@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIXEL ARENA - Edit Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+        
+        body {
+            margin: 0;
+            background: #F1EFF8;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1E1B2E;
+            min-height: 100vh;
+        }
+
+        /* Ambient Background */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #E2D9F3 0%, #FDE2E4 50%, #FFE5D9 100%);
+            opacity: 0.6;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Hardware Accelerated Sticky Nav */
+        .sticky-glass-nav {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(241, 239, 248, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            will-change: transform;
+        }
+
+        /* Optimized Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Inputs */
+        .soft-input {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            color: #1E1B2E;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .soft-input:focus {
+            outline: none;
+            border-color: #0052FF;
+            box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.1);
+        }
+
+        /* Locked Field Styling */
+        .soft-input:disabled {
+            background: #F8FAFC;
+            color: #94A3B8;
+            border-color: #E2E8F0;
+            cursor: not-allowed;
+        }
+
+        /* Toast Notifications */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="relative pb-16">
+
+    <!-- Ambient Background -->
+    <div class="ambient-bg"></div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="px-5 py-3 rounded-xl font-bold text-xs shadow-xl flex items-center gap-2 bg-slate-900 text-white">
+        <span id="toast-message">Notification</span>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="password-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="glass-card w-full max-w-md p-6 bg-white space-y-4 shadow-2xl relative">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-sm font-extrabold text-slate-900">Change Password</h3>
+                <button type="button" onclick="closePasswordModal()" class="text-slate-400 hover:text-slate-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="password-form" class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-700 mb-1 block">Current Password</label>
+                    <input type="password" id="current-password" required placeholder="Enter current password" class="w-full px-4 py-2.5 rounded-xl soft-input text-xs font-semibold">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 mb-1 block">New Password</label>
+                    <input type="password" id="new-password" required minlength="6" placeholder="Enter new password" class="w-full px-4 py-2.5 rounded-xl soft-input text-xs font-semibold">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-700 mb-1 block">Confirm New Password</label>
+                    <input type="password" id="confirm-password" required minlength="6" placeholder="Confirm new password" class="w-full px-4 py-2.5 rounded-xl soft-input text-xs font-semibold">
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closePasswordModal()" class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800">
+                        Cancel
+                    </button>
+                    <button type="submit" id="update-pass-btn" class="px-4 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl">
+                        Update Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sticky Navigation Header -->
+    <header class="sticky-glass-nav px-6 py-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button type="button" onclick="showToast('Testing mode: Navigation back disabled.')" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-slate-200/80 hover:bg-slate-50 transition-colors">
+                    <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <h1 class="text-lg font-extrabold tracking-tight text-slate-900">Edit Profile</h1>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="showToast('Cancel clicked. Changes discarded.')" class="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" form="edit-profile-form" id="save-btn" class="px-5 py-2.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-6 mt-8 relative z-10">
+        
+        <!-- Profile Avatar Header Section -->
+        <div class="glass-card p-6 mb-8 flex flex-col sm:flex-row items-center gap-6">
+            <div class="relative">
+                <div class="w-24 h-24 rounded-full p-1 bg-slate-100 border border-slate-200 overflow-hidden shadow-sm flex items-center justify-center">
+                    <!-- Default Skeleton SVG -->
+                    <svg id="avatar-preview" class="w-16 h-16 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="text-center sm:text-left flex-1">
+                <h2 id="display-name-heading" class="text-xl font-extrabold text-slate-900">Jane Cooper</h2>
+                <p id="display-role" class="text-xs text-slate-500 font-semibold mb-3">Player Account</p>
+                
+                <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <button type="button" id="clear-photo-btn" class="px-4 py-2 text-xs font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-colors border border-rose-200/60">
+                        Reset Photo Field
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Form Layout -->
+        <form id="edit-profile-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Column 1: Editable Fields -->
+            <div class="glass-card p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Editable Fields</span>
+                    <span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Owner Authorized</span>
+                </div>
+                
+                <!-- Editable: name -->
+                <div>
+                    <label class="text-xs font-bold text-slate-700 mb-1.5 block">Full Name (<code class="text-blue-600">name</code>)</label>
+                    <input type="text" id="input-name" required minlength="2" maxlength="30" value="Jane Cooper" placeholder="Enter full name" class="w-full px-4 py-3 rounded-xl soft-input text-xs font-bold">
+                    <span class="text-[10px] text-slate-400 mt-1 block">Must be between 2 and 30 characters.</span>
+                </div>
+
+                <!-- Editable: address -->
+                <div>
+                    <label class="text-xs font-bold text-slate-700 mb-1.5 block">Address (<code class="text-blue-600">address</code>)</label>
+                    <textarea id="input-address" rows="3" placeholder="Enter full address" class="w-full px-4 py-3 rounded-xl soft-input text-xs font-bold resize-none">123 Arena Street, Gaming District, NY</textarea>
+                </div>
+
+                <!-- Editable: profilePhoto -->
+                <div>
+                    <label class="text-xs font-bold text-slate-700 mb-1.5 block">Profile Photo URL (<code class="text-blue-600">profilePhoto</code>)</label>
+                    <input type="url" id="input-photo-url" maxlength="2048" placeholder="https://..." class="w-full px-4 py-3 rounded-xl soft-input text-xs font-semibold">
+                    <span class="text-[10px] text-slate-400 mt-1 block">Leave empty for default skeleton avatar.</span>
+                </div>
+            </div>
+
+            <!-- Column 2: Protected / Read-Only Fields & Security -->
+            <div class="space-y-6">
+                
+                <div class="glass-card p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <span class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Protected Fields</span>
+                        <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Locked</span>
+                    </div>
+
+                    <!-- Locked: mobile -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 mb-1.5 flex items-center justify-between">
+                            <span>Mobile Number (<code class="text-slate-400">mobile</code>)</span>
+                            <span class="text-[10px] text-slate-400">🔒 Unchangeable</span>
+                        </label>
+                        <input type="tel" id="input-mobile" value="+1234567890" disabled class="w-full px-4 py-3 rounded-xl soft-input text-xs font-bold">
+                    </div>
+
+                    <!-- Locked: email -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 mb-1.5 flex items-center justify-between">
+                            <span>Email Address</span>
+                            <span class="text-[10px] text-slate-400">🔒 Unchangeable</span>
+                        </label>
+                        <input type="email" id="input-email" value="jane.cooper@arena.gg" disabled class="w-full px-4 py-3 rounded-xl soft-input text-xs font-bold">
+                    </div>
+                </div>
+
+                <!-- Password & Security Card -->
+                <div class="glass-card p-4 flex items-center justify-between border-slate-200">
+                    <div>
+                        <span class="text-xs font-bold text-slate-800 block">Password & Security</span>
+                        <span class="text-[10px] text-slate-400">Update your account password</span>
+                    </div>
+                    <button type="button" onclick="openPasswordModal()" class="px-3.5 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors">
+                        Change Password
+                    </button>
+                </div>
+
+                <!-- Log Out Card -->
+                <div class="glass-card p-4 flex items-center justify-between border-rose-100">
+                    <div>
+                        <span class="text-xs font-bold text-rose-600 block">Log Out</span>
+                        <span class="text-[10px] text-slate-400">Sign out from current session</span>
+                    </div>
+                    <button type="button" id="logout-btn" class="px-3.5 py-1.5 text-xs font-bold text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-xl transition-colors">
+                        Logout
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+    </main>
+
+    <!-- Firebase JS v10 Integration Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        // Toast Helper
+        window.showToast = function(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = message;
+            toast.className = `px-5 py-3 rounded-xl font-bold text-xs shadow-xl flex items-center gap-2 ${
+                isError ? 'bg-rose-600 text-white' : 'bg-slate-900 text-white'
+            } show`;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        };
+
+        // Modal Helpers
+        window.openPasswordModal = function() {
+            document.getElementById('password-modal').classList.remove('hidden');
+        };
+
+        window.closePasswordModal = function() {
+            document.getElementById('password-modal').classList.add('hidden');
+            document.getElementById('password-form').reset();
+        };
+
+        // Render Avatar Helper
+        function renderAvatar(photoUrl) {
+            const container = document.getElementById('avatar-preview').parentElement;
+            if (photoUrl && photoUrl.trim() !== '') {
+                container.innerHTML = `<img id="avatar-preview" src="${photoUrl}" class="w-full h-full object-cover rounded-full" alt="Avatar">`;
+            } else {
+                // Skeleton SVG default
+                container.innerHTML = `
+                    <svg id="avatar-preview" class="w-16 h-16 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                `;
+            }
+        }
+
+        // Monitor Auth State
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await loadUserProfile(currentUser.uid);
+            } else {
+                showToast("Test Mode: No active auth session detected.", false);
+            }
+        });
+
+        // Load Document
+        async function loadUserProfile(uid) {
+            try {
+                const userRef = doc(db, "users", uid);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+
+                    document.getElementById('input-name').value = data.name || '';
+                    document.getElementById('input-address').value = data.address || '';
+                    document.getElementById('input-photo-url').value = data.profilePhoto || '';
+                    document.getElementById('input-mobile').value = data.mobile || '';
+                    document.getElementById('input-email').value = data.email || currentUser.email || '';
+
+                    document.getElementById('display-name-heading').textContent = data.name || 'Anonymous Player';
+                    renderAvatar(data.profilePhoto);
+                }
+            } catch (err) {
+                console.error("Error fetching user data:", err);
+                showToast("Failed to fetch Firestore user data.", true);
+            }
+        }
+
+        // Handle Form Submission
+        document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerText = 'Saving...';
+
+            // STACK DELTA PAYLOAD
+            const updatePayload = {
+                name: document.getElementById('input-name').value.trim(),
+                address: document.getElementById('input-address').value.trim(),
+                profilePhoto: document.getElementById('input-photo-url').value.trim()
+            };
+
+            // Update local display elements
+            document.getElementById('display-name-heading').textContent = updatePayload.name;
+            renderAvatar(updatePayload.profilePhoto);
+
+            if (!currentUser) {
+                showToast("Test Success: Payload valid! (No active auth connection)");
+                saveBtn.disabled = false;
+                saveBtn.innerText = 'Save Changes';
+                return;
+            }
+
+            try {
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, updatePayload);
+                showToast("Firestore Profile updated successfully!");
+            } catch (err) {
+                console.error("Firestore Security Rule Rejection:", err);
+                showToast("Firestore Write rejected! Check field rules.", true);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerText = 'Save Changes';
+            }
+        });
+
+        // Change Password Form Submission
+        document.getElementById('password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPass = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+
+            if (newPass !== confirmPass) {
+                showToast("New passwords do not match!", true);
+                return;
+            }
+
+            const passBtn = document.getElementById('update-pass-btn');
+            passBtn.disabled = true;
+            passBtn.innerText = 'Updating...';
+
+            if (!currentUser) {
+                showToast("Test Mode: Password change simulated successfully!");
+                closePasswordModal();
+                passBtn.disabled = false;
+                passBtn.innerText = 'Update Password';
+                return;
+            }
+
+            try {
+                // Re-authenticate user first
+                const credential = EmailAuthProvider.credential(currentUser.email, currentPass);
+                await reauthenticateWithCredential(currentUser, credential);
+
+                // Update password
+                await updatePassword(currentUser, newPass);
+                showToast("Password updated successfully!");
+                closePasswordModal();
+            } catch (err) {
+                console.error("Password Update Error:", err);
+                showToast(err.message || "Failed to update password. Check current password.", true);
+            } finally {
+                passBtn.disabled = false;
+                passBtn.innerText = 'Update Password';
+            }
+        });
+
+        // Live Photo Field Input
+        document.getElementById('input-photo-url').addEventListener('input', (e) => {
+            renderAvatar(e.target.value.trim());
+        });
+
+        document.getElementById('clear-photo-btn').addEventListener('click', () => {
+            document.getElementById('input-photo-url').value = '';
+            renderAvatar('');
+            showToast("Photo field reset to default skeleton avatar.");
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            if (currentUser) {
+                signOut(auth).then(() => {
+                    showToast("Signed out.");
+                });
+            } else {
+                showToast("Test Mode: Logged out locally.");
+            }
+        });
+    </script>
+
+</body>
+</html>
