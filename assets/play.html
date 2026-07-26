@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ran'kings · Daily Routine Tournaments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+
+        body {
+            margin: 0;
+            background-color: #F1F5F9;
+            color: #0F172A;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 85px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-ewc {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Hide Horizontal Scrollbars */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Mode Selection Cards */
+        .game-card {
+            background: #FFFFFF;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            min-width: 170px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .game-card.active {
+            border-color: #0F172A;
+            background-color: #F8FAFC;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .badge-active {
+            background-color: #B88E24;
+            color: #FFFFFF;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-upcoming {
+            background-color: #0F172A;
+            color: #FFFFFF;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Featured Game Banner */
+        .featured-game-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Tab Bar */
+        .tab-item {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748B;
+            white-space: nowrap;
+            padding: 10px 4px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-item.active {
+            color: #0F172A;
+            border-bottom-color: #0F172A;
+        }
+
+        /* Filter Chips */
+        .filter-chip {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            color: #475569;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .filter-chip.active {
+            background: #0F172A;
+            color: #FFFFFF;
+            border-color: #0F172A;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+        }
+
+        /* Dropdown UI */
+        .sort-dropdown-button {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 12px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #0F172A;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .sort-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 6px;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 12px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+            z-index: 40;
+            overflow: hidden;
+        }
+
+        .sort-dropdown-item {
+            padding: 12px 16px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: #475569;
+            cursor: pointer;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .sort-dropdown-item:hover {
+            background-color: #F1F5F9;
+            color: #0F172A;
+        }
+
+        /* High-Visibility Stat Boxes */
+        .stat-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Match Card - Active */
+        .match-card {
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .match-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Match Card - Passed/Closed */
+        .match-card-closed {
+            background: #F1F5F9; /* Dimmed background */
+            border: 1.5px solid #CBD5E1;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: none;
+            opacity: 0.7; /* Slight fade */
+            pointer-events: none; /* Block joins */
+        }
+
+        /* App Bottom Navigation */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 8px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            color: #64748B;
+            font-size: 10px;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #0F172A;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+
+        <!-- Top Badge -->
+        <div class="flex items-center justify-between gap-4">
+            <span class="inline-block bg-black text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-md shrink-0">
+                DAILY ROUTINE
+            </span>
+            <span id="current-date-badge" class="text-xs font-bold text-slate-500 font-ewc">
+                LOADING DATE...
+            </span>
+        </div>
+
+        <!-- Header Title & Subtitle -->
+        <div class="space-y-1">
+            <h1 class="font-ewc text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-none">
+                RAN'KINGS
+            </h1>
+            <p class="text-xs sm:text-sm font-semibold text-slate-600 max-w-2xl leading-relaxed">
+                Think you can win it? These are your daily routine tournament matches across every PA title. View winners, match results, and filter by your device time to find upcoming events. Entries close automatically once a match passes.
+            </p>
+        </div>
+
+        <!-- Mode Selection Carousel -->
+        <div class="flex items-center gap-3 overflow-x-auto no-scrollbar py-2">
+            <div id="mode-br" onclick="selectGameMode('br')" class="game-card shrink-0 active">
+                <span class="font-ewc text-xs font-black text-slate-900 text-center">BATTLE ROYALE</span>
+                <span class="badge-active">ACTIVE DAILY</span>
+            </div>
+            <div id="mode-cs" onclick="selectGameMode('cs')" class="game-card shrink-0">
+                <span class="font-ewc text-xs font-black text-slate-900 text-center">CLASH SQUAD</span>
+                <span class="badge-upcoming">COMING SOON</span>
+            </div>
+            <div id="mode-lw" onclick="selectGameMode('lw')" class="game-card shrink-0">
+                <span class="font-ewc text-xs font-black text-slate-900 text-center">LONE WOLF</span>
+                <span class="badge-upcoming">COMING SOON</span>
+            </div>
+        </div>
+
+        <!-- Featured Game Banner -->
+        <div class="featured-game-card">
+            <div class="w-12 h-12 bg-[#070A10] rounded-xl flex items-center justify-center p-2 shrink-0 shadow-md">
+                <svg version="1.1" id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 571.54 485.99" class="w-full h-full text-white" fill="currentColor">
+                    <g>
+                        <path d="M280.68,187.34c2.41-9.01,11.68-16.32,20.7-16.32c0.14,0,108.61,0.01,143.95,0.01c6.99,0,13.58-3.09,18.08-8.45l46.89-55.85c2.15-2.57,0.33-6.48-3.02-6.48H239.6c-10.72,0-20.1,7.2-22.87,17.56l-83.37,311.93c-0.74,2.79,1.66,5.4,4.5,4.9l66.12-11.66c9.06-1.6,16.37-8.3,18.75-17.18l35.18-131.29l153.93-0.06c7,0,13.63-3.09,18.13-8.45l46.88-55.85c2.15-2.57,0.33-6.48-3.02-6.48l-181.33-0.04C283.57,203.55,278.28,196.3,280.68,187.34z"></path> 
+                        <path d="M171.2,51.29c-10.71,0-20.09,7.2-22.86,17.54l-25.63,95.66c-0.77,3.49,0.67,6.56,4.2,6.56h30.04c2.15,0,2.51,2.62,0.56,4.11l-44.91,34.18c-1.47,1.12-2.55,2.68-2.98,4.3l-1.09,4.07c-0.35,1.32,0.43,2.39,1.75,2.39H143c2.16,0,2.51,2.63,0.54,4.12l-43.77,32.91c-1.49,1.13-2.58,2.7-3.02,4.34l-1.41,5.29c-0.35,1.32,0.43,2.38,1.75,2.38l33.45,0c2.15,0,2.5,2.61,0.56,4.1l-45.36,34.93c-1.23,0.95-2.05,2.52-2.58,3.85l-22.72,84.79c-0.75,2.79,1.65,5.41,4.5,4.91l48.37-8.53c9.08-1.6,16.4-8.32,18.77-17.23l72.89-274.44c2.75-10.37,12.14-17.59,22.88-17.59h190.06c7,0,13.63-3.1,18.13-8.45l14.86-17.71c2.15-2.57,0.33-6.48-3.02-6.48H171.2z"></path>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="space-y-0.5">
+                <h2 id="active-mode-title" class="font-ewc text-2xl font-black text-slate-900 leading-none">Free Fire · Battle Royale</h2>
+                <p id="total-matches-count" class="text-xs font-bold text-slate-500">
+                    -- active matches scheduled
+                </p>
+            </div>
+        </div>
+
+        <!-- Filter Sub-Tabs -->
+        <div class="flex items-center gap-6 border-b border-slate-200 overflow-x-auto no-scrollbar">
+            <button id="tab-all-matches" onclick="switchPlayTab('all-matches')" class="tab-item active">TODAY'S SCHEDULE</button>
+            <button id="tab-tournament" onclick="switchPlayTab('tournament')" class="tab-item">COMPETITIVE</button>
+            <button id="tab-recents" onclick="switchPlayTab('recents')" class="tab-item">RESULTS</button>
+        </div>
+
+        <!-- SMART FILTER CONTROL PANEL -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            
+            <!-- 1. MATCH FORMAT FILTER (SOLO / DUO / SQUAD) -->
+            <div class="space-y-2">
+                <span class="font-ewc text-[11px] font-black tracking-widest text-slate-400 uppercase block">
+                    MATCH FORMAT FILTER
+                </span>
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                    <button onclick="setTypeFilter('ALL')" id="type-chip-ALL" class="filter-chip active">ALL FORMATS</button>
+                    <button onclick="setTypeFilter('Solo')" id="type-chip-Solo" class="filter-chip">SOLO</button>
+                    <button onclick="setTypeFilter('Duo')" id="type-chip-Duo" class="filter-chip">DUO</button>
+                    <button onclick="setTypeFilter('Squad')" id="type-chip-Squad" class="filter-chip">SQUAD</button>
+                </div>
+            </div>
+
+            <!-- 2. SPECIFIC ENTRY PRICE FILTER -->
+            <div class="space-y-2 border-t border-slate-100 pt-3">
+                <span class="font-ewc text-[11px] font-black tracking-widest text-slate-400 uppercase block">
+                    ENTRY PRICE FILTER
+                </span>
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                    <button onclick="setPriceFilter('ALL')" id="price-chip-ALL" class="filter-chip active">ALL PRICES</button>
+                    <button onclick="setPriceFilter(5)" id="price-chip-5" class="filter-chip">₹5 ENTRY</button>
+                    <button onclick="setPriceFilter(6)" id="price-chip-6" class="filter-chip">₹6 ENTRY</button>
+                    <button onclick="setPriceFilter(8)" id="price-chip-8" class="filter-chip">₹8 ENTRY</button>
+                    <button onclick="setPriceFilter(9)" id="price-chip-9" class="filter-chip">₹9 ENTRY</button>
+                    <button onclick="setPriceFilter(10)" id="price-chip-10" class="filter-chip">₹10 ENTRY</button>
+                    <button onclick="setPriceFilter(13)" id="price-chip-13" class="filter-chip">₹13 ENTRY</button>
+                    <button onclick="setPriceFilter(15)" id="price-chip-15" class="filter-chip">₹15 ENTRY</button>
+                    <button onclick="setPriceFilter(18)" id="price-chip-18" class="filter-chip">₹18 ENTRY</button>
+                    <button onclick="setPriceFilter(20)" id="price-chip-20" class="filter-chip">₹20 ENTRY</button>
+                </div>
+            </div>
+
+            <!-- 3. TIME SESSION FILTER -->
+            <div class="space-y-2 border-t border-slate-100 pt-3">
+                <span class="font-ewc text-[11px] font-black tracking-widest text-slate-400 uppercase block">
+                    TIME SESSION FILTER
+                </span>
+                <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                    <button onclick="setSessionFilter('ALL')" id="chip-ALL" class="filter-chip active">ALL SESSIONS</button>
+                    <button onclick="setSessionFilter('MORNING')" id="chip-MORNING" class="filter-chip">MORNING (08 AM - 12 PM)</button>
+                    <button onclick="setSessionFilter('AFTERNOON')" id="chip-AFTERNOON" class="filter-chip">AFTERNOON (12 PM - 04 PM)</button>
+                    <button onclick="setSessionFilter('EVENING')" id="chip-EVENING" class="filter-chip">EVENING (04 PM - 08 PM)</button>
+                    <button onclick="setSessionFilter('NIGHT')" id="chip-NIGHT" class="filter-chip">NIGHT (08 PM - 12 AM)</button>
+                </div>
+            </div>
+
+            <!-- 4. SORT DROPDOWN -->
+            <div class="relative pt-1 border-t border-slate-100">
+                <span class="font-ewc text-[10px] font-black tracking-widest text-slate-400 uppercase block mb-1">
+                    SMART SORT BY
+                </span>
+                <button onclick="toggleSortDropdown()" class="sort-dropdown-button">
+                    <span id="selected-sort-label">TIME SLOT: EARLY TO LATE (L2H)</span>
+                    <svg class="w-4 h-4 text-slate-600 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+
+                <div id="sort-dropdown-menu" class="sort-dropdown-menu hidden">
+                    <div onclick="applySort('TIME_ASC', 'TIME SLOT: EARLY TO LATE (L2H)')" class="sort-dropdown-item">TIME SLOT: EARLY TO LATE (L2H)</div>
+                    <div onclick="applySort('TIME_DESC', 'TIME SLOT: LATE TO EARLY (H2L)')" class="sort-dropdown-item">TIME SLOT: LATE TO EARLY (H2L)</div>
+                    <div onclick="applySort('ENTRY_ASC', 'ENTRY PRICE: LOW TO HIGH')" class="sort-dropdown-item">ENTRY PRICE: LOW TO HIGH</div>
+                    <div onclick="applySort('ENTRY_DESC', 'ENTRY PRICE: HIGH TO LOW')" class="sort-dropdown-item">ENTRY PRICE: HIGH TO LOW</div>
+                    <div onclick="applySort('KILL_ASC', 'PER KILL: LOW TO HIGH')" class="sort-dropdown-item">PER KILL: LOW TO HIGH</div>
+                    <div onclick="applySort('KILL_DESC', 'PER KILL: HIGH TO LOW')" class="sort-dropdown-item">PER KILL: HIGH TO LOW</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DYNAMIC MATCH FEED -->
+        <div id="matches-feed-container" class="space-y-4">
+            <!-- Rendered via JS -->
+        </div>
+
+    </main>
+
+    <!-- App Bottom Nav -->
+    <nav class="app-bottom-nav">
+        <a href="#" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+
+        <a href="#" class="nav-item active">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Play</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M12 15l-2 5l9-11h-7l2-5l-9 11h7z"/>
+            </svg>
+            <span>Ranking</span>
+        </a>
+    </nav>
+
+    <!-- Master Data & Dynamic Filtering Logic -->
+    <script>
+        // MASTER DATASET (Standardized times, ignoring specific historic dates)
+        const masterDailyRoutineSchedule = [
+            // --- ₹5 ENTRY EVENTS (Historic Batch) ---
+            { id: "#75845", type: "Solo",  time24h: "16:40", timeDisp: "04:40 PM", fee: 5,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+            { id: "#75853", type: "Duo",   time24h: "17:10", timeDisp: "05:10 PM", fee: 5,  kill: 3,  pool: 3500, session: "EVENING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹30 ON BOOYAH • PLAY TOGETHER" },
+            { id: "#75837", type: "Solo",  time24h: "17:40", timeDisp: "05:40 PM", fee: 5,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+            { id: "#75846", type: "Solo",  time24h: "18:10", timeDisp: "06:10 PM", fee: 5,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+            { id: "#75854", type: "Duo",   time24h: "18:40", timeDisp: "06:40 PM", fee: 5,  kill: 3,  pool: 3500, session: "EVENING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹30 ON BOOYAH • PLAY TOGETHER" },
+            { id: "#75838", type: "Solo",  time24h: "19:10", timeDisp: "07:10 PM", fee: 5,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+            { id: "#75847", type: "Solo",  time24h: "19:40", timeDisp: "07:40 PM", fee: 5,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+            { id: "#75855", type: "Duo",   time24h: "20:10", timeDisp: "08:10 PM", fee: 5,  kill: 3,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹30 ON BOOYAH • PLAY TOGETHER" },
+            { id: "#75839", type: "Solo",  time24h: "20:40", timeDisp: "08:40 PM", fee: 5,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+            { id: "#75848", type: "Solo",  time24h: "21:10", timeDisp: "09:10 PM", fee: 5,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+            { id: "#75856", type: "Duo",   time24h: "21:40", timeDisp: "09:40 PM", fee: 5,  kill: 3,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹30 ON BOOYAH • PLAY TOGETHER" },
+            { id: "#75840", type: "Solo",  time24h: "22:10", timeDisp: "10:10 PM", fee: 5,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹00 ON BOOYAH • PLAY SMART" },
+
+            // --- MORNING BATCH ---
+            { id: "#76115", type: "Solo",  time24h: "08:00", timeDisp: "08:00 AM", fee: 6,  kill: 4,  pool: 3500, session: "MORNING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76185", type: "Duo",   time24h: "08:15", timeDisp: "08:15 AM", fee: 6,  kill: 4,  pool: 3500, session: "MORNING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76104", type: "Squad", time24h: "08:30", timeDisp: "08:30 AM", fee: 8,  kill: 6,  pool: 3500, session: "MORNING", desc: "SQUAD BR • GUN ATTRIBUTES OFF • ₹24 ON BOOYAH • HORSE BAN" },
+            { id: "#76186", type: "Duo",   time24h: "09:00", timeDisp: "09:00 AM", fee: 8,  kill: 6,  pool: 3500, session: "MORNING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76137", type: "Solo",  time24h: "09:15", timeDisp: "09:15 AM", fee: 8,  kill: 6,  pool: 3500, session: "MORNING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76117", type: "Solo",  time24h: "09:30", timeDisp: "09:30 AM", fee: 10, kill: 7,  pool: 3500, session: "MORNING", desc: "SOLO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76187", type: "Duo",   time24h: "09:45", timeDisp: "09:45 AM", fee: 8,  kill: 6,  pool: 3500, session: "MORNING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76105", type: "Squad", time24h: "10:00", timeDisp: "10:00 AM", fee: 13, kill: 10, pool: 3500, session: "MORNING", desc: "SQUAD BR • GUN ATTRIBUTES ON • ₹52 ON BOOYAH • HORSE BAN" },
+            { id: "#76118", type: "Solo",  time24h: "10:15", timeDisp: "10:15 AM", fee: 8,  kill: 6,  pool: 3500, session: "MORNING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76188", type: "Duo",   time24h: "10:30", timeDisp: "10:30 AM", fee: 13, kill: 10, pool: 3500, session: "MORNING", desc: "DUO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76138", type: "Solo",  time24h: "10:45", timeDisp: "10:45 AM", fee: 6,  kill: 4,  pool: 3500, session: "MORNING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76119", type: "Solo",  time24h: "11:00", timeDisp: "11:00 AM", fee: 13, kill: 10, pool: 3500, session: "MORNING", desc: "SOLO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76189", type: "Duo",   time24h: "11:15", timeDisp: "11:15 AM", fee: 8,  kill: 6,  pool: 3500, session: "MORNING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76106", type: "Squad", time24h: "11:30", timeDisp: "11:30 AM", fee: 15, kill: 12, pool: 3500, session: "MORNING", desc: "SQUAD BR • GUN ATTRIBUTES ON • ₹60 ON BOOYAH • HORSE BAN" },
+            { id: "#76120", type: "Solo",  time24h: "11:45", timeDisp: "11:45 AM", fee: 8,  kill: 6,  pool: 3500, session: "MORNING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+
+            // --- AFTERNOON BATCH ---
+            { id: "#76190", type: "Duo",   time24h: "12:00", timeDisp: "12:00 PM", fee: 15, kill: 12, pool: 3500, session: "AFTERNOON", desc: "DUO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76139", type: "Solo",  time24h: "12:15", timeDisp: "12:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76121", type: "Solo",  time24h: "12:30", timeDisp: "12:30 PM", fee: 15, kill: 12, pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76191", type: "Duo",   time24h: "12:45", timeDisp: "12:45 PM", fee: 8,  kill: 6,  pool: 3500, session: "AFTERNOON", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76107", type: "Squad", time24h: "13:00", timeDisp: "01:00 PM", fee: 18, kill: 15, pool: 3500, session: "AFTERNOON", desc: "SQUAD BR • GUN ATTRIBUTES ON • ₹60 ON BOOYAH • HORSE BAN" },
+            { id: "#76122", type: "Solo",  time24h: "13:15", timeDisp: "01:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76192", type: "Duo",   time24h: "13:30", timeDisp: "01:30 PM", fee: 18, kill: 15, pool: 3500, session: "AFTERNOON", desc: "DUO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76140", type: "Solo",  time24h: "13:45", timeDisp: "01:45 PM", fee: 8,  kill: 6,  pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76123", type: "Solo",  time24h: "14:00", timeDisp: "02:00 PM", fee: 18, kill: 15, pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76193", type: "Duo",   time24h: "14:15", timeDisp: "02:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "AFTERNOON", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76108", type: "Squad", time24h: "14:30", timeDisp: "02:30 PM", fee: 20, kill: 15, pool: 3500, session: "AFTERNOON", desc: "SQUAD BR • GUN ATTRIBUTES ON • ₹100 ON BOOYAH • HORSE BAN" },
+            { id: "#76124", type: "Solo",  time24h: "14:45", timeDisp: "02:45 PM", fee: 6,  kill: 4,  pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76194", type: "Duo",   time24h: "15:00", timeDisp: "03:00 PM", fee: 20, kill: 15, pool: 3500, session: "AFTERNOON", desc: "DUO BR • GUN ATTRIBUTES ON • TOP2:- 60₹, 40₹ • HORSE BAN" },
+            { id: "#76141", type: "Solo",  time24h: "15:15", timeDisp: "03:15 PM", fee: 8,  kill: 6,  pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76125", type: "Solo",  time24h: "15:30", timeDisp: "03:30 PM", fee: 15, kill: 12, pool: 3500, session: "AFTERNOON", desc: "SOLO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76195", type: "Duo",   time24h: "15:45", timeDisp: "03:45 PM", fee: 6,  kill: 4,  pool: 3500, minutes: 945,  session: "AFTERNOON", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+
+            // --- EVENING BATCH (Combined) ---
+            { id: "#76109", type: "Squad", time24h: "16:00", timeDisp: "04:00 PM", fee: 15, kill: 12, pool: 3500, session: "EVENING", desc: "SQUAD BR • GUN ATTRIBUTES ON • ₹60 ON BOOYAH • HORSE BAN" },
+            { id: "#76126", type: "Solo",  time24h: "16:15", timeDisp: "04:15 PM", fee: 8,  kill: 6,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76196", type: "Duo",   time24h: "16:30", timeDisp: "04:30 PM", fee: 15, kill: 12, pool: 3500, session: "EVENING", desc: "DUO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76142", type: "Solo",  time24h: "16:45", timeDisp: "04:45 PM", fee: 6,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76127", type: "Solo",  time24h: "17:00", timeDisp: "05:00 PM", fee: 20, kill: 15, pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES ON • TOP3:- 50₹, 30₹, 20₹ • HORSE BAN" },
+            { id: "#76197", type: "Duo",   time24h: "17:15", timeDisp: "05:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "EVENING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76110", type: "Squad", time24h: "17:30", timeDisp: "05:30 PM", fee: 13, kill: 10, pool: 3500, session: "EVENING", desc: "SQUAD BR • GUN ATTRIBUTES ON • ₹52 ON BOOYAH • HORSE BAN" },
+            { id: "#76128", type: "Solo",  time24h: "17:45", timeDisp: "05:45 PM", fee: 8,  kill: 6,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76143", type: "Solo",  time24h: "18:15", timeDisp: "06:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76129", type: "Solo",  time24h: "18:30", timeDisp: "06:30 PM", fee: 13, kill: 10, pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76198", type: "Duo",   time24h: "18:30", timeDisp: "06:30 PM", fee: 13, kill: 10, pool: 3500, session: "EVENING", desc: "DUO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76199", type: "Duo",   time24h: "18:45", timeDisp: "06:45 PM", fee: 8,  kill: 6,  pool: 3500, session: "EVENING", desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76111", type: "Squad", time24h: "19:00", timeDisp: "07:00 PM", fee: 10, kill: 7,  pool: 3500, session: "EVENING", desc: "SQUAD BR • GUN ATTRIBUTES ON • ₹52 ON BOOYAH • HORSE BAN" },
+            { id: "#76130", type: "Solo",  time24h: "19:15", timeDisp: "07:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76200", type: "Duo",   time24h: "19:30", timeDisp: "07:30 PM", fee: 15, kill: 12, pool: 3500, session: "EVENING", desc: "DUO BR • GUN ATTRIBUTES ON • ₹50 ON BOOYAH • HORSE BAN" },
+            { id: "#76144", type: "Solo",  time24h: "19:45", timeDisp: "07:45 PM", fee: 6,  kill: 4,  pool: 3500, session: "EVENING", desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+
+            // --- NIGHT BATCH ---
+            { id: "#76131", type: "Solo",  time24h: "20:00", timeDisp: "08:00 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76201", type: "Duo",   time24h: "20:15", timeDisp: "08:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76112", type: "Squad", time24h: "20:30", timeDisp: "08:30 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SQUAD BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76132", type: "Solo",  time24h: "20:45", timeDisp: "08:45 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76202", type: "Duo",   time24h: "21:00", timeDisp: "09:00 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76145", type: "Solo",  time24h: "21:15", timeDisp: "09:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76133", type: "Solo",  time24h: "21:30", timeDisp: "09:30 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76203", type: "Duo",   time24h: "21:45", timeDisp: "09:45 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76113", type: "Squad", time24h: "22:00", timeDisp: "10:00 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SQUAD BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76134", type: "Solo",  time24h: "22:15", timeDisp: "10:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76204", type: "Duo",   time24h: "22:30", timeDisp: "10:30 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76146", type: "Solo",  time24h: "22:45", timeDisp: "10:45 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76135", type: "Solo",  time24h: "23:00", timeDisp: "11:00 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76205", type: "Duo",   time24h: "23:15", timeDisp: "11:15 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76114", type: "Squad", time24h: "23:30", timeDisp: "11:30 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SQUAD BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76136", type: "Solo",  time24h: "23:45", timeDisp: "11:45 PM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN" },
+            { id: "#76070", type: "Duo",   time24h: "00:00", timeDisp: "12:00 AM", fee: 6,  kill: 4,  pool: 3500, session: "NIGHT",   desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • PLAY TOGETHER" },
+            { id: "#76048", type: "Solo",  time24h: "00:15", timeDisp: "12:15 AM", fee: 9,  kill: 10, pool: 3500, session: "NIGHT",   desc: "SOLO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • PLAY SMART" }
+        ];
+
+        let selectedType = 'ALL';
+        let selectedPrice = 'ALL';
+        let selectedSession = 'ALL';
+        let currentSort = 'TIME_ASC';
+
+        /* Helper to check if a 24h time string has passed device current time */
+        function hasTimePassed(time24h) {
+            const now = new Date();
+            const [hours, minutes] = time24h.split(':').map(Number);
+            const matchTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+            return now >= matchTime;
+        }
+
+        /* Helper function to extract Booyah Reward text */
+        function extractBooyahBonus(description) {
+            if (description.includes("ON BOOYAH")) {
+                const parts = description.split("•");
+                for (let part of parts) {
+                    if (part.includes("ON BOOYAH")) {
+                        return part.trim();
+                    }
+                }
+            } else if (description.includes("TOP2:-")) {
+                return "TOP 2 BONUS: ₹60, ₹40";
+            } else if (description.includes("TOP3:-")) {
+                return "TOP 3 BONUS: ₹50, ₹30, ₹20";
+            }
+            return null;
+        }
+
+        function renderMatchFeed() {
+            const container = document.getElementById('matches-feed-container');
+            let list = [...masterDailyRoutineSchedule];
+
+            // --- 1. FILTERING ENGINE ---
+            // Format Filter
+            if (selectedType !== 'ALL') {
+                list = list.filter(m => m.type === selectedType);
+            }
+            // Entry Price Filter
+            if (selectedPrice !== 'ALL') {
+                list = list.filter(m => m.fee === Number(selectedPrice));
+            }
+            // Time Session Filter
+            if (selectedSession !== 'ALL') {
+                list = list.filter(m => m.session === selectedSession);
+            }
+
+            // --- 2. ADD DYNAMIC STATUS (PASSED LOGIC) ---
+            // Add a passed flag to every item
+            list = list.map(match => ({
+                ...match,
+                isPassed: hasTimePassed(match.time24h)
+            }));
+
+            // --- 3. SORTING ENGINE ---
+            // Primary Sort: TIME_ASC ( Early to Late )
+            list.sort((a, b) => {
+                const [hA, mA] = a.time24h.split(':').map(Number);
+                const [hB, mB] = b.time24h.split(':').map(Number);
+                return (hA * 60 + mA) - (hB * 60 + mB);
+            });
+
+            // Secondary Sort: ENTRY PRICE (if selected)
+            if (currentSort === 'ENTRY_ASC') {
+                list.sort((a, b) => a.fee - b.fee);
+            } else if (currentSort === 'ENTRY_DESC') {
+                list.sort((a, b) => b.fee - a.fee);
+            } else if (currentSort === 'KILL_ASC') {
+                list.sort((a, b) => a.kill - b.kill);
+            } else if (currentSort === 'KILL_DESC') {
+                list.sort((a, b) => b.kill - a.kill);
+            }
+
+            // --- 4. THE HARD RULE: MOVE PASSED MATCHES TO BOTTOM ---
+            // Re-sort the final filtered/sorted list
+            list.sort((a, b) => {
+                // If isPassed flag is true, move it down (1), otherwise move it up (-1)
+                return a.isPassed - b.isPassed;
+            });
+
+            // --- 5. RENDER THE FEED ---
+            document.getElementById('total-matches-count').textContent = `${list.filter(m => !m.isPassed).length} active matches showing`;
+
+            let html = '';
+
+            list.forEach(match => {
+                const booyahText = extractBooyahBonus(match.desc);
+                const passed = match.isPassed;
+
+                html += `
+                    <div class="${passed ? 'match-card-closed' : 'match-card'}">
+                        <!-- Header Row -->
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <div>
+                                <span class="px-2 py-0.5 ${passed ? 'bg-slate-400' : 'bg-black'} text-white font-ewc text-[9px] font-black rounded uppercase tracking-wider">
+                                    ${match.type} BR
+                                </span>
+                                <h3 class="font-ewc text-base font-black ${passed ? 'text-slate-600' : 'text-slate-900'} mt-1">
+                                    ${match.type.toUpperCase()} FULL MAP ${match.id}
+                                </h3>
+                                <p class="text-[10px] font-bold text-slate-500 mt-0.5">
+                                    ${match.desc}
+                                </p>
+                            </div>
+                            <!-- Dynamic Status Badges -->
+                            ${passed ? `
+                                <div class="flex flex-col items-end gap-1 shrink-0">
+                                    <span class="px-2.5 py-1 bg-slate-200 text-slate-500 border border-slate-300 font-ewc text-[10px] font-black rounded-lg uppercase tracking-wide">
+                                        ENTRY CLOSED
+                                    </span>
+                                    <span class="px-2.5 py-1 bg-slate-200 text-slate-500 border border-slate-300 font-ewc text-[10px] font-black rounded-lg uppercase tracking-wide">
+                                        PASSED
+                                    </span>
+                                </div>
+                            ` : `
+                                <div class="flex flex-col items-end gap-1 shrink-0">
+                                    <span class="px-2.5 py-1 bg-green-50 text-green-700 border border-green-200 font-ewc text-[10px] font-black rounded-lg uppercase tracking-wide">
+                                        OPEN
+                                    </span>
+                                    <span class="px-2.5 py-1 bg-amber-50 text-[#B88E24] border border-amber-200 font-ewc text-[10px] font-black rounded-lg uppercase shrink-0 tracking-wide">
+                                        SPOTS LEFT
+                                    </span>
+                                </div>
+                            `}
+                        </div>
+
+                        <!-- Booyah Reward Badge -->
+                        ${booyahText ? `
+                            <div class="mb-3 px-3 py-1.5 ${passed ? 'bg-slate-300 text-slate-600' : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950'} font-ewc text-[11px] font-black rounded-lg shadow-sm flex items-center justify-between">
+                                <span>🏆 BOOYAH BONUS REWARD:</span>
+                                <span>${booyahText}</span>
+                            </div>
+                        ` : ''}
+
+                        <!-- Stat Boxes -->
+                        <div class="grid grid-cols-3 gap-2 my-3">
+                            <div class="stat-box">
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">ENTRY FEE</span>
+                                <span class="font-ewc text-xl font-black ${passed ? 'text-slate-600' : 'text-slate-900'}">₹${match.fee}</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">PER KILL</span>
+                                <span class="font-ewc text-xl font-black ${passed ? 'text-slate-500' : 'text-[#B88E24]'}">₹${match.kill}</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">MATCH TIME</span>
+                                <span class="font-ewc text-xs font-extrabold ${passed ? 'text-slate-600' : 'text-slate-900'} mt-1 block">${match.timeDisp}</span>
+                            </div>
+                        </div>
+
+                        <!-- ACTION BUTTON -->
+                        ${passed ? `
+                            <button class="w-full py-3 border-2 border-slate-300 bg-slate-200 text-red-500 font-ewc text-xs font-black tracking-widest rounded-xl transition-all cursor-not-allowed">
+                                ENTRY CLOSED ( PASSED MATCH )
+                            </button>
+                        ` : `
+                            <button onclick="alert('Joining Match ${match.id} for ₹${match.fee}')" class="w-full py-3 bg-[#0F172A] hover:bg-black text-white font-ewc text-xs font-black tracking-widest rounded-xl transition-all shadow-md mb-2">
+                                JOIN MATCH (₹${match.fee})
+                            </button>
+                        `}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        /* Set current date badge */
+        function initializeDate() {
+            const now = new Date();
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', options).toUpperCase();
+            document.getElementById('current-date-badge').textContent = `TODAY: ${dateStr}`;
+        }
+
+        /* Type Filter Handlers */
+        function setTypeFilter(type) {
+            selectedType = type;
+            document.querySelectorAll('[id^="type-chip-"]').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`type-chip-${type}`).classList.add('active');
+            renderMatchFeed();
+        }
+
+        /* Entry Price Filter Handlers */
+        function setPriceFilter(price) {
+            selectedPrice = price;
+            document.querySelectorAll('[id^="price-chip-"]').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`price-chip-${price}`).classList.add('active');
+            renderMatchFeed();
+        }
+
+        /* Time Session Filter Handlers */
+        function setSessionFilter(session) {
+            selectedSession = session;
+            document.querySelectorAll('[id^="chip-"]').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`chip-${session}`).classList.add('active');
+            renderMatchFeed();
+        }
+
+        /* Sort Handlers */
+        function toggleSortDropdown() {
+            document.getElementById('sort-dropdown-menu').classList.toggle('hidden');
+        }
+
+        function applySort(sortKey, label) {
+            currentSort = sortKey;
+            document.getElementById('selected-sort-label').textContent = label;
+            document.getElementById('sort-dropdown-menu').classList.add('hidden');
+            renderMatchFeed();
+        }
+
+        function selectGameMode(mode) {
+            document.querySelectorAll('.game-card').forEach(card => card.classList.remove('active'));
+            document.getElementById(`mode-${mode}`).classList.add('active');
+            const titleElement = document.getElementById('active-mode-title');
+            if (mode === 'br') titleElement.textContent = 'Free Fire · Battle Royale';
+            if (mode === 'cs') titleElement.textContent = 'Free Fire · Clash Squad';
+            if (mode === 'lw') titleElement.textContent = 'Free Fire · Lone Wolf';
+        }
+
+        function switchPlayTab(targetTab) {
+            document.querySelectorAll('.tab-item').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`tab-${targetTab}`);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            const btn = document.querySelector('.sort-dropdown-button');
+            const menu = document.getElementById('sort-dropdown-menu');
+            if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Initialize Matches
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeDate();
+            renderMatchFeed();
+        });
+    </script>
+
+</body>
+</html>
