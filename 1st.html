@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pixel Arena | Core</title>
+    <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-database-compat.js"></script>
+    <script src="version-gate.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --bg-dark: #0B1120;
+            --top-glow: #1E3A8A;
+            --neon-blue: #3B82F6;
+            --input-bg: rgba(255, 255, 255, 0.02);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #64748B;
+            --orb-core: #0F172A;
+            --orb-edge: #1D4ED8;
+            --orb-glow: rgba(59, 130, 246, 0.3);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient Top Glow & Dot Pattern */
+        .ambient-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background: radial-gradient(circle at 50% 0%, var(--top-glow) 0%, var(--bg-dark) 65%);
+        }
+        .dot-pattern {
+            position: absolute; top: 0; left: 0; width: 100%; height: 40%; z-index: -1;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 16px 16px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        /* Mobile Container Layout */
+        .app-container {
+            width: 100%; max-width: 400px; height: 100vh;
+            padding: 30px 25px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            position: relative;
+        }
+
+        /* Animated Bubble Orb Elements Match */
+        .orb-wrapper { display: flex; justify-content: center; margin-bottom: 40px; }
+        .orb {
+            width: 100px; height: 100px;
+            background: radial-gradient(circle at 30% 30%, #1E40AF, var(--orb-core));
+            border: 2px solid var(--orb-edge);
+            box-shadow: 0 0 35px var(--orb-glow), inset 0 0 20px rgba(59, 130, 246, 0.5);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation: morph 6s ease-in-out infinite alternate, float 4s ease-in-out infinite;
+        }
+
+        @keyframes morph {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+            67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* Terminal Logs Layout styling */
+        .terminal-box {
+            width: 100%;
+            padding: 0 10px;
+            font-family: 'Space Mono', monospace;
+            text-align: left;
+        }
+
+        .status-line {
+            font-size: 13px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            opacity: 0;
+            animation: lineFade 0.4s ease forwards;
+        }
+        .status-line.highlight {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .loader-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .loader-progress {
+            position: absolute;
+            left: 0; top: 0; height: 100%; width: 0;
+            background: linear-gradient(90deg, #1D4ED8, var(--neon-blue));
+            box-shadow: 0 0 15px var(--neon-blue);
+            animation: load 2.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+
+        @keyframes lineFade { to { opacity: 1; transform: translateY(0); } }
+        @keyframes load { to { width: 100%; } }
+    </style>
+
+    <link rel="manifest" href="app.webmanifest">
+    <meta name="theme-color" content="#0B1120">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Pixel Arena">
+    <link rel="icon" href="icons/app-icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/app-icon-192.png">
+</head>
+<body>
+
+    <div class="ambient-bg"></div>
+    <div class="dot-pattern"></div>
+
+    <div class="app-container">
+        
+        <div class="orb-wrapper">
+            <div class="orb"></div>
+        </div>
+
+        <div class="terminal-box">
+            <div class="status-line" style="animation-delay: 0.2s;">&gt; INITIALIZING SECURE HANDSHAKE...</div>
+            <div class="status-line highlight" style="animation-delay: 0.7s;">&gt; IDENTITY CONFIRMED // GUEST_SESSION</div>
+            <div class="status-line" style="animation-delay: 1.2s;">&gt; ESTABLISHING SYNCHRONIZED SESSION...</div>
+            <div class="status-line" style="animation-delay: 1.7s;">&gt; MOUNTING LOGIN ENVIRONMENT ROUTERS...</div>
+            
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyD0ChrjPp8gi3tjABIPt6suiNAIQyQtlNI", 
+            databaseURL: "https://vanshika-91c7c-default-rtdb.firebaseio.com", 
+            projectId: "vanshika-91c7c", 
+            appId: "1:904185275294:web:c981b788091f442a3dec8f" 
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        async function syncAndRedirect() {
+            try {
+                const allowed = await window.enforceVersionGate(db);
+                if (!allowed) return;
+            } catch (e) {}
+
+            // Delay execution then transition to login screen
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 3000);
+        }
+
+        window.addEventListener('load', syncAndRedirect);
+    </script>
+
+    <script src="app-install.js" defer></script>
+</body>
+</html>

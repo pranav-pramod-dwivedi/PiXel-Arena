@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iconic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css?v=16">
+    <style>
+        :root {
+            --wlt-cream: #fbf9f2;
+            --wlt-yellow: #f8be14;
+            --wlt-yellow-dark: #e5ab00;
+            --wlt-dark: #262a2d;
+            --wlt-text: #111111;
+            --wlt-muted: #8e8e93;
+            --wlt-action: #f4efe2;
+            --wlt-green: #27ae60;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .wlt-bg { background-color: var(--wlt-cream); }
+        .wrap { position: relative; z-index: 2; min-height: 100vh; background: var(--wlt-cream); }
+
+        .tx-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .tx-item:last-child { border-bottom: none; }
+
+        .tx-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tx-av-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(248,190,20,0.2) 0%, rgba(255,255,255,0) 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tx-av {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .tx-detail .tx-time {
+            font-size: 11px;
+            color: var(--wlt-muted);
+            margin-bottom: 2px;
+        }
+
+        .tx-detail .tx-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--wlt-text);
+        }
+
+        .tx-amt {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .tx-amt.pos { color: var(--wlt-text); }
+        .tx-amt.neg { color: var(--wlt-yellow-dark); }
+
+        .tx-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--wlt-muted);
+            font-size: 14px;
+        }
+
+        .tx-empty i {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 14px;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora"></div>
+
+    <div class="wrap max-w-md mx-auto px-5 pt-6 pb-32">
+        <div class="flex items-center gap-3 mb-6">
+            <a href="wallet.html" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--wlt-dark);color:#fff"><i class="fa-solid fa-chevron-left"></i></a>
+            <h1 class="text-xl font-extrabold" style="color:var(--wlt-text)">Transactions</h1>
+        </div>
+
+        <div id="tx-list">
+            <div class="tx-empty"><i class="fa-solid fa-receipt"></i>Loading...</div>
+        </div>
+    </div>
+
+    <div class="nv-dock">
+        <a href="home.html" class="nv-item" data-nav="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="wallet.html" class="nv-item on" data-nav="wallet"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+        <a href="stats.html" class="nv-item" data-nav="tournament"><i class="fa-solid fa-trophy"></i><span>Tournament</span></a>
+        <a href="pay.html" class="nv-item" data-nav="live"><i class="fa-solid fa-bolt"></i><span>Live</span></a>
+        <a href="user.html" class="nv-item" data-nav="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </div>
+
+    <script>
+        function fmt(n) {
+            const num = Number(n);
+            if (num >= 1000) return num.toLocaleString();
+            return String(num);
+        }
+
+        function formatTime(d) {
+            const pad = n => String(n).padStart(2, '0');
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' - ' + pad(d.getDate()) + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        }
+
+        function render(txns) {
+            const el = document.getElementById('tx-list');
+            if (!txns || !txns.length) {
+                el.innerHTML = '<div class="tx-empty"><i class="fa-solid fa-receipt"></i>No transactions yet</div>';
+                return;
+            }
+            el.innerHTML = txns.map(t => `
+                <div class="tx-item">
+                    <div class="tx-info">
+                        <div class="tx-av-wrap">
+                            <img class="tx-av" src="${t.avatar || 'https://ui-avatars.com/api/?background=f4efe2&color=111&name='+encodeURIComponent(t.name)}" alt="${t.name}" loading="lazy">
+                        </div>
+                        <div class="tx-detail">
+                            <div class="tx-time">${t.createdAt?.toDate ? formatTime(t.createdAt.toDate()) : ''}</div>
+                            <div class="tx-name">${t.name}</div>
+                            ${t.note ? `<div style="font-size:11px;color:var(--wlt-muted);margin-top:1px">${t.note}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="tx-amt ${t.type === 'credit' ? 'pos' : 'neg'}">${t.type === 'credit' ? '+' : '-'} ${fmt(t.amount)}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+    <div id="progress-overlay">
+        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
+        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading wallet</div>
+        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading transactions</div>
+    </div>
+
+    <script src="haptics.js?v=16" defer></script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { requireAuth } from './authGuard.js';
+        import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        try {
+            const user = await requireAuth();
+            document.getElementById('p-auth').className = 'progress-step done';
+            document.getElementById('p-auth').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            const uid = user.uid;
+            document.getElementById('p-profile').className = 'progress-step done';
+            document.getElementById('p-profile').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            let txns = [];
+            try {
+                const txSnap = await getDocs(query(collection(db, 'users', uid, 'transactions'), orderBy('createdAt', 'desc')));
+                txns = txSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            } catch (e) {}
+            document.getElementById('p-data').className = 'progress-step done';
+            document.getElementById('p-data').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+            render(txns);
+
+            setTimeout(() => document.getElementById('progress-overlay').classList.add('hide'), 300);
+        } catch (e) {}
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reset Password</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+        :root {
+            --nv-bg:#eef1f8; --nv-bg2:#e6ebf7;
+            --nv-ink:#0f172a; --nv-ink2:#475569; --nv-sub:#8a93ab;
+            --nv-blue:#2f6bff;
+            --nv-glass:rgba(255,255,255,.38);
+            --nv-glass-brd:rgba(255,255,255,.85);
+            --nv-glass-hi:rgba(255,255,255,.95);
+            --nv-card1:#3a6bff; --nv-card2:#7a49ff;
+            --nv-shadow:0 18px 44px -20px rgba(40,60,120,.35);
+            --lg-radius:28px;
+        }
+
+        * { -webkit-tap-highlight-color: transparent; box-sizing:border-box; margin:0; padding:0; }
+        html, body { width:100%; height:100%; overflow:hidden; }
+        body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--nv-bg); color:var(--nv-ink); display:flex; align-items:center; justify-content:center; }
+
+        .lg-bg { position:fixed; inset:0; z-index:-1; overflow:hidden; background:linear-gradient(160deg,#e8eefc 0%,#f3f0fb 55%,#eaf1ff 100%); }
+        .lg-bg::before, .lg-bg::after { content:""; position:absolute; border-radius:50%; filter:blur(70px); opacity:.6; animation:lgFloat 20s ease-in-out infinite; }
+        .lg-bg::before { width:62vw;height:62vw;top:-20vw;left:-14vw; background:radial-gradient(circle at 35% 35%,#7db1ff,transparent 68%); }
+        .lg-bg::after  { width:58vw;height:58vw;bottom:-22vw;right:-16vw; background:radial-gradient(circle at 65% 65%,#c9b8ff,transparent 68%); animation-delay:-9s; }
+        .lg-blob { position:fixed; z-index:-1; width:44vw;height:44vw; border-radius:50%; filter:blur(80px);
+            background:radial-gradient(circle,rgba(10,132,255,.15),transparent 70%); top:34%; left:22%; animation:lgFloat 26s ease-in-out infinite -5s; pointer-events:none; }
+        @keyframes lgFloat { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(5vw,-4vw) scale(1.1)} }
+
+        .liquid-glass {
+            position:relative; border-radius:var(--lg-radius);
+            background:rgba(255,255,255,.14);
+            backdrop-filter:blur(30px) saturate(150%); -webkit-backdrop-filter:blur(30px) saturate(150%);
+            box-shadow:0 12px 34px -14px rgba(20,40,90,.28), inset 0 0.5px 0.5px rgba(255,255,255,.6), inset 0 0 0 0.5px rgba(255,255,255,.14);
+            isolation:isolate;
+        }
+        .liquid-glass::before {
+            content:""; position:absolute; inset:0; border-radius:inherit; padding:0.8px; pointer-events:none; z-index:2;
+            background:linear-gradient(150deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.05) 40%,rgba(255,255,255,.02) 60%,rgba(255,255,255,.35) 100%);
+            -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+            -webkit-mask-composite:xor; mask-composite:exclude; opacity:.8;
+        }
+        .liquid-glass::after {
+            content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:1;
+            background:radial-gradient(120% 80% at 12% 0%, rgba(255,255,255,.22), transparent 55%); opacity:.8;
+        }
+
+        .nv-input {
+            width:100%; height:48px; padding:0 16px; border-radius:14px;
+            background:rgba(255,255,255,.5); border:1px solid var(--nv-glass-brd);
+            font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:600; color:var(--nv-ink);
+            outline:none; transition:border-color 0.25s, box-shadow 0.25s;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,.9), var(--nv-shadow);
+        }
+        .nv-input::placeholder { color:var(--nv-sub); }
+        .nv-input:focus { border-color:var(--nv-blue); box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 3px rgba(47,107,255,.12), var(--nv-shadow); }
+        .nv-input.error { border-color:#f0506e; box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 0 0 3px rgba(240,80,110,.15), var(--nv-shadow); }
+
+        .btn-primary {
+            width:100%; height:56px; border-radius:28px; border:none;
+            background:linear-gradient(135deg,var(--nv-card1),var(--nv-card2));
+            color:#fff; font:inherit; font-size:15px; font-weight:800; cursor:pointer;
+            position:relative; overflow:hidden; isolation:isolate;
+            box-shadow:0 10px 24px rgba(80,80,255,.45), inset 0 1px 0 rgba(255,255,255,.2);
+            transition:transform 0.2s cubic-bezier(0.16,1,0.3,1);
+            animation:btnPulse 2.5s ease-in-out infinite alternate;
+        }
+        .btn-primary::before { content:''; position:absolute; top:0; left:0; right:0; height:50%;
+            background:linear-gradient(180deg,rgba(255,255,255,.18),transparent); border-radius:28px 28px 0 0; pointer-events:none; z-index:2; }
+        .btn-primary:active { transform:scale(0.96); }
+        @keyframes btnPulse {
+            0% { box-shadow:0 8px 24px rgba(58,107,255,.35), inset 0 1px 0 rgba(255,255,255,.2); }
+            100% { box-shadow:0 16px 40px rgba(58,107,255,.55), 0 0 20px rgba(122,73,255,.3), inset 0 1px 0 rgba(255,255,255,.2); }
+        }
+
+        .page { animation:pageIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .page.out { animation:pageOut 0.35s cubic-bezier(0.16,1,0.3,1) forwards; }
+        @keyframes pageIn { 0%{opacity:0;transform:scale(0.95) translateY(10px);filter:blur(8px)} 100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)} }
+        @keyframes pageOut { 0%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)} 100%{opacity:0;transform:scale(0.95) translateY(-10px);filter:blur(8px)} }
+
+        .fade-el { opacity:0; transform:translateY(12px); }
+        .page .fade-el { animation:fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .page .fade-el:nth-child(1) { animation-delay:0.05s; }
+        .page .fade-el:nth-child(2) { animation-delay:0.12s; }
+        .page .fade-el:nth-child(3) { animation-delay:0.19s; }
+        .page .fade-el:nth-child(4) { animation-delay:0.26s; }
+        .page .fade-el:nth-child(5) { animation-delay:0.33s; }
+        @keyframes fadeUp { 0%{opacity:0;transform:translateY(12px);filter:blur(4px)} 100%{opacity:1;transform:translateY(0);filter:blur(0)} }
+
+        /* ---- modal popup ---- */
+        .modal-overlay {
+            position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center;
+            background:rgba(0,0,0,0.3); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+            opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+        }
+        .modal-overlay.show { opacity:1; pointer-events:auto; }
+        .modal-box {
+            width:calc(100% - 48px); max-width:320px; padding:28px 24px 24px;
+            transform:scale(0.9) translateY(10px); transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .modal-overlay.show .modal-box { transform:scale(1) translateY(0); }
+        .modal-icon { width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="lg-bg"></div>
+    <div class="lg-blob"></div>
+
+    <div class="page relative z-10 w-full max-w-sm px-6" id="pageRoot">
+
+        <div class="text-center mb-7 fade-el">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 liquid-glass" style="background:linear-gradient(135deg,rgba(58,107,255,.2),rgba(122,73,255,.15));">
+                <i class="fa-solid fa-unlock-keyhole text-2xl" style="background:linear-gradient(135deg,var(--nv-card1),var(--nv-card2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></i>
+            </div>
+            <h1 class="text-[24px] font-extrabold" style="color:var(--nv-ink)">Reset password</h1>
+            <p class="text-sm mt-1" style="color:var(--nv-sub)">Enter your details to recover access</p>
+        </div>
+
+        <div class="liquid-glass rounded-3xl p-6 fade-el" style="--lg-radius:24px">
+            <div class="mb-4" style="position:relative;z-index:4">
+                <label class="text-[11px] font-bold uppercase tracking-wider mb-1.5 block" style="color:var(--nv-ink2)">Mobile number</label>
+                <input type="tel" id="mobile" placeholder="Enter your mobile number" class="nv-input">
+            </div>
+            <div class="mb-4" style="position:relative;z-index:4">
+                <label class="text-[11px] font-bold uppercase tracking-wider mb-1.5 block" style="color:var(--nv-ink2)">New password</label>
+                <input type="password" id="newPass" placeholder="Enter new password" class="nv-input">
+            </div>
+            <div class="mb-2" style="position:relative;z-index:4">
+                <label class="text-[11px] font-bold uppercase tracking-wider mb-1.5 block" style="color:var(--nv-ink2)">Confirm password</label>
+                <input type="password" id="confirmPass" placeholder="Re-enter new password" class="nv-input">
+            </div>
+            <div class="mt-6" style="position:relative;z-index:4">
+                <button class="btn-primary" onclick="handleReset()">Reset Password</button>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 fade-el">
+            <a href="login.html" class="text-sm font-bold" style="color:var(--nv-blue)"><i class="fa-solid fa-arrow-left mr-1"></i>Back to sign in</a>
+        </div>
+
+    </div>
+
+    <!-- modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box liquid-glass" style="--lg-radius:20px;text-align:center">
+            <div class="modal-icon" id="modalIcon" style="background:rgba(47,107,255,.12);color:var(--nv-blue)"><i class="fa-solid fa-check text-xl"></i></div>
+            <h3 class="text-lg font-extrabold mb-1" id="modalTitle" style="color:var(--nv-ink)">Success</h3>
+            <p class="text-sm mb-5" id="modalMsg" style="color:var(--nv-sub)">Password reset successfully.</p>
+            <button class="w-full h-11 rounded-2xl font-bold text-sm text-white" id="modalBtn" style="background:linear-gradient(135deg,var(--nv-card1),var(--nv-card2));box-shadow:0 8px 20px rgba(80,80,255,.35)" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        function showModal(icon, title, msg, color, btnText, cb) {
+            const m = document.getElementById('modal');
+            document.getElementById('modalIcon').innerHTML = icon;
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMsg').textContent = msg;
+            document.getElementById('modalBtn').textContent = btnText || 'OK';
+            document.getElementById('modalBtn').onclick = function() { closeModal(); if (cb) cb(); };
+            m.classList.add('show');
+        }
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        function handleReset() {
+            const mobile = document.getElementById('mobile');
+            const newPass = document.getElementById('newPass');
+            const confirmPass = document.getElementById('confirmPass');
+
+            [mobile, newPass, confirmPass].forEach(i => i.classList.remove('error'));
+
+            if (!mobile.value.trim()) {
+                mobile.classList.add('error');
+                showModal('<i class="fa-solid fa-circle-exclamation text-xl"></i>', 'Missing field', 'Please enter your mobile number.', '#f0506e');
+                return;
+            }
+            if (!newPass.value.trim()) {
+                newPass.classList.add('error');
+                showModal('<i class="fa-solid fa-circle-exclamation text-xl"></i>', 'Missing field', 'Please enter a new password.', '#f0506e');
+                return;
+            }
+            if (newPass.value.length < 6) {
+                newPass.classList.add('error');
+                showModal('<i class="fa-solid fa-circle-exclamation text-xl"></i>', 'Weak password', 'Password must be at least 6 characters.', '#f0506e');
+                return;
+            }
+            if (!confirmPass.value.trim()) {
+                confirmPass.classList.add('error');
+                showModal('<i class="fa-solid fa-circle-exclamation text-xl"></i>', 'Missing field', 'Please confirm your password.', '#f0506e');
+                return;
+            }
+            if (newPass.value !== confirmPass.value) {
+                confirmPass.classList.add('error');
+                showModal('<i class="fa-solid fa-circle-exclamation text-xl"></i>', 'Mismatch', 'Passwords do not match.', '#f0506e');
+                return;
+            }
+
+            showModal(
+                '<i class="fa-solid fa-check-circle text-xl"></i>',
+                'Password reset',
+                'Your password has been reset successfully.',
+                '#12b886',
+                'Sign In',
+                function() {
+                    const page = document.getElementById('pageRoot');
+                    page.classList.add('out');
+                    setTimeout(() => window.location.href = 'login.html', 330);
+                }
+            );
+        }
+    </script>
+
+</body>
+</html>

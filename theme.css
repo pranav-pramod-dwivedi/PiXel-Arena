@@ -1,0 +1,152 @@
+/* ============================================================
+   NovaPay — shared theme (LIGHT default + DARK option)
+   Include on every page AFTER Tailwind:
+     <link rel="stylesheet" href="theme.css">
+   Put <div class="aurora"></div> as first child of <body>.
+   Dark mode: <html data-theme="dark"> (set by app.js from settings).
+   ============================================================ */
+
+:root{
+  --nv-bg:#eef1f8; --nv-bg2:#e6ebf7;
+  --nv-ink:#0f172a; --nv-ink2:#475569; --nv-sub:#8a93ab;
+  --nv-blue:#2f6bff; --nv-green:#12b886; --nv-red:#f0506e; --nv-purple:#8b5cf6; --nv-orange:#f59e0b;
+  --nv-glass:rgba(255,255,255,.38);
+  --nv-glass-brd:rgba(255,255,255,.85);
+  --nv-glass-hi:rgba(255,255,255,.95);
+  --nv-card1:#3a6bff; --nv-card2:#7a49ff;
+  --nv-shadow:0 18px 44px -20px rgba(40,60,120,.35);
+}
+[data-theme="dark"]{
+  --nv-bg:#05060E; --nv-bg2:#0a0f1e;
+  --nv-ink:#eef2ff; --nv-ink2:#c3ccec; --nv-sub:#8a94b8;
+  --nv-glass:rgba(255,255,255,.06);
+  --nv-glass-brd:rgba(255,255,255,.1);
+  --nv-glass-hi:rgba(255,255,255,.14);
+  --nv-shadow:0 20px 50px -20px rgba(0,0,0,.7);
+}
+
+body{ background:var(--nv-bg) !important; color:var(--nv-ink) !important; }
+
+/* ambient aurora (soft in light, richer in dark) */
+.aurora{ position:fixed; inset:0; z-index:0; overflow:hidden;
+  background:radial-gradient(120% 80% at 50% -10%, var(--nv-bg2) 0%, var(--nv-bg) 55%); }
+.aurora::before,.aurora::after{ content:""; position:absolute; border-radius:50%; filter:blur(80px); animation:nvFloat 18s ease-in-out infinite; }
+.aurora::before{ width:80vw;height:80vw;top:-30vw;left:-20vw; background:radial-gradient(circle,#6f9dff,transparent 62%); opacity:.85; }
+.aurora::after{ width:70vw;height:70vw;bottom:-25vw;right:-22vw; background:radial-gradient(circle,#b48bff,transparent 62%); opacity:.8; animation-delay:-8s; }
+/* third blob mid-screen so glass panels always have color behind them */
+.aurora::after, .aurora::before { will-change:transform; }
+[data-theme="dark"] .aurora::before{ background:radial-gradient(circle,#3b5bff,transparent 65%); opacity:.5; }
+[data-theme="dark"] .aurora::after{ background:radial-gradient(circle,#9b4dff,transparent 65%); opacity:.5; }
+@keyframes nvFloat{ 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(5vw,-4vw) scale(1.1)} }
+
+/* aurora sits at the very back */
+.aurora{ z-index:-1 !important; }
+.glow-orb, .lg-bg, .lg-blob{ z-index:-1 !important; }
+
+/* reusable glass */
+.nv-glass{ background:var(--nv-glass); backdrop-filter:blur(26px) saturate(150%); -webkit-backdrop-filter:blur(26px) saturate(150%);
+  border:1px solid var(--nv-glass-brd); box-shadow:inset 0 1px 0 var(--nv-glass-hi), var(--nv-shadow); }
+
+/* ---------- retint Tailwind utilities from old pages ---------- */
+/* NOTE: no backdrop-filter here — blur on many scrolling elements tanks FPS.
+   A near-opaque light fill gives the frosted look cheaply. */
+.bg-white,.bg-slate-50,.bg-gray-50,.bg-gray-100,.bg-slate-100{
+  background:rgba(255,255,255,.75) !important;
+  border:1px solid rgba(255,255,255,.9); box-shadow:var(--nv-shadow); }
+.text-slate-900,.text-gray-900,.text-gray-800,.text-slate-800,.text-black{ color:var(--nv-ink) !important; }
+.text-slate-700,.text-gray-700,.text-slate-600,.text-gray-600{ color:var(--nv-ink2) !important; }
+.text-slate-500,.text-gray-500,.text-slate-400,.text-gray-400,.text-slate-300,.text-gray-300{ color:var(--nv-sub) !important; }
+.border-slate-50,.border-slate-100,.border-gray-50,.border-gray-100,.border-gray-200,.border-slate-200{ border-color:var(--nv-glass-brd) !important; }
+.bg-blue-50{ background:rgba(47,107,255,.12) !important; }
+.bg-green-50,.bg-emerald-50{ background:rgba(18,184,134,.12) !important; }
+.bg-red-50{ background:rgba(240,80,110,.12) !important; }
+.bg-purple-50,.bg-violet-50{ background:rgba(139,92,246,.12) !important; }
+.bg-orange-50,.bg-amber-50{ background:rgba(245,158,11,.12) !important; }
+
+/* skeletons */
+#skeleton-screen{ background:var(--nv-bg) !important; }
+.skeleton-block{ background:rgba(120,140,190,.12) !important; }
+[data-theme="dark"] .skeleton-block{ background:rgba(255,255,255,.06) !important; }
+
+/* misc light-block fixes for old pages */
+.locked-field,.disabled-grey{ background:rgba(120,140,190,.06) !important; }
+.info-group{ border-color:var(--nv-glass-brd) !important; }
+.user-badge{ background:rgba(47,107,255,.1) !important; border-color:rgba(47,107,255,.2) !important; }
+.bg-white\/95,.bg-white\/90,.bg-white\/80{ background:rgba(238,241,250,.9) !important; border:none; box-shadow:none; }
+
+/* ---- Progress Stages Overlay + Skeleton ---- */
+#progress-overlay {
+  position:fixed; inset:0; z-index:9999;
+  background:rgba(255,255,255,.25);
+  backdrop-filter:blur(12px) saturate(120%); -webkit-backdrop-filter:blur(12px) saturate(120%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+  transition:opacity .5s ease, visibility .5s;
+}
+[data-theme="dark"] #progress-overlay { background:rgba(5,6,14,.3); }
+#progress-overlay.hide { opacity:0; visibility:hidden; pointer-events:none; }
+.progress-step { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600; color:var(--nv-sub); }
+.progress-step .picon { width:20px; text-align:center; font-size:14px; }
+.progress-step.done { color:var(--nv-green); }
+.progress-step.active { color:var(--nv-ink); }
+@keyframes nvSpin { to { transform:rotate(360deg); } }
+.nv-spin { animation:nvSpin .8s linear infinite; }
+
+
+/* ---- Expanding Pill Nav (glass) ---- */
+.nv-dock {
+  position:fixed; bottom:18px; left:0; right:0; max-width:28rem; margin:0 auto;
+  height:58px; border-radius:999px;
+  background:rgba(255,255,255,.32); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 14px 40px -12px rgba(40,60,120,.28), inset 0 1px 0 rgba(255,255,255,.7);
+  display:flex; align-items:center; justify-content:space-around; padding:0 4px; z-index:60;
+}
+[data-theme="dark"] .nv-dock { background:rgba(20,24,44,.45); border-color:rgba(255,255,255,.12); }
+.nv-item {
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  height:42px; min-width:42px; border-radius:999px;
+  color:var(--nv-sub); font-size:17px; text-decoration:none;
+  transition:all 400ms cubic-bezier(.22,1,.36,1);
+  flex-shrink:0;
+}
+.nv-item span {
+  font-size:12px; font-weight:700; letter-spacing:-.2px;
+  white-space:nowrap; display:none;
+}
+.nv-item.on {
+  padding:0 16px 0 12px; gap:8px;
+  color:#fff; background:#0052FF;
+  box-shadow:0 4px 12px rgba(0,82,255,.35);
+  animation:pillIn 400ms cubic-bezier(.22,1,.36,1) both;
+}
+.nv-item.on span { display:inline-block; }
+@keyframes pillIn {
+  0% { transform:scale(.9); opacity:.7; }
+  100% { transform:scale(1); opacity:1; }
+}
+.nv-item.on[data-nav="wallet"] { background:#FF8A00; box-shadow:0 4px 12px rgba(255,138,0,.35); }
+.nv-item.on[data-nav="tournament"] { background:#FFD54A; color:#1A1A1A; box-shadow:0 4px 12px rgba(255,213,74,.35); }
+.nv-item.on[data-nav="tournament"] i { color:#1A1A1A; }
+.nv-item.on[data-nav="live"] { background:#FF3B30; box-shadow:0 4px 12px rgba(255,59,48,.35); }
+.nv-item.on[data-nav="profile"] { background:#22C55E; box-shadow:0 4px 12px rgba(34,197,94,.35); }
+
+/* neon card keeps its vivid gradient in BOTH themes (it's the hero) */
+.nv-card{ background:linear-gradient(135deg,var(--nv-card1),var(--nv-card2)); }
+
+/* ===== frosted look WITHOUT backdrop-filter (blur on scrolling content kills FPS) =====
+   Near-opaque light fills read as frosted glass but are cheap to paint. */
+.rounded-2xl, .rounded-3xl, .info-group, .stat, .panel-card{
+  /* no blur; the fill from .bg-white retint already reads frosted */
+}
+/* icon circles/squares get a subtle frosted fill (solid, no blur) */
+.tx-icon, .action-icon, .icon-box, .control-icon, .seg-icn{
+  background:rgba(255,255,255,.7) !important; border:1px solid rgba(255,255,255,.85);
+}
+/* list rows: soft separators */
+.tx-item, .tx-list > div, .noti{ border-color:rgba(120,140,190,.14) !important; }
+/* inputs/search fields -> frosted fill, no blur */
+input:not([type="range"]):not([type="checkbox"]), textarea, select{
+  background:rgba(255,255,255,.72) !important; border:1px solid rgba(255,255,255,.85) !important; color:var(--nv-ink) !important;
+}
+input::placeholder{ color:var(--nv-sub) !important; }

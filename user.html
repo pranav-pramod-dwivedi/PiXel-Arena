@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iconic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css?v=16">
+    <style>
+        :root {
+            --surface: #FFFFFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            background-color: var(--surface);
+            color: #0F172A;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- ORBITAL SYSTEM --- */
+        .orbit-container {
+            position: relative; width: 300px; height: 300px; margin: 0 auto 20px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .sun-profile {
+            width: 90px; height: 90px; border-radius: 50%; z-index: 10;
+            background: white; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0, 82, 255, 0.3);
+            position: relative; overflow: hidden;
+        }
+        .sun-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .orbit-track {
+            position: absolute; border: 1px dashed rgba(0, 82, 255, 0.1); border-radius: 50%;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        .track-1 { width: 160px; height: 160px; animation: spinRight 20s linear infinite; }
+        .track-2 { width: 260px; height: 260px; animation: spinLeft 30s linear infinite; }
+
+        .planet {
+            position: absolute; width: 40px; height: 40px; border-radius: 50%;
+            background: white; border: 2px solid #fff; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;
+        }
+        .planet img { width: 100%; height: 100%; object-fit: cover; }
+        .planet-svg { width: 18px; height: 18px; }
+
+        .track-1 .p1 { top: -20px; left: 50%; margin-left: -20px; }
+        .track-1 .p2 { bottom: -20px; left: 50%; margin-left: -20px; }
+        .track-1 .p3 { top: 50%; left: -20px; margin-top: -20px; }
+        .track-2 .p4 { top: 20px; right: 20px; }
+        .track-2 .p5 { bottom: 20px; left: 20px; }
+        .track-2 .p6 { top: 50%; right: -20px; margin-top: -20px; }
+        .track-2 .p7 { bottom: -20px; left: 50%; margin-left: -20px; }
+
+        @keyframes spinRight { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes spinLeft { 100% { transform: translate(-50%, -50%) rotate(-360deg); } }
+        
+        .track-1 .planet { animation: counterSpinRight 20s linear infinite; }
+        .track-2 .planet { animation: counterSpinLeft 30s linear infinite; }
+        
+        @keyframes counterSpinRight { 100% { transform: rotate(-360deg); } }
+        @keyframes counterSpinLeft { 100% { transform: rotate(360deg); } }
+
+        /* --- GLASS STAT CAPSULES --- */
+        .stat-cap { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+            background:rgba(255,255,255,.45); backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%);
+            border:1px solid rgba(255,255,255,.75); border-radius:20px; padding:16px 10px;
+            box-shadow:0 12px 34px -14px rgba(60,80,150,.35), inset 0 1px 0 rgba(255,255,255,.85); }
+        .stat-n { font-size:17px; font-weight:800; color:#0f172a; }
+        .stat-l { font-size:9px; font-weight:700; color:#8a93ab; text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
+        .cap-btn { background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.9); box-shadow:0 6px 16px -8px rgba(60,80,150,.3); }
+        .spring { transition:transform .35s cubic-bezier(.34,1.56,.64,1); } .spring:active { transform:scale(.96); }
+
+        /* --- PANELS --- */
+        .panel { margin:0 20px 22px; border-radius:24px; padding:6px 4px;
+            background:rgba(255,255,255,.45); backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%);
+            border:1px solid rgba(255,255,255,.75); box-shadow:0 12px 34px -14px rgba(60,80,150,.35), inset 0 1px 0 rgba(255,255,255,.85); }
+        .panel-head { display:flex; align-items:center; justify-content:space-between; padding:14px 16px 8px; }
+        .panel-head h3 { font-size:15px; font-weight:800; color:#0f172a; margin:0; }
+        .panel-head .see { font-size:12px; font-weight:700; color:#3a6bff; }
+
+        .grow { display:flex; align-items:center; gap:13px; padding:12px 16px; }
+        .grow + .grow { border-top:1px solid rgba(120,140,190,.12); }
+        .grow-av { width:44px; height:44px; border-radius:14px; flex-shrink:0; object-fit:cover; display:flex; align-items:center; justify-content:center; font-size:1.05rem; }
+        .grow-mid { flex:1; min-width:0; }
+        .grow-name { font-size:14px; font-weight:700; color:#0f172a; }
+        .grow-note { font-size:12px; color:#8a93ab; margin-top:1px; }
+        .grow-amt { font-size:14px; font-weight:800; white-space:nowrap; }
+        .amt-pos { color:#12b886; }
+
+        /* --- TOURNAMENT CARDS --- */
+        .tournament-scroll { display:flex; gap:14px; overflow-x:auto; padding:0 20px 8px; scrollbar-width:none; }
+        .tournament-scroll::-webkit-scrollbar { display:none; }
+        .t-card { min-width:280px; flex-shrink:0; text-decoration:none; border-radius:24px; padding:18px; color:#fff; position:relative; overflow:hidden; }
+        .t-card::after { content:""; position:absolute; right:-24px; top:-24px; width:110px; height:110px; border-radius:50%; background:rgba(255,255,255,.08); }
+        .t-card:active { transform:scale(.98); }
+        .t-top { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; margin-bottom:14px; }
+        .t-game { font-size:11px; font-weight:700; opacity:.9; }
+        .t-format { font-size:10px; font-weight:800; background:rgba(255,255,255,.22); padding:3px 10px; border-radius:99px; }
+        .t-body { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+        .t-name { font-size:20px; font-weight:800; line-height:1.1; }
+        .t-detail { text-align:right; }
+        .t-time { font-size:13px; font-weight:700; opacity:.9; }
+        .t-date { font-size:10px; font-weight:600; opacity:.75; margin-top:2px; }
+        .t-foot { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; margin-top:16px; font-size:10px; font-weight:700; opacity:.9; }
+        .t-prize { background:rgba(255,255,255,.22); padding:3px 9px; border-radius:99px; font-size:9px; font-weight:800; }
+
+        /* --- MASONRY FEED --- */
+        .masonry-grid { column-count: 2; column-gap: 8px; padding: 0 24px 10px; }
+        .masonry-item { break-inside: avoid; margin-bottom: 8px; border-radius: 16px; overflow: hidden; background: #f1f5f9; }
+        .masonry-img { width: 100%; display: block; object-fit: cover; }
+
+        /* --- GIFT ICON --- */
+        .gift-icon {
+            width: 38px; height: 38px; border-radius: 13px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; isolation: isolate; color: #f0506e;
+            background: rgba(255, 255, 255, .28);
+            backdrop-filter: blur(18px) saturate(170%);
+            -webkit-backdrop-filter: blur(18px) saturate(170%);
+            box-shadow:
+                0 8px 20px -8px rgba(240, 80, 110, .4),
+                inset 0 .5px .5px rgba(255, 255, 255, .8),
+                inset 0 0 0 .5px rgba(255, 255, 255, .3);
+        }
+        .gift-icon::after {
+            content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+            background:
+                radial-gradient(120% 80% at 15% 0%, rgba(255,255,255,.65), transparent 55%),
+                linear-gradient(150deg, rgba(255,120,150,.22), rgba(240,80,110,.10));
+        }
+        .gift-icon::before {
+            content: ""; position: absolute; inset: 0; border-radius: inherit;
+            padding: .8px; pointer-events: none;
+            background: linear-gradient(150deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.06) 45%, rgba(255,255,255,.55) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+                    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+        }
+        .gift-svg { width: 18px; height: 18px; }
+
+        /* --- SYSTEM LIST --- */
+        .bank-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; border: 1px solid #f1f5f9; border-radius: 20px; margin-bottom: 12px; background: white; transition: 0.2s; }
+        .bank-item:active { transform: scale(0.98); background: #f8fafc; }
+        .bank-logo { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; color: #ef4444; font-size: 1.2rem; }
+
+        /* --- UPLOAD BUTTON --- */
+        .upload-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.9);
+            box-shadow:0 6px 16px -8px rgba(60,80,150,.3);
+            padding: 8px 16px; border-radius: 99px; font-size: 11px; font-weight: 700; color: #3a6bff;
+            cursor: pointer; transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+        }
+        .upload-btn:active { transform: scale(.96); }
+
+        /* --- FORMAT CHIP --- */
+        .format-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px; border-radius: 99px;
+            background:rgba(255,255,255,.45); backdrop-filter:blur(24px) saturate(160%);
+            border:1px solid rgba(255,255,255,.75);
+            box-shadow:0 6px 16px -8px rgba(60,80,150,.3);
+            font-size: 12px; font-weight: 700; color: #0f172a;
+            text-decoration: none; transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+        }
+        .format-chip:active { transform: scale(.96); }
+        .format-chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 16px 16px; }
+
+        /* --- EMPTY STATE --- */
+        .empty-state { text-align: center; padding: 24px 20px; color: #8a93ab; }
+        .empty-state p { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+        .join-btn {
+            display: inline-block; background: #0052FF; color: white;
+            padding: 10px 24px; border-radius: 99px; font-size: 12px; font-weight: 700;
+            text-decoration: none; transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+        }
+        .join-btn:active { transform: scale(.96); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .sticky-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 12px 20px 8px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,.78); backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-bottom: 1px solid rgba(0,0,0,.05);
+        }
+    </style>
+</head>
+<body class="max-w-md mx-auto relative bg-white">
+    <div class="aurora"></div>
+
+    <div id="progress-overlay">
+        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
+        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading profile</div>
+        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading data</div>
+    </div>
+
+    <!-- 2. Main Content -->
+    <div id="main-content" class="min-h-screen pb-40" style="padding-top:52px">
+        
+        <!-- Header -->
+        <header class="sticky-header">
+            <a href="home.html" class="cap-btn spring w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-chevron-left text-[14px] text-slate-500"></i>
+            </a>
+            <h1 class="text-lg font-extrabold text-slate-800" style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;font-weight:700">Profile</h1>
+            <div class="w-10 h-10"></div>
+        </header>
+
+        <!-- ORBITAL SYSTEM -->
+        <div class="orbit-container">
+            <div class="orbit-track track-1">
+                <div class="planet p1"><img src="/IMG_20251221_172718.jpg" alt="Friend"></div>
+                <div class="planet p2"><img src="/IMG_20251213_100449.jpg" alt="Friend"></div>
+                <div class="planet p3"><i class="fa-brands fa-apple text-xl text-black"></i></div>
+            </div>
+            <div class="orbit-track track-2">
+                <div class="planet p4"><i class="fa-brands fa-spotify text-xl text-green-600"></i></div>
+                <div class="planet p5"><img src="/Screenshot_2025-12-21-17-28-39-037_com.instagram.lite-edit.jpg" alt="Friend"></div>
+                <div class="planet p6"><span class="text-xs font-bold text-slate-600">MK</span></div>
+                <div class="planet p7">
+                    <svg class="planet-svg" viewBox="0 0 24 24" fill="#e50914" aria-label="Netflix" role="img">
+                        <path d="M5.4 2h4.1l4.9 13.9V2h4.2v20h-4L9.6 7.6V22H5.4z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="sun-profile">
+                <img id="userSunImg" src="" alt="User" class="sun-img">
+            </div>
+        </div>
+
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-black text-slate-900 mb-1"><span id="displayName">Player</span> <i class="fa-solid fa-circle-check text-blue-600 text-sm ml-1"></i></h2>
+            <div class="mt-4" style="height:10px"></div>
+        </div>
+
+        <!-- STATS: Matches / Kills / Coins -->
+        <div class="px-5 grid grid-cols-3 gap-2.5 mb-8">
+            <div class="stat-cap"><span id="statMatches" class="stat-n">0</span><span class="stat-l">Matches</span></div>
+            <div class="stat-cap"><span id="statKills" class="stat-n">0</span><span class="stat-l">Kills</span></div>
+            <div class="stat-cap"><span id="statCoins" class="stat-n">0</span><span class="stat-l">Coins</span></div>
+        </div>
+
+        <!-- TOURNAMENT COINS -->
+        <div class="panel">
+            <div class="panel-head"><h3>Tournament Coins</h3><span class="see" id="coin-total">0</span></div>
+            <div id="coin-bars" style="padding:6px 16px 14px"></div>
+        </div>
+
+        <!-- FAVOURITE TOURNAMENTS -->
+        <div class="panel">
+            <div class="panel-head"><h3>Your Favourite Tournaments</h3></div>
+            <div id="fav-formats-list"></div>
+        </div>
+
+        <!-- NEXT TOURNAMENTS -->
+        <div class="px-6 mb-3 mt-6 flex items-center justify-between">
+            <h3 class="text-[14px] font-extrabold text-slate-900">Next Tournaments</h3>
+            <a href="tournaments.html" class="text-[11px] font-bold text-blue-600">View all</a>
+        </div>
+        <div id="next-tournaments-scroll" class="tournament-scroll hide-scrollbar"></div>
+
+        <!-- GAMING GALLERY -->
+        <div class="px-6 mb-3 mt-6 flex items-center justify-between">
+            <h3 class="text-[14px] font-extrabold text-slate-900">Gaming Gallery</h3>
+            <label class="upload-btn spring"><i class="fa-solid fa-plus"></i> Upload Pics<input type="file" id="galleryUpload" accept="image/*" multiple style="display:none"></label>
+        </div>
+        <div id="gallery-grid" class="masonry-grid"></div>
+
+        <!-- SYSTEM -->
+        <div class="px-6 space-y-3 mt-6">
+            <h3 class="text-[14px] font-extrabold text-slate-900 mb-2">System</h3>
+            <a href="wallet.html" class="bank-item">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-red-50 text-red-600"><i class="fa-solid fa-building-columns"></i></div>
+                    <div><p class="text-[13px] font-bold text-slate-900">My Wallet</p><p class="text-[10px] text-slate-400">Balance & Settings</p></div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
+            </a>
+            <a href="transactions.html" class="bank-item">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-blue-50 text-blue-600"><i class="fa-solid fa-receipt"></i></div>
+                    <div><p class="text-[13px] font-bold text-slate-900">Transactions</p><p class="text-[10px] text-slate-400">History</p></div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
+            </a>
+            <a href="address.html" class="bank-item">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-slate-50 text-slate-600"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <div><p class="text-[13px] font-bold text-slate-900">Registered Address</p><p class="text-[10px] text-slate-400" id="regAddress">Quebec, Canada</p></div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
+            </a>
+            <div class="bank-item border-red-100 bg-red-50/50">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-red-100 text-red-600"><i class="fa-solid fa-trash"></i></div>
+                    <div><p class="text-[13px] font-bold text-red-600">Delete Account</p><p class="text-[10px] text-red-400">Locked</p></div>
+                </div>
+                <i class="fa-solid fa-lock text-xs text-red-300"></i>
+            </div>
+        </div>
+
+        <!-- GIFTS RECEIVED -->
+        <div class="panel mt-8">
+            <div class="panel-head"><h3> Gifts Received</h3><span class="see" id="gift-total"></span></div>
+            <div id="gift-list"></div>
+            <button id="gift-more" onclick="toggleGifts()" class="w-full text-center py-3 text-[13px] font-bold" style="color:#3a6bff">More</button>
+        </div>
+
+    </div>
+
+    <!-- WATCH NAV -->
+    <div class="nv-dock">
+        <a href="home.html" class="nv-item" data-nav="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="wallet.html" class="nv-item" data-nav="wallet"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+        <a href="stats.html" class="nv-item" data-nav="tournament"><i class="fa-solid fa-trophy"></i><span>Tournament</span></a>
+        <a href="pay.html" class="nv-item" data-nav="live"><i class="fa-solid fa-bolt"></i><span>Live</span></a>
+        <a href="user.html" class="nv-item on" data-nav="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </div>
+
+    <script>
+        let giftsExpanded = false;
+        let _allGifts = [];
+
+        function timeAgo(ts){
+            const d = Math.floor((Date.now() - ts) / 86400000);
+            if(d < 1) return 'today';
+            if(d < 30) return d + 'd ago';
+            if(d < 365) return Math.floor(d/30) + 'mo ago';
+            return Math.floor(d/365) + 'y ago';
+        }
+
+        function renderCoinBars(){
+            const userData = window._userData || { coins: 0 };
+            const spent = Math.min(Math.floor(userData.coins * 0.4), userData.coins);
+            const won = userData.coins - spent;
+            const total = spent + won || 1;
+            document.getElementById('coin-total').textContent = userData.coins;
+            document.getElementById('coin-bars').innerHTML = `
+                <div style="font-size:10px;font-weight:700;color:#8a93ab;margin-bottom:4px"><i class="fa-solid fa-arrow-up-right-dots" style="font-size:9px;color:#3a6bff"></i> Spent on Tournaments</div>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-size:12px;font-weight:700;color:#3a6bff">${userData.coins ? spent : '-'}</span>
+                    <div style="flex:1;height:3px;border-radius:99px;background:rgba(58,107,255,.12)">
+                        <span style="display:block;height:100%;width:${(spent/total*100).toFixed(1)}%;border-radius:99px;background:#3a6bff"></span>
+                    </div>
+                </div>
+                <div style="margin-top:10px">
+                <div style="font-size:10px;font-weight:700;color:#3a6bff;margin-bottom:4px"><i class="fa-solid fa-trophy" style="font-size:9px;color:#3a6bff"></i> Won from Tournaments</div>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-size:12px;font-weight:700;color:#3a6bff">${userData.coins ? won : '-'}</span>
+                    <div style="flex:1;height:3px;border-radius:99px;background:rgba(58,107,255,.12)">
+                        <span style="display:block;height:100%;width:${(won/total*100).toFixed(1)}%;border-radius:99px;background:#3a6bff"></span>
+                    </div>
+                </div>
+                </div>
+            `;
+        }
+
+        function renderFavouriteFormats(){
+            const formats = window._userData?.favouriteFormats || [];
+            const el = document.getElementById('fav-formats-list');
+            if (!formats.length) {
+                el.innerHTML = `
+                    <div class="empty-state">
+                        <p>You've played no tournaments,<br>why not play one?</p>
+                        <a href="tournaments.html" class="join-btn">Join a Tournament</a>
+                    </div>
+                `;
+                return;
+            }
+            el.innerHTML = `<div class="format-chips">${formats.map(f =>
+                `<a href="format.html?f=${encodeURIComponent(f)}" class="format-chip spring"><i class="fa-solid fa-gamepad" style="font-size:12px;color:#3a6bff"></i>${f}</a>`
+            ).join('')}</div>`;
+        }
+
+        function renderNextTournaments(){
+            const list = window._nextTournaments || [];
+            const el = document.getElementById('next-tournaments-scroll');
+            if (!list.length) {
+                el.innerHTML = `<div class="empty-state" style="min-width:100%"><p>No upcoming tournaments</p></div>`;
+                return;
+            }
+            el.innerHTML = list.map(t => `
+                <a href="details.html?id=${encodeURIComponent(t.id)}" class="t-card">
+                    <div class="t-top">
+                        <span class="t-game">${t.game || 'Tournament'}</span>
+                        <span class="t-format">${t.format || 'Open'}</span>
+                    </div>
+                    <div class="t-body">
+                        <div class="t-name">${t.name}</div>
+                        <div class="t-detail">
+                            <div class="t-time">${t.time || 'TBD'}</div>
+                            <div class="t-date">${t.date || ''}</div>
+                        </div>
+                    </div>
+                    <div class="t-foot">
+                        <span>${t.game || ''}</span>
+                        <span class="t-prize">${t.prizePool || 'Free'}</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function renderGamingGallery(){
+            const images = window._galleryImages || [];
+            const el = document.getElementById('gallery-grid');
+            if (!images.length) {
+                el.innerHTML = `<div class="empty-state" style="column-span:all"><p>No gaming moments yet.<br>Upload your first screenshot!</p></div>`;
+                return;
+            }
+            el.innerHTML = images.map(src =>
+                `<div class="masonry-item"><img src="${src}" class="masonry-img" loading="lazy"></div>`
+            ).join('');
+        }
+
+        function renderGifts(){
+            const gifts = _allGifts;
+            document.getElementById('gift-total').textContent = gifts.length ? gifts.length + (gifts.length === 1 ? ' gift' : ' gifts') : '';
+            if (!gifts.length) {
+                document.getElementById('gift-list').innerHTML = `<div class="empty-state"><p>No gifts received yet</p></div>`;
+                document.getElementById('gift-more').style.display = 'none';
+                return;
+            }
+            const shown = giftsExpanded ? gifts : gifts.slice(0,3);
+            document.getElementById('gift-list').innerHTML = shown.map(g => `
+                <div class="grow">
+                    <img class="grow-av" src="${g.img || 'https://ui-avatars.com/api/?background=eef&color=3a6bff&name='+encodeURIComponent(g.from)}" onerror="this.src='https://ui-avatars.com/api/?background=eef&color=3a6bff&name=${encodeURIComponent(g.from)}'">
+                    <div class="grow-mid"><div class="grow-name">${g.from}</div><div class="grow-note">${g.note || ''} · ${timeAgo(g.createdAt?.toMillis ? g.createdAt.toMillis() : (g.createdAt || Date.now()))}</div></div>
+                    <div class="gift-icon"><svg class="gift-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"></path><path d="M12 8v13"></path><path d="M12 8H7.5a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8z"></path><path d="M12 8h4.5a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8z"></path></svg></div>
+                </div>
+            `).join('');
+            const btn = document.getElementById('gift-more');
+            if (gifts.length <= 3) btn.style.display = 'none';
+            else { btn.style.display = ''; btn.textContent = giftsExpanded ? 'Show less' : 'More'; }
+        }
+
+        function toggleGifts(){ giftsExpanded = !giftsExpanded; renderGifts(); if(navigator.vibrate) navigator.vibrate(10); }
+
+        function renderAll(){
+            try {
+                renderCoinBars();
+                renderFavouriteFormats();
+                renderNextTournaments();
+                renderGamingGallery();
+                renderGifts();
+            } catch(e) {}
+        }
+
+        window.addEventListener('novapay:change', () => {});
+
+        // Gallery upload handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('galleryUpload');
+            if (input) {
+                input.addEventListener('change', function(e) {
+                    const files = Array.from(e.target.files);
+                    if (!files.length) return;
+                    const existing = window._galleryImages || [];
+                    const available = 4 - existing.length;
+                    if (available <= 0) { alert('Max 4 images allowed'); return; }
+                    const toProcess = files.slice(0, available);
+                    let loaded = 0;
+                    toProcess.forEach(f => {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            existing.push(ev.target.result);
+                            loaded++;
+                            if (loaded === toProcess.length) {
+                                window._galleryImages = existing;
+                                try { localStorage.setItem('galleryImages', JSON.stringify(existing)); } catch(e) {}
+                                renderGamingGallery();
+                            }
+                        };
+                        reader.readAsDataURL(f);
+                    });
+                    this.value = '';
+                });
+            }
+            // Restore gallery from localStorage
+            try {
+                const saved = localStorage.getItem('galleryImages');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length) {
+                        window._galleryImages = parsed;
+                        renderGamingGallery();
+                    }
+                }
+            } catch(e) {}
+        });
+    </script>
+
+    <script src="haptics.js?v=16" defer></script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { requireAuth } from './authGuard.js';
+        import { doc, getDoc, collection, query, orderBy, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        try {
+            const user = await requireAuth();
+            document.getElementById('p-auth').className = 'progress-step done';
+            document.getElementById('p-auth').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            const uid = user.uid;
+            let userData = { name: '', profilePhoto: '', matchesPlayed: 0, kills: 0, coins: 0, favouriteFormats: [] };
+            let nextTournaments = [];
+
+            document.getElementById('p-profile').className = 'progress-step active';
+            try {
+                const snap = await getDoc(doc(db, 'users', uid));
+                if (snap.exists()) userData = { ...userData, ...snap.data() };
+            } catch (e) {}
+            document.getElementById('p-profile').className = 'progress-step done';
+            document.getElementById('p-profile').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            document.getElementById('p-data').className = 'progress-step active';
+            try {
+                const tSnap = await getDocs(query(collection(db, 'tournaments'), orderBy('date', 'asc'), limit(10)));
+                nextTournaments = tSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            } catch (e) {}
+
+            function nameFromEmail(email) {
+                if (!email) return 'Player';
+                const raw = email.split('@')[0];
+                const clean = raw.replace(/[^a-zA-Z0-9._-]/g, '');
+                if (!clean) return 'Player';
+                return clean.replace(/[._-]+/g, ' ').split(' ').filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+            }
+
+            const displayName = (userData.name && userData.name.trim()) ? userData.name.trim() : nameFromEmail(user.email);
+            document.getElementById('displayName').textContent = displayName;
+
+            document.getElementById('statMatches').textContent = userData.matchesPlayed ?? 0;
+            document.getElementById('statKills').textContent = userData.kills ?? 0;
+            document.getElementById('statCoins').textContent = userData.coins ?? 0;
+            document.getElementById('regAddress').textContent = userData.address || 'Quebec, Canada';
+
+            window._userData = userData;
+            window._nextTournaments = nextTournaments;
+
+            if (typeof renderCoinBars === 'function') renderCoinBars();
+            if (typeof renderFavouriteFormats === 'function') renderFavouriteFormats();
+            if (typeof renderNextTournaments === 'function') renderNextTournaments();
+
+            if (userData.profilePhoto) {
+                document.getElementById('userSunImg').src = userData.profilePhoto;
+            } else {
+                const c = displayName.charAt(0).toUpperCase();
+                document.getElementById('userSunImg').src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230052FF'/%3E%3Cstop offset='100%25' stop-color='%23002D8F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='200' height='200' fill='url(%23g)'/%3E%3Ctext x='100' y='118' text-anchor='middle' font-family='SF Pro Display,system-ui,sans-serif' font-weight='900' font-size='80' fill='%23fff' fill-opacity='0.95'%3E${c}%3C/text%3E%3C/svg%3E`;
+            }
+
+            try {
+                const gSnap = await getDocs(query(collection(db, 'users', uid, 'gifts'), orderBy('createdAt', 'desc')));
+                _allGifts = gSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            } catch (e) { _allGifts = []; }
+            if (typeof renderGifts === 'function') renderGifts();
+
+            document.getElementById('p-data').className = 'progress-step done';
+            document.getElementById('p-data').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            setTimeout(() => document.getElementById('progress-overlay').classList.add('hide'), 300);
+
+        } catch (e) {}
+    </script>
+</body>
+</html>

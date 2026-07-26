@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iconic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css?v=16">
+    <style>
+        :root {
+            --wlt-cream: #fbf9f2;
+            --wlt-yellow: #f8be14;
+            --wlt-yellow-dark: #e5ab00;
+            --wlt-dark: #262a2d;
+            --wlt-text: #111111;
+            --wlt-muted: #8e8e93;
+            --wlt-action: #f4efe2;
+            --wlt-green: #27ae60;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .wlt-bg { background-color: var(--wlt-cream); }
+        .wrap { position: relative; z-index: 2; min-height: 100vh; background: var(--wlt-cream); }
+
+        .hero-card {
+            border-radius: 20px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(248, 190, 20, 0.25);
+        }
+
+        .hero-sidebar {
+            width: 48px;
+            background-color: #111;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-shrink: 0;
+        }
+
+        .hero-sidebar .v-date {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            color: #fff;
+            font-size: 11px;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .hero-sidebar .sdots {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .hero-sidebar .sdot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #555;
+        }
+
+        .hero-sidebar .sdot.on { background-color: var(--wlt-yellow); }
+
+        .hero-main {
+            flex: 1;
+            background: linear-gradient(135deg, #fbc02d 0%, #f57f17 100%);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hero-main .bl-title {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.6);
+            font-weight: 600;
+        }
+
+        .hero-main .bl-amt {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--wlt-text);
+            margin-top: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-main .bl-amt span {
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 2px;
+            opacity: 0.7;
+        }
+
+        .hero-main .bl-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--wlt-text);
+        }
+
+        .hero-main .stat-badge {
+            color: var(--wlt-green);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .action-card {
+            background-color: var(--wlt-action);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .action-card span {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--wlt-text);
+        }
+
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background-color: var(--wlt-dark);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        .action-btn:active { transform: scale(.88); }
+
+        .tx-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tx-header h2 {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--wlt-text);
+        }
+
+        .tx-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tx-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tx-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tx-av-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(248,190,20,0.2) 0%, rgba(255,255,255,0) 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tx-av {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .tx-detail .tx-time {
+            font-size: 11px;
+            color: var(--wlt-muted);
+            margin-bottom: 2px;
+        }
+
+        .tx-detail .tx-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--wlt-text);
+        }
+
+        .tx-amt {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .tx-amt.pos { color: var(--wlt-text); }
+        .tx-amt.neg { color: var(--wlt-yellow-dark); }
+
+        .tx-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--wlt-muted);
+            font-size: 14px;
+        }
+
+        .tx-empty i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora"></div>
+
+    <div class="wrap max-w-md mx-auto px-5 pt-6 pb-32">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-extrabold" style="color:var(--wlt-text);letter-spacing:-0.5px">My Wallet</h1>
+            <div class="w-7 h-7 rounded-full border-2" style="border-color:var(--wlt-text);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;color:var(--wlt-text)">◌</div>
+        </div>
+
+        <!-- Hero Card -->
+        <div class="hero-card mb-5">
+            <div class="hero-sidebar">
+                <span class="v-date" id="hero-date">Today</span>
+                <div class="sdots">
+                    <div class="sdot on"></div>
+                    <div class="sdot"></div>
+                    <div class="sdot"></div>
+                </div>
+            </div>
+            <div class="hero-main">
+                <div>
+                    <div class="bl-title">Available Balance</div>
+                    <div class="bl-amt"><span id="bl-amt">0</span> <span>coins</span></div>
+                </div>
+                <div class="bl-stat">
+                    <span id="bl-earned">+0</span> <span class="stat-badge" id="bl-pct">↑ +0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-grid mb-6">
+            <div class="action-card">
+                <span>Add Money</span>
+                <button class="action-btn" onclick="alert('Payment gateway coming soon')">⤴</button>
+            </div>
+            <div class="action-card">
+                <span>Transfer</span>
+                <button class="action-btn" onclick="alert('Payment gateway coming soon')">⇄</button>
+            </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="tx-header mb-4">
+            <h2>Transactions</h2>
+            <a href="transactions.html" style="font-weight:bold;letter-spacing:2px;color:var(--wlt-text);text-decoration:none">••</a>
+        </div>
+
+        <div class="tx-list" id="tx-list">
+            <div class="tx-empty"><i class="fa-solid fa-receipt"></i>No transactions yet</div>
+        </div>
+    </div>
+
+    <div class="nv-dock">
+        <a href="home.html" class="nv-item" data-nav="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="wallet.html" class="nv-item on" data-nav="wallet"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
+        <a href="stats.html" class="nv-item" data-nav="tournament"><i class="fa-solid fa-trophy"></i><span>Tournament</span></a>
+        <a href="pay.html" class="nv-item" data-nav="live"><i class="fa-solid fa-bolt"></i><span>Live</span></a>
+        <a href="user.html" class="nv-item" data-nav="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </div>
+
+    <script>
+        function fmt(n) {
+            const num = Number(n);
+            if (num >= 1000) return num.toLocaleString();
+            return String(num);
+        }
+
+        function renderWallet(userData) {
+            const coins = userData.coins || 0;
+            document.getElementById('bl-amt').textContent = fmt(coins);
+
+            const earned = Math.floor(coins * 0.1);
+            const pct = coins > 0 ? 10 : 0;
+            document.getElementById('bl-earned').textContent = '+' + fmt(earned);
+            document.getElementById('bl-pct').textContent = '↑ +' + pct + '%';
+
+            const d = new Date();
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            document.getElementById('hero-date').textContent = d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear();
+        }
+
+        function renderTransactions(txns) {
+            const el = document.getElementById('tx-list');
+            if (!txns || !txns.length) {
+                el.innerHTML = '<div class="tx-empty"><i class="fa-solid fa-receipt"></i>No transactions yet</div>';
+                return;
+            }
+            el.innerHTML = txns.map(t => `
+                <div class="tx-item">
+                    <div class="tx-info">
+                        <div class="tx-av-wrap">
+                            <img class="tx-av" src="${t.avatar || 'https://ui-avatars.com/api/?background=f4efe2&color=111&name='+encodeURIComponent(t.name)}" alt="${t.name}" loading="lazy">
+                        </div>
+                        <div class="tx-detail">
+                            <div class="tx-time">${t.createdAt?.toDate ? formatTime(t.createdAt.toDate()) : ''}</div>
+                            <div class="tx-name">${t.name}</div>
+                        </div>
+                    </div>
+                    <div class="tx-amt ${t.type === 'credit' ? 'pos' : 'neg'}">${t.type === 'credit' ? '+' : '-'} ${fmt(t.amount)}</div>
+                </div>
+            `).join('');
+        }
+
+        function formatTime(d) {
+            const pad = n => String(n).padStart(2, '0');
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' - ' + pad(d.getDate()) + ' ' + months[d.getMonth()];
+        }
+    </script>
+
+    <div id="progress-overlay">
+        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
+        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading wallet</div>
+        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading transactions</div>
+    </div>
+
+    <script src="haptics.js?v=16" defer></script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { requireAuth } from './authGuard.js';
+        import { doc, getDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        try {
+            const user = await requireAuth();
+            document.getElementById('p-auth').className = 'progress-step done';
+            document.getElementById('p-auth').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            const uid = user.uid;
+            let userData = { coins: 0 };
+            try {
+                const snap = await getDoc(doc(db, 'users', uid));
+                if (snap.exists()) userData = { ...userData, ...snap.data() };
+            } catch (e) {}
+            window._userData = userData;
+            document.getElementById('p-profile').className = 'progress-step done';
+            document.getElementById('p-profile').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            renderWallet(userData);
+
+            let txns = [];
+            try {
+                const txSnap = await getDocs(query(collection(db, 'users', uid, 'transactions'), orderBy('createdAt', 'desc')));
+                txns = txSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            } catch (e) {}
+            document.getElementById('p-data').className = 'progress-step done';
+            document.getElementById('p-data').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+            renderTransactions(txns);
+
+            setTimeout(() => document.getElementById('progress-overlay').classList.add('hide'), 300);
+        } catch (e) {}
+    </script>
+</body>
+</html>
