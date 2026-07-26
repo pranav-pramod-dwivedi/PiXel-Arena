@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick'em Leaderboard - Esports World Cup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+
+        body {
+            margin: 0;
+            background-color: #FFFFFF;
+            color: #0F172A;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            padding-bottom: 85px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-ewc {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Hide Horizontal Scrollbars */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Mode Selection Cards */
+        .game-card {
+            background: #FFFFFF;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            min-width: 170px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .game-card.active {
+            border-color: #0F172A;
+            background-color: #F8FAFC;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .badge-progress {
+            background-color: #B88E24;
+            color: #FFFFFF;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-upcoming {
+            background-color: #0F172A;
+            color: #FFFFFF;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main Featured Game Card */
+        .featured-game-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Tab Item Bar */
+        .tab-item {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748B;
+            white-space: nowrap;
+            padding: 10px 4px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-item.active {
+            color: #0F172A;
+            border-bottom-color: #0F172A;
+        }
+
+        /* Leaderboard Table Row */
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 40px 1fr auto;
+            align-items: center;
+            padding: 12px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .xp-text {
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            color: #A57D28;
+            letter-spacing: 0.5px;
+        }
+
+        /* Bottom Nav */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 8px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            color: #64748B;
+            font-size: 10px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .nav-item.active,
+        .nav-item:hover {
+            color: #0F172A;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+
+        <!-- Top Badge -->
+        <div>
+            <span class="inline-block bg-black text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-md">
+                RAN'KINGS
+            </span>
+        </div>
+
+        <!-- Header Title & Subtitle -->
+        <div class="space-y-1">
+            <h1 class="font-ewc text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-none">
+                RAN'KINGS
+            </h1>
+            <p class="text-xs sm:text-sm font-semibold text-slate-600 max-w-2xl leading-relaxed">
+                Think you can win it? These are the tournament winners and match results across every PA title, and earn XP for every elimination they get right
+            </p>
+        </div>
+
+        <!-- Mode Selection Carousel -->
+        <div class="flex items-center gap-3 overflow-x-auto no-scrollbar py-2">
+            <!-- Mode 1: BR -->
+            <div id="mode-br" onclick="selectGameMode('br')" class="game-card shrink-0 active">
+                <span class="font-ewc text-xs font-black text-slate-900 text-center">BATTLE ROYALE</span>
+                <span class="badge-progress">IN PROGRESS</span>
+            </div>
+
+            <!-- Mode 2: CS -->
+            <div id="mode-cs" onclick="selectGameMode('cs')" class="game-card shrink-0">
+                <span class="font-ewc text-xs font-black text-slate-900 text-center">CLASH SQUAD</span>
+                <span class="badge-progress">IN PROGRESS</span>
+            </div>
+
+            <!-- Mode 3: LW -->
+            <div id="mode-lw" onclick="selectGameMode('lw')" class="game-card shrink-0">
+                <span class="font-ewc text-xs font-black text-slate-900 text-center">LONE WOLF</span>
+                <span class="badge-upcoming">UPCOMING</span>
+            </div>
+        </div>
+
+        <!-- Featured Selected Game Card -->
+        <div class="featured-game-card">
+            <!-- PURE WHITE FREE FIRE VECTOR LOGO -->
+            <div class="w-12 h-12 bg-[#070A10] rounded-xl flex items-center justify-center p-2 shrink-0 shadow-md">
+                <svg version="1.1" id="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 571.54 485.99" class="w-full h-full text-white" fill="currentColor">
+                    <g>
+                        <path d="M280.68,187.34c2.41-9.01,11.68-16.32,20.7-16.32c0.14,0,108.61,0.01,143.95,0.01c6.99,0,13.58-3.09,18.08-8.45l46.89-55.85c2.15-2.57,0.33-6.48-3.02-6.48H239.6c-10.72,0-20.1,7.2-22.87,17.56l-83.37,311.93c-0.74,2.79,1.66,5.4,4.5,4.9l66.12-11.66c9.06-1.6,16.37-8.3,18.75-17.18l35.18-131.29l153.93-0.06c7,0,13.63-3.09,18.13-8.45l46.88-55.85c2.15-2.57,0.33-6.48-3.02-6.48l-181.33-0.04C283.57,203.55,278.28,196.3,280.68,187.34z"></path> 
+                        <path d="M171.2,51.29c-10.71,0-20.09,7.2-22.86,17.54l-25.63,95.66c-0.77,3.49,0.67,6.56,4.2,6.56h30.04c2.15,0,2.51,2.62,0.56,4.11l-44.91,34.18c-1.47,1.12-2.55,2.68-2.98,4.3l-1.09,4.07c-0.35,1.32,0.43,2.39,1.75,2.39H143c2.16,0,2.51,2.63,0.54,4.12l-43.77,32.91c-1.49,1.13-2.58,2.7-3.02,4.34l-1.41,5.29c-0.35,1.32,0.43,2.38,1.75,2.38l33.45,0c2.15,0,2.5,2.61,0.56,4.1l-45.36,34.93c-1.23,0.95-2.05,2.52-2.58,3.85l-22.72,84.79c-0.75,2.79,1.65,5.41,4.5,4.91l48.37-8.53c9.08-1.6,16.4-8.32,18.77-17.23l72.89-274.44c2.75-10.37,12.14-17.59,22.88-17.59h190.06c7,0,13.63-3.1,18.13-8.45l14.86-17.71c2.15-2.57,0.33-6.48-3.02-6.48H171.2z"></path>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="space-y-0.5">
+                <h2 id="active-mode-title" class="font-ewc text-2xl font-black text-slate-900 leading-none">Free Fire · Battle Royale</h2>
+                <p class="text-xs font-bold text-slate-500">
+                    41 matches · <span class="text-slate-600 font-extrabold">completed</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Filter Sub-Tabs Row -->
+        <div class="flex items-center gap-6 border-b border-slate-200 overflow-x-auto no-scrollbar">
+            <button id="tab-all-matches" onclick="switchPickemTab('all-matches')" class="tab-item">ALL MATCHES</button>
+            <button id="tab-tournament" onclick="switchPickemTab('tournament')" class="tab-item">TOURNAMENT</button>
+            <button id="tab-global" onclick="switchPickemTab('global')" class="tab-item active">GLOBAL</button>
+            <button id="tab-recents" onclick="switchPickemTab('recents')" class="tab-item">RECENTS</button>
+        </div>
+
+        <!-- Dynamic Content Container -->
+        <div id="tab-content-container">
+
+            <!-- GLOBAL LEADERBOARD VIEW -->
+            <div id="view-global" class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                
+                <!-- Table Header -->
+                <div class="leaderboard-row bg-black text-white font-ewc text-[11px] font-bold tracking-wider uppercase">
+                    <span>#</span>
+                    <span>USER</span>
+                    <span class="text-right">PICK'EM XP</span>
+                </div>
+
+                <!-- Dynamic Rows Injection Target -->
+                <div id="leaderboard-rows-container"></div>
+
+            </div>
+
+            <!-- OTHER TAB PLACEHOLDERS -->
+            <div id="view-all-matches" class="hidden space-y-3 p-6 bg-white rounded-2xl border border-slate-200 text-center">
+                <span class="font-ewc text-lg font-bold text-slate-800">ALL MATCHES FEED</span>
+                <p class="text-xs text-slate-500 font-semibold">Live predictions feed loading...</p>
+            </div>
+
+            <div id="view-tournament" class="hidden space-y-3 p-6 bg-white rounded-2xl border border-slate-200 text-center">
+                <span class="font-ewc text-lg font-bold text-slate-800">TOURNAMENT WINNER PICKS</span>
+                <p class="text-xs text-slate-500 font-semibold">Stage predictors loading...</p>
+            </div>
+
+            <div id="view-recents" class="hidden space-y-3 p-6 bg-white rounded-2xl border border-slate-200 text-center">
+                <span class="font-ewc text-lg font-bold text-slate-800">RECENTLY COMPLETED MATCHES</span>
+                <p class="text-xs text-slate-500 font-semibold">Awarded XP history loading...</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- App Bottom Navigation Bar -->
+    <nav class="app-bottom-nav">
+        <a href="index.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+
+        <a href="#" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Play</span>
+        </a>
+
+        <a href="ranking.html" class="nav-item active">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M12 15l-2 5l9-11h-7l2-5l-9 11h7z"/>
+            </svg>
+            <span>Ranking</span>
+        </a>
+    </nav>
+
+    <!-- Leaderboard Randomization & Logic Engine -->
+    <script>
+        let currentMode = 'br';
+
+        // Pool of potential players for ranks 2 through 10
+        const playerPool = [
+            '複SHRE𝚈ASH',
+            'XOSZ',
+            'ΔKHIL',
+            'H ム D i',
+            'ＬＡＲＡ＇シ',
+            '◤DEVENDRA ◢',
+            '彡Oɴʟʏ 々GOAT彡',
+            '𝐊ᴀᴡ𝐬ᴀʀ ',
+            '亗 𝙵 𝙰 𝚁 𝙼 𝙴 𝚁__❤',
+            '༺Saksham༻',
+            '♛DONATO♛',
+            'এ ⁞ㅤᴀɴ፝֟ᴀ এ'
+        ];
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function renderLeaderboard(mode) {
+            const container = document.getElementById('leaderboard-rows-container');
+            const titleElement = document.getElementById('active-mode-title');
+            
+            let numberOnePlayer = '';
+            let modeTitle = '';
+
+            if (mode === 'br') {
+                numberOnePlayer = 'XOSZ';
+                modeTitle = 'Free Fire · Battle Royale';
+            } else if (mode === 'cs') {
+                numberOnePlayer = 'ΔKHIL';
+                modeTitle = 'Free Fire · Clash Squad';
+            } else if (mode === 'lw') {
+                numberOnePlayer = '複SHRE𝚈ASH';
+                modeTitle = 'Free Fire · Lone Wolf';
+            }
+
+            if (titleElement) titleElement.textContent = modeTitle;
+
+            // Filter out the guaranteed #1 player from the pool for remaining ranks
+            const remainingPool = playerPool.filter(p => p !== numberOnePlayer);
+            const shuffledPool = shuffleArray(remainingPool).slice(0, 9);
+
+            // Construct Top 10 List
+            const top10 = [numberOnePlayer, ...shuffledPool];
+
+            // Base coins above 2000
+            let startCoins = 2950;
+
+            let htmlHTML = '';
+
+            top10.forEach((player, index) => {
+                const rank = index + 1;
+                const coins = (startCoins - (index * 85)).toLocaleString();
+
+                htmlHTML += `
+                    <div class="leaderboard-row">
+                        <span class="font-black text-slate-900 text-sm">${rank}</span>
+                        <span class="font-bold text-slate-900">${player}</span>
+                        <span class="xp-text text-right">${coins}</span>
+                    </div>
+                `;
+
+                // Add Dashed Top 3 Divider
+                if (rank === 3) {
+                    htmlHTML += `
+                        <div class="py-3 px-4 flex items-center gap-3">
+                            <div class="h-px bg-slate-300 flex-1 border-t border-dashed border-slate-400"></div>
+                            <span class="font-ewc text-[10px] font-black tracking-widest text-slate-500 uppercase">LEADERBOARD TOP 3</span>
+                            <div class="h-px bg-slate-300 flex-1 border-t border-dashed border-slate-400"></div>
+                        </div>
+                    `;
+                }
+            });
+
+            container.innerHTML = htmlHTML;
+        }
+
+        function selectGameMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.game-card').forEach(card => card.classList.remove('active'));
+            document.getElementById(`mode-${mode}`).classList.add('active');
+            renderLeaderboard(mode);
+        }
+
+        function switchPickemTab(targetTab) {
+            document.querySelectorAll('.tab-item').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById('view-global').classList.add('hidden');
+            document.getElementById('view-all-matches').classList.add('hidden');
+            document.getElementById('view-tournament').classList.add('hidden');
+            document.getElementById('view-recents').classList.add('hidden');
+
+            const activeBtn = document.getElementById(`tab-${targetTab}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const activeView = document.getElementById(`view-${targetTab}`);
+            if (activeView) activeView.classList.remove('hidden');
+        }
+
+        // Initialize with default Battle Royale mode
+        window.addEventListener('DOMContentLoaded', () => {
+            renderLeaderboard('br');
+        });
+    </script>
+
+</body>
+</html>
