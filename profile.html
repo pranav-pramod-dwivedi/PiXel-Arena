@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NovaPay | Official Profile</title>
+    <script src="app.js?v=16"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css?v=16">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --visa-blue: #0052FF;
+            --visa-dark: #002D8F;
+            --surface: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--surface);
+            color: #0F172A;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- SKELETON SHIMMER (850ms) --- */
+        .skeleton-block {
+            background: #f1f5f9;
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .skeleton-block::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            animation: shimmer 0.8s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        #skeleton-screen {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 100;
+            transition: opacity 0.4s ease-out;
+        }
+
+        .loaded #skeleton-screen { opacity: 0; pointer-events: none; }
+        #main-content { opacity: 0; transform: translateY(10px); transition: 0.4s ease-out; }
+        .loaded #main-content { opacity: 1; transform: translateY(0); }
+
+        .user-badge {
+            background: rgba(0, 82, 255, 0.04);
+            border: 1px solid rgba(0, 82, 255, 0.08);
+        }
+
+        .info-group {
+            border: 1px solid #F1F5F9;
+            border-radius: 24px;
+        }
+
+        .locked-field {
+            background-color: #fafbfc;
+        }
+
+        .disabled-grey {
+            filter: grayscale(1);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* toggles */
+        /* iOS-style switch: the knob springs past its stop and settles, and squashes
+           while held — that overshoot is what makes it read as physical. */
+        .tog { width:46px; height:28px; border-radius:999px; background:#e2e8f0; position:relative; border:none; flex-shrink:0;
+            transition:background .25s cubic-bezier(.4,0,.2,1); cursor:pointer;
+            box-shadow:inset 0 1px 3px rgba(15,23,42,.12); }
+        .tog::after { content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff;
+            box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 0 rgba(0,82,255,.35);
+            transition:transform .34s cubic-bezier(.34,1.56,.64,1), width .18s ease, box-shadow .3s; }
+        .tog.on { background:#0052FF; }
+        .tog.on::after { transform:translateX(18px); }
+        /* knob stretches while pressed, like it's being dragged */
+        .tog:active::after { width:26px; }
+        .tog.on:active::after { transform:translateX(14px); }
+        /* ring pulse on the tap that turned it on */
+        .tog.flash::after { box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 7px rgba(0,82,255,0); animation:togRing .45s ease-out; }
+        @keyframes togRing {
+            from { box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 0 rgba(0,82,255,.4); }
+            to   { box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 9px rgba(0,82,255,0); }
+        }
+        /* row acknowledges the tap too */
+        .set-row { transition:background .25s; }
+        .set-row.touched { background:rgba(58,107,255,.06); }
+        :root[data-theme="dark"] .tog { background:#2b3550; }
+        :root[data-theme="dark"] .set-row.touched { background:rgba(122,162,255,.1); }
+        #theme-seg button.on { background:#0f172a; color:#fff; border-color:#0f172a; }
+
+        /* dark theme */
+        :root[data-theme="dark"] body { color:#e8eefc; }
+        :root[data-theme="dark"] .text-slate-800 { color:#e8eefc !important; }
+        :root[data-theme="dark"] .text-slate-400 { color:#8b96ad !important; }
+        :root[data-theme="dark"] .info-group { border-color:#1e293b; }
+        :root[data-theme="dark"] .info-group.bg-white, :root[data-theme="dark"] .bg-white { background:#131a2e !important; }
+        :root[data-theme="dark"] .bg-slate-50 { background:#1b2440 !important; }
+        :root[data-theme="dark"] .border-slate-50, :root[data-theme="dark"] .border-slate-100 { border-color:#1e293b !important; }
+        :root[data-theme="dark"] #skeleton-screen { background:#0b1020; }
+        :root[data-theme="dark"] .locked-field { background:#0f1626; }
+
+        /* ============ LIGHT GLASS (frosted, low blur for smooth scroll) ============ */
+        /* soft light gradient bg — no heavy blur, cheap to paint */
+        .prof-bg { position:fixed; inset:0; z-index:-1; overflow:hidden;
+            background:linear-gradient(170deg,#e6ecff 0%,#eae6fb 50%,#e6f3ff 100%); }
+        .prof-bg::before{ content:""; position:absolute; width:80vw; height:80vw; top:-25vw; left:-20vw; border-radius:50%;
+            background:radial-gradient(circle,#9fbaff,transparent 62%); opacity:.55; filter:blur(50px); }
+        .prof-bg::after{ content:""; position:absolute; width:70vw; height:70vw; bottom:-22vw; right:-20vw; border-radius:50%;
+            background:radial-gradient(circle,#c9b0ff,transparent 62%); opacity:.5; filter:blur(50px); }
+        .aurora{ display:none; }
+
+        /* frosted glass — real blur, but only on these FEW big panels (cheap, stays 60fps) */
+        .info-group, .stat-card{
+            background:rgba(255,255,255,.45) !important;
+            backdrop-filter:blur(24px) saturate(160%) !important; -webkit-backdrop-filter:blur(24px) saturate(160%) !important;
+            border:1px solid rgba(255,255,255,.75) !important;
+            box-shadow:0 12px 34px -14px rgba(60,80,150,.35), inset 0 1px 0 rgba(255,255,255,.85) !important;
+            border-radius:22px; }
+        .info-group{ overflow:hidden; }
+        .info-group > *{ position:relative; }
+        .locked-field{ background:rgba(120,140,190,.05) !important; }
+
+        .row-ic{ width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,.6); }
+        /* FA glyphs carry their own baseline metrics — centring the inline box
+           leaves the glyph sitting high. Make the <i> its own centred flex box. */
+        .row-ic > i, .row-ic > svg { display:flex; align-items:center; justify-content:center;
+            width:1em; height:1em; line-height:1; }
+        .ic-blue{ background:rgba(58,107,255,.13); color:#3a6bff; }
+        .ic-green{ background:rgba(18,184,134,.13); color:#12b886; }
+        .ic-purple{ background:rgba(139,92,246,.13); color:#8b5cf6; }
+        .ic-orange{ background:rgba(245,158,11,.13); color:#f59e0b; }
+        .ic-red{ background:rgba(240,80,110,.13); color:#f0506e; }
+        .ic-grey{ background:rgba(120,140,190,.1) !important; color:#64748b !important; }
+
+        .stat-card{ display:flex; flex-direction:column; align-items:center; justify-content:center;
+            padding:11px 10px; border-radius:18px; }
+        .stat-card .num, .stat-card p:first-child { color:#0f172a !important; }
+        .stat-card .num.stat-rank { color:#3a6bff !important; }   /* rank reads as the accent stat */
+        :root[data-theme="dark"] .stat-card .num, :root[data-theme="dark"] .stat-card p:first-child { color:#eaf0ff !important; }
+        :root[data-theme="dark"] .stat-card .num.stat-rank { color:#7aa2ff !important; }
+        .settings-title{ font-size:10px; font-weight:800; color:#8a93ab; text-transform:uppercase; letter-spacing:.12em; padding:0 8px; margin-bottom:10px; }
+        .spring{ transition:transform .35s cubic-bezier(.34,1.56,.64,1); } .spring:active{ transform:scale(.96); }
+        .nv-nav-bar{ background:rgba(255,255,255,.82) !important; border:1px solid rgba(255,255,255,.9) !important; }
+        .nv-item{ color:#8a93ab; } .nv-item.on{ color:#3a6bff; }
+        .text-slate-800{ color:#1e293b !important; } .text-slate-400{ color:#8a93ab !important; }
+    </style>
+</head>
+<body class="max-w-md mx-auto relative">
+    <div class="prof-bg"></div><div class="prof-orb"></div>
+
+    <!-- 1. Skeleton Shimmer -->
+    <div id="skeleton-screen" class="p-6">
+        <div class="w-10 h-10 rounded-full skeleton-block mb-8"></div>
+        <div class="flex flex-col items-center mb-10">
+            <div class="w-24 h-24 rounded-full skeleton-block mb-4"></div>
+            <div class="w-32 h-6 rounded-full skeleton-block mb-2"></div>
+            <div class="w-20 h-3 rounded-full skeleton-block"></div>
+        </div>
+        <div class="space-y-6">
+            <div class="h-32 w-full rounded-3xl skeleton-block"></div>
+            <div class="h-48 w-full rounded-3xl skeleton-block"></div>
+        </div>
+    </div>
+
+    <!-- 2. Main Content -->
+    <div id="main-content" class="min-h-screen pb-10">
+        
+        <header class="px-5 pt-7 pb-4 flex justify-between items-center sticky top-0 z-50" style="background:linear-gradient(to bottom,rgba(233,238,252,.95),rgba(233,238,252,0));backdrop-filter:blur(10px)">
+            <a href="home.html" class="cap-btn spring w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9)">
+                <i class="fa-solid fa-chevron-left text-[14px] text-slate-500"></i>
+            </a>
+            <h1 class="text-lg font-extrabold text-slate-800">Profile</h1>
+            <a href="help.html" class="cap-btn spring w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9)">
+                <i class="fa-solid fa-headset text-[14px] text-slate-500"></i>
+            </a>
+        </header>
+
+        <section class="flex flex-col items-center px-5 mb-8 mt-2">
+            <div class="relative mb-4 cursor-pointer" onclick="document.getElementById('avatar-file').click()">
+                <div class="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-blue-600 to-blue-200 shadow-xl">
+                    <img id="profile-avatar" src="IMG_20251214_013513.jpg" class="w-full h-full rounded-full object-cover border-4 border-white">
+                </div>
+                <div class="absolute bottom-0 right-0 w-7 h-7 bg-blue-600 border-4 border-white rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-camera text-white text-[9px]"></i>
+                </div>
+                <input type="file" id="avatar-file" accept="image/*" class="hidden">
+            </div>
+            <div class="flex items-center gap-1.5 mb-1">
+                <span id="p-name" class="text-[18px] font-extrabold text-slate-800">Pranav D.</span>
+                <i class="fa-solid fa-circle-check text-blue-600 text-[13px]"></i>
+            </div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Platinum Member</p>
+        </section>
+
+        <!-- stat cards -->
+        <div class="px-5 grid grid-cols-3 gap-2.5 mb-8">
+            <div class="stat-card min-w-0"><p class="num text-[17px] font-extrabold truncate" id="st-circle">12</p><p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide mt-1.5">Circle</p></div>
+            <div class="stat-card min-w-0"><p class="num text-[17px] font-extrabold truncate" id="st-bal">$429k</p><p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide mt-1.5">Balance</p></div>
+            <div class="stat-card min-w-0"><p class="num stat-rank text-[17px] font-extrabold truncate" id="st-rank">#7,807</p><p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide mt-1.5">Rank</p></div>
+        </div>
+
+        <div class="px-5 space-y-8">
+            <!-- Group 1: Identity -->
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Account Identity</h3>
+                <div class="info-group bg-white overflow-hidden">
+                    <div class="p-4 border-b border-slate-50 flex justify-between items-center locked-field">
+                        <div class="space-y-1">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Legal Name</p>
+                            <p class="text-[13px] font-bold text-slate-800">Pranav Dwivedi</p>
+                        </div>
+                        <i class="fa-solid fa-lock text-slate-200 text-[10px]"></i>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex justify-between items-center locked-field">
+                        <div class="space-y-1">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Email</p>
+                            <p class="text-[13px] font-bold text-slate-800">hkdy****@gmail.com</p>
+                        </div>
+                        <i class="fa-solid fa-lock text-slate-200 text-[10px]"></i>
+                    </div>
+                    <a href="address.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-map-location-dot"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Residential Address</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 2: Preferences -->
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">App Configuration</h3>
+                <div class="info-group bg-white overflow-hidden">
+                    <a href="notif-settings.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-orange"><i class="fa-solid fa-bell"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Notifications</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <a href="security.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-green"><i class="fa-solid fa-fingerprint"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Security & Biometrics</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <!-- Notifications toggle -->
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-bell"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Push Notifications</span>
+                        </div>
+                        <button id="tog-notif" class="tog" onclick="toggle('notifications')"></button>
+                    </div>
+                    <!-- Hide balance toggle -->
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-grey"><i class="fa-solid fa-eye-slash"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Hide Balance</span>
+                        </div>
+                        <button id="tog-hide" class="tog" onclick="toggle('hideBalance')"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 3: Card Controls (Visa/Amex staple) -->
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Card Controls</h3>
+                <div class="info-group bg-white overflow-hidden">
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-snowflake"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Freeze Card</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5" id="freeze-sub">Visa Infinite • 8144</p>
+                            </div>
+                        </div>
+                        <button id="tog-freeze" class="tog" onclick="toggleFreeze()"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-green"><i class="fa-solid fa-globe"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">International Use</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Allow foreign transactions</p>
+                            </div>
+                        </div>
+                        <button id="tog-intl" class="tog" onclick="toggle('intlUse')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-purple"><i class="fa-solid fa-wifi"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Contactless Pay</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Tap to pay at terminals</p>
+                            </div>
+                        </div>
+                        <button id="tog-tap" class="tog" onclick="toggle('contactless')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-orange"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">ATM Withdrawals</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Cash access abroad</p>
+                            </div>
+                        </div>
+                        <button id="tog-atm" class="tog" onclick="toggle('atmWithdrawals')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-red"><i class="fa-solid fa-cart-shopping"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Online Purchases</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">E-commerce transactions</p>
+                            </div>
+                        </div>
+                        <button id="tog-online" class="tog" onclick="toggle('onlinePurchases')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-purple"><i class="fa-solid fa-arrows-rotate"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Recurring Charges</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Subscriptions & auto-billing</p>
+                            </div>
+                        </div>
+                        <button id="tog-recurring" class="tog" onclick="toggle('recurringCharges')"></button>
+                    </div>
+                    <a href="limits.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-gauge-high"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Spending Limits</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <a href="security.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-green"><i class="fa-solid fa-key"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Change PIN</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group: Payments -->
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Payments</h3>
+                <div class="info-group bg-white overflow-hidden">
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-green"><i class="fa-solid fa-calendar-check"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Autopay</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Pay statement balance monthly</p>
+                            </div>
+                        </div>
+                        <button id="tog-autopay" class="tog" onclick="toggle('autopay')"></button>
+                    </div>
+                    <a href="banks.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-building-columns"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Linked Bank Accounts</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-purple"><i class="fa-solid fa-bolt"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Instant Transfers</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Faster payouts, small fee</p>
+                            </div>
+                        </div>
+                        <button id="tog-instant" class="tog" onclick="toggle('instantTransfers')"></button>
+                    </div>
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-orange"><i class="fa-solid fa-piggy-bank"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Round-Up Savings</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Round purchases to nearest $1</p>
+                            </div>
+                        </div>
+                        <button id="tog-roundup" class="tog" onclick="toggle('roundUp')"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 4: Alerts -->
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Alerts & Statements</h3>
+                <div class="info-group bg-white overflow-hidden">
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Fraud Alerts</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Instant suspicious-activity texts</p>
+                            </div>
+                        </div>
+                        <button id="tog-fraud" class="tog" onclick="toggle('fraudAlerts')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-receipt"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Transaction Alerts</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Every purchase over $100</p>
+                            </div>
+                        </div>
+                        <button id="tog-txalert" class="tog" onclick="toggle('txAlerts')"></button>
+                    </div>
+                    <a href="transactions.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-green"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Statements</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-grey"><i class="fa-solid fa-leaf"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Paperless Billing</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">No mailed statements</p>
+                            </div>
+                        </div>
+                        <button id="tog-paperless" class="tog" onclick="toggle('paperless')"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group: Security -->
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Sign-In & Security</h3>
+                <div class="info-group bg-white overflow-hidden">
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-green"><i class="fa-solid fa-fingerprint"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Biometric Login</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Face ID / fingerprint</p>
+                            </div>
+                        </div>
+                        <button id="tog-bio" class="tog" onclick="toggle('biometricLogin')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Two-Factor Auth</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Code on every sign-in</p>
+                            </div>
+                        </div>
+                        <button id="tog-2fa" class="tog" onclick="toggle('twoFactor')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-orange"><i class="fa-solid fa-lock"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Require PIN to Pay</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Every transaction</p>
+                            </div>
+                        </div>
+                        <button id="tog-pinpay" class="tog" onclick="toggle('pinToPay')"></button>
+                    </div>
+                    <a href="devices.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-purple"><i class="fa-solid fa-mobile-screen"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Trusted Devices</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <a href="wipe.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-red"><i class="fa-solid fa-eraser"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Erase App Data</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 5: Privacy & Support -->
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Privacy & Support</h3>
+                <div class="info-group bg-white overflow-hidden">
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-purple"><i class="fa-solid fa-chart-pie"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Share Usage Data</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Personalised offers</p>
+                            </div>
+                        </div>
+                        <button id="tog-usage" class="tog" onclick="toggle('shareUsage')"></button>
+                    </div>
+                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-orange"><i class="fa-solid fa-bullhorn"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">Marketing Emails</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Promotions & partner offers</p>
+                            </div>
+                        </div>
+                        <button id="tog-marketing" class="tog" onclick="toggle('marketingEmails')"></button>
+                    </div>
+                    <a href="help.html#contact">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-green"><i class="fa-solid fa-headset"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Contact Support</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <a href="help.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-circle-question"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Help Centre</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <a href="offers.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-orange"><i class="fa-solid fa-tags"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Offers & Perks</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <a href="legal.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-blue"><i class="fa-solid fa-file-contract"></i></div>
+                            <span class="text-[13px] font-bold text-slate-800">Terms & Privacy Policy</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                    <a href="about.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="row-ic ic-grey"><i class="fa-solid fa-circle-info"></i></div>
+                            <div>
+                                <span class="text-[13px] font-bold text-slate-800">About</span>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">NovaPay v2.4.1</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <div class="pb-6">
+                <a href="index.html" class="info-group bg-white p-4 flex items-center justify-between active:scale-95 transition-transform">
+                    <div class="flex items-center gap-4">
+                        <div class="row-ic ic-red"><i class="fa-solid fa-power-off"></i></div>
+                        <span class="text-[13px] font-extrabold text-red-500">Sign out session</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // settings toggles -> the NovaPay settings key each one persists to.
+        // Defaults are what a real card app ships with: protective things on,
+        // data-sharing off.
+        const TOGGLES = {
+            'tog-notif':     ['notifications',    true],
+            'tog-hide':      ['hideBalance',      false],
+            // card controls
+            'tog-intl':      ['intlUse',          true],
+            'tog-tap':       ['contactless',      true],
+            'tog-atm':       ['atmWithdrawals',   true],
+            'tog-online':    ['onlinePurchases',  true],
+            'tog-recurring': ['recurringCharges', true],
+            // payments
+            'tog-autopay':   ['autopay',          true],
+            'tog-instant':   ['instantTransfers', false],
+            'tog-roundup':   ['roundUp',          false],
+            // security
+            'tog-bio':       ['biometricLogin',   true],
+            'tog-2fa':       ['twoFactor',        true],
+            'tog-pinpay':    ['pinToPay',         false],
+            // alerts
+            'tog-fraud':     ['fraudAlerts',      true],
+            'tog-txalert':   ['txAlerts',         true],
+            'tog-paperless': ['paperless',        true],
+            // privacy
+            'tog-usage':     ['shareUsage',       false],
+            'tog-marketing': ['marketingEmails',  false],
+        };
+
+        function render() {
+            const s = NovaPay.state;
+            if (s.profile.avatar) document.getElementById('profile-avatar').src = s.profile.avatar;
+            document.getElementById('p-name').textContent = s.profile.name || 'Pranav D.';
+            document.getElementById('st-circle').textContent = s.profile.circle;
+            document.getElementById('st-bal').textContent = '$' + Math.round(NovaPay.balanceCents/100000) + 'k';
+            document.getElementById('st-rank').textContent = '#' + s.profile.rank.toLocaleString();
+
+            for (const [id, [key, dflt]] of Object.entries(TOGGLES)) {
+                const v = s.settings[key] === undefined ? dflt : s.settings[key];
+                document.getElementById(id).classList.toggle('on', !!v);
+            }
+
+            // freeze mirrors the active card, so it stays in sync with cards.html
+            const card = (NovaPay.cards() || []).find(c => c.id === s.activeCard) || s.card;
+            document.getElementById('tog-freeze').classList.toggle('on', !!card.frozen);
+            document.getElementById('freeze-sub').textContent =
+                (card.name || 'Card') + ' • ' + card.last4;
+        }
+
+        function toggle(key) {
+            const cur = NovaPay.state.settings[key];
+            const dflt = (Object.values(TOGGLES).find(t => t[0] === key) || [, false])[1];
+            const now = !(cur === undefined ? dflt : cur);
+            NovaPay.setSetting(key, now);
+            ack(document.querySelector(`[onclick="toggle('${key}')"]`), now);
+            render();
+        }
+
+        // the visible half of "it worked": ring pulse on the switch, a flash on the
+        // row, and a heavier tick for on than off
+        function ack(el, on) {
+            if (el && on) { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 460); }
+            const row = el && el.closest('.p-4');
+            if (row) { row.classList.add('set-row', 'touched'); setTimeout(() => row.classList.remove('touched'), 260); }
+            if (navigator.vibrate) navigator.vibrate(on ? 12 : 8);
+        }
+
+        // setCard() patches the legacy state.card mirror; the cards[] entry has to be
+        // set alongside it or cards.html and this page disagree about the freeze.
+        function toggleFreeze() {
+            const s = NovaPay.state;
+            const card = (NovaPay.cards() || []).find(c => c.id === s.activeCard);
+            if (!card) return;
+            card.frozen = !card.frozen;
+            NovaPay.setCard({ frozen: card.frozen });   // mirrors + saves
+            ack(document.getElementById('tog-freeze'), card.frozen);
+            render();
+        }
+
+        document.getElementById('avatar-file').addEventListener('change', async e => {
+            const file = e.target.files[0]; if (!file) return;
+            const dataUrl = await NovaPay.readFileAsDataURL(file);
+            NovaPay.setProfile({ avatar: dataUrl });
+            document.getElementById('profile-avatar').src = dataUrl;
+        });
+
+        window.addEventListener('novapay:change', () => { NovaPay.reload(); render(); });
+        window.onload = function() {
+            render();
+            setTimeout(() => { document.body.classList.add('loaded'); }, 600);
+        };
+    </script>
+    <script src="haptics.js?v=16" defer></script>
+</body>
+</html>
