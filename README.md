@@ -30,3 +30,4 @@ User data is protected using Firebase Authentication and Firestore Security Rule
 ## Status
 
 🚧 Currently under development.
+updated 28 jul-3am
