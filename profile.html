@@ -6,35 +6,46 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NovaPay | Official Profile</title>
+    <title>Iconic EWC - Profile & Settings</title>
     <script src="app.js?v=16"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="theme.css?v=16">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700;800;900&display=swap');
+
         :root {
-            --visa-blue: #0052FF;
-            --visa-dark: #002D8F;
-            --surface: #FFFFFF;
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --wlt-green: #22C55E;
+        }
+
+        /* --- UNIFIED FONT: ALL TEXT USES CHAKRA PETCH --- */
+        * {
+            font-family: 'Chakra Petch', sans-serif !important;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--surface);
             color: #0F172A;
             margin: 0;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 95px;
         }
 
-        /* --- SKELETON SHIMMER (850ms) --- */
+        .font-ewc {
+            text-transform: uppercase;
+        }
+
+        /* --- SKELETON SHIMMER --- */
         .skeleton-block {
-            background: #f1f5f9;
+            background: #E2E8F0;
             position: relative;
             overflow: hidden;
-            border-radius: 6px;
+            border-radius: 4px;
         }
         .skeleton-block::after {
             content: "";
@@ -51,7 +62,7 @@
         #skeleton-screen {
             position: fixed;
             inset: 0;
-            background: white;
+            background: var(--surface);
             z-index: 100;
             transition: opacity 0.4s ease-out;
         }
@@ -60,351 +71,458 @@
         #main-content { opacity: 0; transform: translateY(10px); transition: 0.4s ease-out; }
         .loaded #main-content { opacity: 1; transform: translateY(0); }
 
-        .user-badge {
-            background: rgba(0, 82, 255, 0.04);
-            border: 1px solid rgba(0, 82, 255, 0.08);
-        }
-
+        /* --- EWC SHARP PANELS --- */
         .info-group {
-            border: 1px solid #F1F5F9;
-            border-radius: 24px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(7, 10, 16, 0.05);
         }
 
         .locked-field {
-            background-color: #fafbfc;
+            background-color: #F1F5F9;
         }
 
-        .disabled-grey {
-            filter: grayscale(1);
-            opacity: 0.5;
-            cursor: not-allowed;
+        /* --- STAT CARDS --- */
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 10px;
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-
-        /* toggles */
-        /* iOS-style switch: the knob springs past its stop and settles, and squashes
-           while held — that overshoot is what makes it read as physical. */
-        .tog { width:46px; height:28px; border-radius:999px; background:#e2e8f0; position:relative; border:none; flex-shrink:0;
-            transition:background .25s cubic-bezier(.4,0,.2,1); cursor:pointer;
-            box-shadow:inset 0 1px 3px rgba(15,23,42,.12); }
-        .tog::after { content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff;
-            box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 0 rgba(0,82,255,.35);
-            transition:transform .34s cubic-bezier(.34,1.56,.64,1), width .18s ease, box-shadow .3s; }
-        .tog.on { background:#0052FF; }
-        .tog.on::after { transform:translateX(18px); }
-        /* knob stretches while pressed, like it's being dragged */
-        .tog:active::after { width:26px; }
-        .tog.on:active::after { transform:translateX(14px); }
-        /* ring pulse on the tap that turned it on */
-        .tog.flash::after { box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 7px rgba(0,82,255,0); animation:togRing .45s ease-out; }
-        @keyframes togRing {
-            from { box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 0 rgba(0,82,255,.4); }
-            to   { box-shadow:0 1px 3px rgba(0,0,0,.2), 0 0 0 9px rgba(0,82,255,0); }
+        .stat-card .num {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0F172A;
+            line-height: 1;
         }
-        /* row acknowledges the tap too */
-        .set-row { transition:background .25s; }
-        .set-row.touched { background:rgba(58,107,255,.06); }
-        :root[data-theme="dark"] .tog { background:#2b3550; }
-        :root[data-theme="dark"] .set-row.touched { background:rgba(122,162,255,.1); }
-        #theme-seg button.on { background:#0f172a; color:#fff; border-color:#0f172a; }
 
-        /* dark theme */
-        :root[data-theme="dark"] body { color:#e8eefc; }
-        :root[data-theme="dark"] .text-slate-800 { color:#e8eefc !important; }
-        :root[data-theme="dark"] .text-slate-400 { color:#8b96ad !important; }
-        :root[data-theme="dark"] .info-group { border-color:#1e293b; }
-        :root[data-theme="dark"] .info-group.bg-white, :root[data-theme="dark"] .bg-white { background:#131a2e !important; }
-        :root[data-theme="dark"] .bg-slate-50 { background:#1b2440 !important; }
-        :root[data-theme="dark"] .border-slate-50, :root[data-theme="dark"] .border-slate-100 { border-color:#1e293b !important; }
-        :root[data-theme="dark"] #skeleton-screen { background:#0b1020; }
-        :root[data-theme="dark"] .locked-field { background:#0f1626; }
+        .stat-card .stat-rank {
+            color: var(--ewc-gold) !important;
+        }
 
-        /* ============ LIGHT GLASS (frosted, low blur for smooth scroll) ============ */
-        /* soft light gradient bg — no heavy blur, cheap to paint */
-        .prof-bg { position:fixed; inset:0; z-index:-1; overflow:hidden;
-            background:linear-gradient(170deg,#e6ecff 0%,#eae6fb 50%,#e6f3ff 100%); }
-        .prof-bg::before{ content:""; position:absolute; width:80vw; height:80vw; top:-25vw; left:-20vw; border-radius:50%;
-            background:radial-gradient(circle,#9fbaff,transparent 62%); opacity:.55; filter:blur(50px); }
-        .prof-bg::after{ content:""; position:absolute; width:70vw; height:70vw; bottom:-22vw; right:-20vw; border-radius:50%;
-            background:radial-gradient(circle,#c9b0ff,transparent 62%); opacity:.5; filter:blur(50px); }
-        .aurora{ display:none; }
+        /* --- VECTOR ICON BADGES --- */
+        .row-ic {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(7, 10, 16, 0.1);
+        }
 
-        /* frosted glass — real blur, but only on these FEW big panels (cheap, stays 60fps) */
-        .info-group, .stat-card{
-            background:rgba(255,255,255,.45) !important;
-            backdrop-filter:blur(24px) saturate(160%) !important; -webkit-backdrop-filter:blur(24px) saturate(160%) !important;
-            border:1px solid rgba(255,255,255,.75) !important;
-            box-shadow:0 12px 34px -14px rgba(60,80,150,.35), inset 0 1px 0 rgba(255,255,255,.85) !important;
-            border-radius:22px; }
-        .info-group{ overflow:hidden; }
-        .info-group > *{ position:relative; }
-        .locked-field{ background:rgba(120,140,190,.05) !important; }
+        .ic-blue { background: rgba(37, 99, 235, 0.12); color: #1D4ED8; }
+        .ic-green { background: rgba(34, 197, 94, 0.12); color: #15803D; }
+        .ic-purple { background: rgba(147, 51, 234, 0.12); color: #7E22CE; }
+        .ic-orange { background: rgba(217, 119, 6, 0.12); color: #B45309; }
+        .ic-red { background: rgba(220, 38, 38, 0.12); color: #B91C1C; }
+        .ic-grey { background: rgba(71, 85, 105, 0.12); color: #334155; }
 
-        .row-ic{ width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;
-            box-shadow:inset 0 1px 0 rgba(255,255,255,.6); }
-        /* FA glyphs carry their own baseline metrics — centring the inline box
-           leaves the glyph sitting high. Make the <i> its own centred flex box. */
-        .row-ic > i, .row-ic > svg { display:flex; align-items:center; justify-content:center;
-            width:1em; height:1em; line-height:1; }
-        .ic-blue{ background:rgba(58,107,255,.13); color:#3a6bff; }
-        .ic-green{ background:rgba(18,184,134,.13); color:#12b886; }
-        .ic-purple{ background:rgba(139,92,246,.13); color:#8b5cf6; }
-        .ic-orange{ background:rgba(245,158,11,.13); color:#f59e0b; }
-        .ic-red{ background:rgba(240,80,110,.13); color:#f0506e; }
-        .ic-grey{ background:rgba(120,140,190,.1) !important; color:#64748b !important; }
+        /* --- EWC TACTICAL SWITCH TOGGLE --- */
+        .tog {
+            width: 48px;
+            height: 26px;
+            border-radius: 4px;
+            background: #94A3B8;
+            position: relative;
+            border: 1.5px solid #64748B;
+            flex-shrink: 0;
+            transition: background .2s ease, border-color .2s ease;
+            cursor: pointer;
+        }
 
-        .stat-card{ display:flex; flex-direction:column; align-items:center; justify-content:center;
-            padding:11px 10px; border-radius:18px; }
-        .stat-card .num, .stat-card p:first-child { color:#0f172a !important; }
-        .stat-card .num.stat-rank { color:#3a6bff !important; }   /* rank reads as the accent stat */
-        :root[data-theme="dark"] .stat-card .num, :root[data-theme="dark"] .stat-card p:first-child { color:#eaf0ff !important; }
-        :root[data-theme="dark"] .stat-card .num.stat-rank { color:#7aa2ff !important; }
-        .settings-title{ font-size:10px; font-weight:800; color:#8a93ab; text-transform:uppercase; letter-spacing:.12em; padding:0 8px; margin-bottom:10px; }
-        .spring{ transition:transform .35s cubic-bezier(.34,1.56,.64,1); } .spring:active{ transform:scale(.96); }
-        .nv-nav-bar{ background:rgba(255,255,255,.82) !important; border:1px solid rgba(255,255,255,.9) !important; }
-        .nv-item{ color:#8a93ab; } .nv-item.on{ color:#3a6bff; }
-        .text-slate-800{ color:#1e293b !important; } .text-slate-400{ color:#8a93ab !important; }
+        .tog::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 2px;
+            background: #FFFFFF;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transition: transform .2s cubic-bezier(.2, 1, .3, 1);
+        }
+
+        .tog.on {
+            background: var(--ewc-black);
+            border-color: var(--ewc-lime);
+        }
+
+        .tog.on::after {
+            transform: translateX(22px);
+            background: var(--ewc-lime);
+        }
+
+        .spring { transition: transform .2s ease; }
+        .spring:active { transform: scale(.96); }
+
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(236,239,241,.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1.5px solid #CBD5E1;
+        }
+
+        .cap-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- EWC NAVIGATION BAR --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1.5px solid #CBD5E1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
+
+        .section-head {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #475569;
+        }
     </style>
 </head>
 <body class="max-w-md mx-auto relative">
-    <div class="prof-bg"></div><div class="prof-orb"></div>
 
     <!-- 1. Skeleton Shimmer -->
     <div id="skeleton-screen" class="p-6">
-        <div class="w-10 h-10 rounded-full skeleton-block mb-8"></div>
+        <div class="w-10 h-10 rounded-md skeleton-block mb-8"></div>
         <div class="flex flex-col items-center mb-10">
             <div class="w-24 h-24 rounded-full skeleton-block mb-4"></div>
-            <div class="w-32 h-6 rounded-full skeleton-block mb-2"></div>
-            <div class="w-20 h-3 rounded-full skeleton-block"></div>
+            <div class="w-32 h-6 rounded-md skeleton-block mb-2"></div>
+            <div class="w-20 h-3 rounded-md skeleton-block"></div>
         </div>
         <div class="space-y-6">
-            <div class="h-32 w-full rounded-3xl skeleton-block"></div>
-            <div class="h-48 w-full rounded-3xl skeleton-block"></div>
+            <div class="h-32 w-full rounded-md skeleton-block"></div>
+            <div class="h-48 w-full rounded-md skeleton-block"></div>
         </div>
     </div>
 
     <!-- 2. Main Content -->
-    <div id="main-content" class="min-h-screen pb-10">
+    <div id="main-content" class="min-h-screen pb-32" style="padding-top: 58px;">
         
-        <header class="px-5 pt-7 pb-4 flex justify-between items-center sticky top-0 z-50" style="background:linear-gradient(to bottom,rgba(233,238,252,.95),rgba(233,238,252,0));backdrop-filter:blur(10px)">
-            <a href="home.html" class="cap-btn spring w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9)">
-                <i class="fa-solid fa-chevron-left text-[14px] text-slate-500"></i>
+        <!-- Header -->
+        <header class="sticky-header">
+            <a href="home.html" class="cap-btn spring">
+                <svg class="w-4 h-4 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M15 18l-6-6 6-6"/></svg>
             </a>
-            <h1 class="text-lg font-extrabold text-slate-800">Profile</h1>
-            <a href="help.html" class="cap-btn spring w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9)">
-                <i class="fa-solid fa-headset text-[14px] text-slate-500"></i>
+            <h1 class="font-ewc text-base font-black text-slate-900 tracking-wider">SETTINGS</h1>
+            <a href="help.html" class="cap-btn spring">
+                <svg class="w-4 h-4 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3v4zM3 19a2 2 0 002 2h1v-6H3v4z"/></svg>
             </a>
         </header>
 
-        <section class="flex flex-col items-center px-5 mb-8 mt-2">
-            <div class="relative mb-4 cursor-pointer" onclick="document.getElementById('avatar-file').click()">
-                <div class="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-blue-600 to-blue-200 shadow-xl">
-                    <img id="profile-avatar" src="IMG_20251214_013513.jpg" class="w-full h-full rounded-full object-cover border-4 border-white">
+        <!-- Profile Hero -->
+        <section class="flex flex-col items-center px-5 mb-6 mt-3">
+            <div class="relative mb-3 cursor-pointer" onclick="document.getElementById('avatar-file').click()">
+                <div class="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-slate-900 to-amber-500 shadow-xl">
+                    <img id="profile-avatar" src="IMG_20251214_013513.jpg" class="w-full h-full rounded-full object-cover border-4 border-white" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?background=0F131C&color=CCFF00&bold=true&name=PD'">
                 </div>
-                <div class="absolute bottom-0 right-0 w-7 h-7 bg-blue-600 border-4 border-white rounded-full flex items-center justify-center shadow-lg">
-                    <i class="fa-solid fa-camera text-white text-[9px]"></i>
+                <div class="absolute bottom-0 right-0 w-7 h-7 bg-[#070A10] border-2 border-white rounded-md flex items-center justify-center shadow-lg">
+                    <svg class="w-3.5 h-3.5 text-[#CCFF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
                 </div>
                 <input type="file" id="avatar-file" accept="image/*" class="hidden">
             </div>
-            <div class="flex items-center gap-1.5 mb-1">
-                <span id="p-name" class="text-[18px] font-extrabold text-slate-800">Pranav D.</span>
-                <i class="fa-solid fa-circle-check text-blue-600 text-[13px]"></i>
+            <div class="flex items-center gap-1.5 mb-0.5">
+                <span id="p-name" class="font-ewc text-xl font-black text-slate-900 uppercase">Pranav D.</span>
+                <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
             </div>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Platinum Member</p>
+            <p class="font-ewc text-[10px] font-bold text-[#B88E24] uppercase tracking-widest bg-amber-100/60 px-3 py-1 rounded border border-amber-300">EWC PLATINUM CONTENDER</p>
         </section>
 
-        <!-- stat cards -->
-        <div class="px-5 grid grid-cols-3 gap-2.5 mb-8">
-            <div class="stat-card min-w-0"><p class="num text-[17px] font-extrabold truncate" id="st-circle">12</p><p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide mt-1.5">Circle</p></div>
-            <div class="stat-card min-w-0"><p class="num text-[17px] font-extrabold truncate" id="st-bal">$429k</p><p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide mt-1.5">Balance</p></div>
-            <div class="stat-card min-w-0"><p class="num stat-rank text-[17px] font-extrabold truncate" id="st-rank">#7,807</p><p class="text-[9px] font-bold text-slate-400 uppercase tracking-wide mt-1.5">Rank</p></div>
+        <!-- Stat Cards -->
+        <div class="px-5 grid grid-cols-3 gap-2.5 mb-6">
+            <div class="stat-card min-w-0">
+                <p class="num" id="st-circle">12</p>
+                <p class="font-ewc text-[9px] font-bold text-slate-500 mt-1 uppercase">Circle</p>
+            </div>
+            <div class="stat-card min-w-0">
+                <p class="num" id="st-bal">$429k</p>
+                <p class="font-ewc text-[9px] font-bold text-slate-500 mt-1 uppercase">Balance</p>
+            </div>
+            <div class="stat-card min-w-0">
+                <p class="num stat-rank" id="st-rank">#7,807</p>
+                <p class="font-ewc text-[9px] font-bold text-slate-500 mt-1 uppercase">Rank</p>
+            </div>
         </div>
 
-        <div class="px-5 space-y-8">
+        <div class="px-5 space-y-6">
             <!-- Group 1: Identity -->
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Account Identity</h3>
-                <div class="info-group bg-white overflow-hidden">
-                    <div class="p-4 border-b border-slate-50 flex justify-between items-center locked-field">
-                        <div class="space-y-1">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Legal Name</p>
-                            <p class="text-[13px] font-bold text-slate-800">Pranav Dwivedi</p>
+            <div class="space-y-2">
+                <h3 class="section-head px-1">Account Identity</h3>
+                <div class="info-group">
+                    <div class="p-4 border-b border-slate-200 flex justify-between items-center locked-field">
+                        <div class="space-y-0.5">
+                            <p class="font-ewc text-[10px] font-bold text-slate-500 uppercase">Legal Name</p>
+                            <p class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Pranav Dwivedi</p>
                         </div>
-                        <i class="fa-solid fa-lock text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                     </div>
-                    <div class="p-4 border-b border-slate-50 flex justify-between items-center locked-field">
-                        <div class="space-y-1">
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Email</p>
-                            <p class="text-[13px] font-bold text-slate-800">hkdy****@gmail.com</p>
+                    <div class="p-4 border-b border-slate-200 flex justify-between items-center locked-field">
+                        <div class="space-y-0.5">
+                            <p class="font-ewc text-[10px] font-bold text-slate-500 uppercase">Email</p>
+                            <p class="font-ewc text-[13px] font-bold text-slate-900 uppercase">hkdy****@gmail.com</p>
                         </div>
-                        <i class="fa-solid fa-lock text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
                     </div>
                     <a href="address.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-map-location-dot"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Residential Address</span>
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Registered Address</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
                 </div>
             </div>
 
             <!-- Group 2: Preferences -->
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">App Configuration</h3>
-                <div class="info-group bg-white overflow-hidden">
-                    <a href="notif-settings.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-orange"><i class="fa-solid fa-bell"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Notifications</span>
+            <div class="space-y-2">
+                <h3 class="section-head px-1">App Configuration</h3>
+                <div class="info-group">
+                    <a href="notif-settings.html" class="p-4 border-b border-slate-200 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-orange">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Notifications Setup</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
-                    <a href="security.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-green"><i class="fa-solid fa-fingerprint"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Security & Biometrics</span>
+                    <a href="security.html" class="p-4 border-b border-slate-200 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-green">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 11c0 3-1 6-3 8M12 2a10 10 0 00-7 17M12 6a7 7 0 00-5 12M12 15a2 2 0 100-4 2 2 0 000 4z"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Security & Biometrics</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
-                    <!-- Notifications toggle -->
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-bell"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Push Notifications</span>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Push Notifications</span>
                         </div>
                         <button id="tog-notif" class="tog" onclick="toggle('notifications')"></button>
                     </div>
-                    <!-- Hide balance toggle -->
                     <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-grey"><i class="fa-solid fa-eye-slash"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Hide Balance</span>
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-grey">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.45 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Hide Balance</span>
                         </div>
                         <button id="tog-hide" class="tog" onclick="toggle('hideBalance')"></button>
                     </div>
                 </div>
             </div>
 
-            <!-- Group 3: Card Controls (Visa/Amex staple) -->
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Card Controls</h3>
-                <div class="info-group bg-white overflow-hidden">
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-snowflake"></i></div>
+            <!-- Group 3: Card Controls -->
+            <div class="space-y-2">
+                <h3 class="section-head px-1">Vault & Card Controls</h3>
+                <div class="info-group">
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Freeze Card</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5" id="freeze-sub">Visa Infinite • 8144</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Freeze Card</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase" id="freeze-sub">Amex Platinum • 1007</p>
                             </div>
                         </div>
                         <button id="tog-freeze" class="tog" onclick="toggleFreeze()"></button>
                     </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-green"><i class="fa-solid fa-globe"></i></div>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-green">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">International Use</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Allow foreign transactions</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">International Use</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Foreign tournament transactions</p>
                             </div>
                         </div>
                         <button id="tog-intl" class="tog" onclick="toggle('intlUse')"></button>
                     </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-purple"><i class="fa-solid fa-wifi"></i></div>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-purple">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Contactless Pay</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Tap to pay at terminals</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Contactless Pay</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Tap to pay at terminals</p>
                             </div>
                         </div>
                         <button id="tog-tap" class="tog" onclick="toggle('contactless')"></button>
                     </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-orange"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-orange">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">ATM Withdrawals</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Cash access abroad</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">ATM Cash Outs</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Cash access abroad</p>
                             </div>
                         </div>
                         <button id="tog-atm" class="tog" onclick="toggle('atmWithdrawals')"></button>
                     </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-red"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-red">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Online Purchases</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">E-commerce transactions</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Online Purchases</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">E-commerce transactions</p>
                             </div>
                         </div>
                         <button id="tog-online" class="tog" onclick="toggle('onlinePurchases')"></button>
                     </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-purple"><i class="fa-solid fa-arrows-rotate"></i></div>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-purple">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Recurring Charges</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Subscriptions & auto-billing</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Recurring Charges</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Subscriptions & passes</p>
                             </div>
                         </div>
                         <button id="tog-recurring" class="tog" onclick="toggle('recurringCharges')"></button>
                     </div>
-                    <a href="limits.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-gauge-high"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Spending Limits</span>
+                    <a href="limits.html" class="p-4 border-b border-slate-200 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="12" cy="12" r="10"/><path d="M12 12l4-4"/><path d="M12 6v2M6 12h2M18 12h-2"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Spending Limits</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
                     <a href="security.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-green"><i class="fa-solid fa-key"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Change PIN</span>
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-green">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Change PIN</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
                 </div>
             </div>
 
-            <!-- Group: Payments -->
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Payments</h3>
-                <div class="info-group bg-white overflow-hidden">
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-green"><i class="fa-solid fa-calendar-check"></i></div>
+            <!-- Group 4: Payments -->
+            <div class="space-y-2">
+                <h3 class="section-head px-1">Payments & Banking</h3>
+                <div class="info-group">
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-green">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Autopay</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Pay statement balance monthly</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Autopay</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Pay statement balance monthly</p>
                             </div>
                         </div>
                         <button id="tog-autopay" class="tog" onclick="toggle('autopay')"></button>
                     </div>
-                    <a href="banks.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-building-columns"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Linked Bank Accounts</span>
+                    <a href="banks.html" class="p-4 border-b border-slate-200 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Linked Bank Accounts</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-purple"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-purple">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Instant Transfers</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Faster payouts, small fee</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Instant Transfers</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Faster payouts, small fee</p>
                             </div>
                         </div>
                         <button id="tog-instant" class="tog" onclick="toggle('instantTransfers')"></button>
                     </div>
                     <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-orange"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-orange">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V19a1 1 0 001 1h2a1 1 0 001-1v-1h4v1a1 1 0 001 1h2a1 1 0 001-1v-2.5c2-1.5 2-2.7 2-4.5 0-5.3-7.5-6.5-11-5-.2-.6-1.5-2-3-2z"/><circle cx="16" cy="11" r="1"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Round-Up Savings</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Round purchases to nearest $1</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Round-Up Savings</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Round tournament coins</p>
                             </div>
                         </div>
                         <button id="tog-roundup" class="tog" onclick="toggle('roundUp')"></button>
@@ -412,270 +530,171 @@
                 </div>
             </div>
 
-            <!-- Group 4: Alerts -->
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Alerts & Statements</h3>
-                <div class="info-group bg-white overflow-hidden">
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <!-- Group 5: Alerts & Privacy -->
+            <div class="space-y-2">
+                <h3 class="section-head px-1">Alerts & Legal</h3>
+                <div class="info-group">
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-red">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </div>
                             <div>
-                                <span class="text-[13px] font-bold text-slate-800">Fraud Alerts</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Instant suspicious-activity texts</p>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Fraud Alerts</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Instant security alerts</p>
                             </div>
                         </div>
                         <button id="tog-fraud" class="tog" onclick="toggle('fraudAlerts')"></button>
                     </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-receipt"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">Transaction Alerts</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Every purchase over $100</p>
+                    <a href="legal.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                             </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Terms & Privacy Policy</span>
                         </div>
-                        <button id="tog-txalert" class="tog" onclick="toggle('txAlerts')"></button>
-                    </div>
-                    <a href="transactions.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-green"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Statements</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
-                    </a>
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-grey"><i class="fa-solid fa-leaf"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">Paperless Billing</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">No mailed statements</p>
-                            </div>
-                        </div>
-                        <button id="tog-paperless" class="tog" onclick="toggle('paperless')"></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Group: Security -->
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Sign-In & Security</h3>
-                <div class="info-group bg-white overflow-hidden">
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-green"><i class="fa-solid fa-fingerprint"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">Biometric Login</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Face ID / fingerprint</p>
-                            </div>
-                        </div>
-                        <button id="tog-bio" class="tog" onclick="toggle('biometricLogin')"></button>
-                    </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-shield-halved"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">Two-Factor Auth</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Code on every sign-in</p>
-                            </div>
-                        </div>
-                        <button id="tog-2fa" class="tog" onclick="toggle('twoFactor')"></button>
-                    </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-orange"><i class="fa-solid fa-lock"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">Require PIN to Pay</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Every transaction</p>
-                            </div>
-                        </div>
-                        <button id="tog-pinpay" class="tog" onclick="toggle('pinToPay')"></button>
-                    </div>
-                    <a href="devices.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-purple"><i class="fa-solid fa-mobile-screen"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Trusted Devices</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
-                    </a>
-                    <a href="wipe.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-red"><i class="fa-solid fa-eraser"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Erase App Data</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                     </a>
                 </div>
             </div>
 
-            <!-- Group 5: Privacy & Support -->
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2">Privacy & Support</h3>
-                <div class="info-group bg-white overflow-hidden">
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-purple"><i class="fa-solid fa-chart-pie"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">Share Usage Data</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Personalised offers</p>
-                            </div>
-                        </div>
-                        <button id="tog-usage" class="tog" onclick="toggle('shareUsage')"></button>
-                    </div>
-                    <div class="p-4 border-b border-slate-50 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-orange"><i class="fa-solid fa-bullhorn"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">Marketing Emails</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Promotions & partner offers</p>
-                            </div>
-                        </div>
-                        <button id="tog-marketing" class="tog" onclick="toggle('marketingEmails')"></button>
-                    </div>
-                    <a href="help.html#contact">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-green"><i class="fa-solid fa-headset"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Contact Support</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
-                    </a>
-                    <a href="help.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-circle-question"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Help Centre</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
-                    </a>
-                    <a href="offers.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-orange"><i class="fa-solid fa-tags"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Offers & Perks</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
-                    </a>
-                    <a href="legal.html" class="p-4 border-b border-slate-50 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-blue"><i class="fa-solid fa-file-contract"></i></div>
-                            <span class="text-[13px] font-bold text-slate-800">Terms & Privacy Policy</span>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
-                    </a>
-                    <a href="about.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="row-ic ic-grey"><i class="fa-solid fa-circle-info"></i></div>
-                            <div>
-                                <span class="text-[13px] font-bold text-slate-800">About</span>
-                                <p class="text-[10px] text-slate-400 font-semibold mt-0.5">NovaPay v2.4.1</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-right text-slate-200 text-[10px]"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Logout -->
+            <!-- Logout Section -->
             <div class="pb-6">
-                <a href="index.html" class="info-group bg-white p-4 flex items-center justify-between active:scale-95 transition-transform">
-                    <div class="flex items-center gap-4">
-                        <div class="row-ic ic-red"><i class="fa-solid fa-power-off"></i></div>
-                        <span class="text-[13px] font-extrabold text-red-500">Sign out session</span>
+                <a href="index.html" class="info-group p-4 flex items-center justify-between active:scale-98 transition-transform border-red-300 bg-red-100/50">
+                    <div class="flex items-center gap-3.5">
+                        <div class="row-ic ic-red">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M18.36 6.64a9 9 0 11-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                        </div>
+                        <span class="font-ewc text-[13px] font-extrabold text-red-700 uppercase">Sign Out Session</span>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-slate-300 text-[10px]"></i>
+                    <svg class="w-3.5 h-3.5 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
                 </a>
             </div>
         </div>
     </div>
 
+    <!-- EWC BOTTOM NAV BAR WITH SHARP VECTOR ICONS -->
+    <nav class="app-bottom-nav">
+        <a href="tournaments.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="wallet.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="1"/>
+                <path d="M16 12h.01"/>
+                <path d="M2 10h20"/>
+            </svg>
+            <span>Wallet</span>
+        </a>
+        <a href="play.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Tournament</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M18 20V10"/>
+                <path d="M12 20V4"/>
+                <path d="M6 20v-6"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="user.html" class="nav-item active-ewc">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
     <script>
-        // settings toggles -> the NovaPay settings key each one persists to.
-        // Defaults are what a real card app ships with: protective things on,
-        // data-sharing off.
         const TOGGLES = {
             'tog-notif':     ['notifications',    true],
             'tog-hide':      ['hideBalance',      false],
-            // card controls
             'tog-intl':      ['intlUse',          true],
             'tog-tap':       ['contactless',      true],
             'tog-atm':       ['atmWithdrawals',   true],
             'tog-online':    ['onlinePurchases',  true],
             'tog-recurring': ['recurringCharges', true],
-            // payments
             'tog-autopay':   ['autopay',          true],
             'tog-instant':   ['instantTransfers', false],
             'tog-roundup':   ['roundUp',          false],
-            // security
-            'tog-bio':       ['biometricLogin',   true],
-            'tog-2fa':       ['twoFactor',        true],
-            'tog-pinpay':    ['pinToPay',         false],
-            // alerts
-            'tog-fraud':     ['fraudAlerts',      true],
-            'tog-txalert':   ['txAlerts',         true],
-            'tog-paperless': ['paperless',        true],
-            // privacy
-            'tog-usage':     ['shareUsage',       false],
-            'tog-marketing': ['marketingEmails',  false],
+            'tog-fraud':     ['fraudAlerts',      true]
         };
 
         function render() {
-            const s = NovaPay.state;
-            if (s.profile.avatar) document.getElementById('profile-avatar').src = s.profile.avatar;
-            document.getElementById('p-name').textContent = s.profile.name || 'Pranav D.';
-            document.getElementById('st-circle').textContent = s.profile.circle;
-            document.getElementById('st-bal').textContent = '$' + Math.round(NovaPay.balanceCents/100000) + 'k';
-            document.getElementById('st-rank').textContent = '#' + s.profile.rank.toLocaleString();
+            if (typeof NovaPay !== 'undefined' && NovaPay.state) {
+                const s = NovaPay.state;
+                if (s.profile?.avatar) document.getElementById('profile-avatar').src = s.profile.avatar;
+                document.getElementById('p-name').textContent = s.profile?.name || 'Pranav D.';
+                if (s.profile?.circle) document.getElementById('st-circle').textContent = s.profile.circle;
+                if (NovaPay.balanceCents) document.getElementById('st-bal').textContent = '$' + Math.round(NovaPay.balanceCents/100000) + 'k';
+                if (s.profile?.rank) document.getElementById('st-rank').textContent = '#' + s.profile.rank.toLocaleString();
 
-            for (const [id, [key, dflt]] of Object.entries(TOGGLES)) {
-                const v = s.settings[key] === undefined ? dflt : s.settings[key];
-                document.getElementById(id).classList.toggle('on', !!v);
+                for (const [id, [key, dflt]] of Object.entries(TOGGLES)) {
+                    const v = s.settings?.[key] === undefined ? dflt : s.settings[key];
+                    const el = document.getElementById(id);
+                    if (el) el.classList.toggle('on', !!v);
+                }
+
+                const cards = typeof NovaPay.cards === 'function' ? NovaPay.cards() : [];
+                const card = (cards || []).find(c => c.id === s.activeCard) || s.card || { last4: '1007', name: 'Amex Platinum' };
+                const freezeBtn = document.getElementById('tog-freeze');
+                if (freezeBtn) freezeBtn.classList.toggle('on', !!card.frozen);
+                const freezeSub = document.getElementById('freeze-sub');
+                if (freezeSub) freezeSub.textContent = (card.name || 'Amex Platinum') + ' • ' + (card.last4 || '1007');
             }
-
-            // freeze mirrors the active card, so it stays in sync with cards.html
-            const card = (NovaPay.cards() || []).find(c => c.id === s.activeCard) || s.card;
-            document.getElementById('tog-freeze').classList.toggle('on', !!card.frozen);
-            document.getElementById('freeze-sub').textContent =
-                (card.name || 'Card') + ' • ' + card.last4;
         }
 
         function toggle(key) {
-            const cur = NovaPay.state.settings[key];
-            const dflt = (Object.values(TOGGLES).find(t => t[0] === key) || [, false])[1];
-            const now = !(cur === undefined ? dflt : cur);
-            NovaPay.setSetting(key, now);
-            ack(document.querySelector(`[onclick="toggle('${key}')"]`), now);
-            render();
+            if (typeof NovaPay !== 'undefined') {
+                const cur = NovaPay.state.settings?.[key];
+                const dflt = (Object.values(TOGGLES).find(t => t[0] === key) || [, false])[1];
+                const now = !(cur === undefined ? dflt : cur);
+                NovaPay.setSetting(key, now);
+                if (navigator.vibrate) navigator.vibrate(now ? 12 : 8);
+                render();
+            }
         }
 
-        // the visible half of "it worked": ring pulse on the switch, a flash on the
-        // row, and a heavier tick for on than off
-        function ack(el, on) {
-            if (el && on) { el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 460); }
-            const row = el && el.closest('.p-4');
-            if (row) { row.classList.add('set-row', 'touched'); setTimeout(() => row.classList.remove('touched'), 260); }
-            if (navigator.vibrate) navigator.vibrate(on ? 12 : 8);
-        }
-
-        // setCard() patches the legacy state.card mirror; the cards[] entry has to be
-        // set alongside it or cards.html and this page disagree about the freeze.
         function toggleFreeze() {
-            const s = NovaPay.state;
-            const card = (NovaPay.cards() || []).find(c => c.id === s.activeCard);
-            if (!card) return;
-            card.frozen = !card.frozen;
-            NovaPay.setCard({ frozen: card.frozen });   // mirrors + saves
-            ack(document.getElementById('tog-freeze'), card.frozen);
-            render();
+            if (typeof NovaPay !== 'undefined') {
+                const s = NovaPay.state;
+                const cards = typeof NovaPay.cards === 'function' ? NovaPay.cards() : [];
+                const card = (cards || []).find(c => c.id === s.activeCard) || s.card;
+                if (!card) return;
+                card.frozen = !card.frozen;
+                NovaPay.setCard({ frozen: card.frozen });
+                if (navigator.vibrate) navigator.vibrate(card.frozen ? 12 : 8);
+                render();
+            }
         }
 
-        document.getElementById('avatar-file').addEventListener('change', async e => {
-            const file = e.target.files[0]; if (!file) return;
-            const dataUrl = await NovaPay.readFileAsDataURL(file);
-            NovaPay.setProfile({ avatar: dataUrl });
-            document.getElementById('profile-avatar').src = dataUrl;
-        });
+        const avatarInput = document.getElementById('avatar-file');
+        if (avatarInput) {
+            avatarInput.addEventListener('change', async e => {
+                const file = e.target.files[0]; if (!file) return;
+                if (typeof NovaPay !== 'undefined' && NovaPay.readFileAsDataURL) {
+                    const dataUrl = await NovaPay.readFileAsDataURL(file);
+                    NovaPay.setProfile({ avatar: dataUrl });
+                    document.getElementById('profile-avatar').src = dataUrl;
+                }
+            });
+        }
 
-        window.addEventListener('novapay:change', () => { NovaPay.reload(); render(); });
+        window.addEventListener('novapay:change', () => { if (typeof NovaPay !== 'undefined') { NovaPay.reload(); render(); } });
         window.onload = function() {
             render();
-            setTimeout(() => { document.body.classList.add('loaded'); }, 600);
+            setTimeout(() => { document.body.classList.add('loaded'); }, 500);
         };
     </script>
     <script src="haptics.js?v=16" defer></script>
