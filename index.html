@@ -6,144 +6,223 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PIXEL ARENA</title>
+    <title>Iconic EWC · Splash</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800;900&family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap');
+
+        :root {
+            --ewc-bg: #ECEFF1;
+            --ewc-dark: #070A10;
+            --ewc-card: #FFFFFF;
+            --ewc-border: #CBD5E1;
+            --ewc-lime: #CCFF00;
+            --ewc-gold-gradient: linear-gradient(135deg, #FFE57F 0%, #D4AF37 50%, #8C6D10 100%);
+            --ewc-muted: #64748B;
+        }
+
         body {
             margin: 0;
-            background-color: #0052FF;
+            background-color: var(--ewc-bg);
+            color: #0F172A;
+            font-family: 'Chakra Petch', sans-serif;
             overflow: hidden;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: background-color 0.8s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        #stage {
-            height: 100vh;
-            width: 100vw;
+        /* Subtle Light Grid Texture */
+        .light-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .telemetry-header {
+            position: absolute;
+            top: 28px;
+            left: 32px;
+            right: 32px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at center, #0052FF 0%, #0035A3 100%);
-            transition: opacity 0.6s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--ewc-muted);
+            letter-spacing: 2px;
+            z-index: 50;
         }
 
-        .brand-container {
+        .brand-stage {
+            position: relative;
+            z-index: 30;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            width: 100%;
+            max-width: 480px;
         }
 
-        .iconic-text {
-            font-size: 3rem;
-            font-weight: 800;
-            color: white;
+        /* Letter spacing offset fix: margin-right compensates trailing letter-spacing */
+        .main-title {
+            font-size: 5rem;
+            line-height: 0.88;
+            font-weight: 900;
+            letter-spacing: 12px;
+            margin-right: -12px;
+            color: var(--ewc-dark);
+            margin-bottom: 16px;
+            text-shadow: 0 4px 20px rgba(7, 10, 16, 0.12);
+            animation: titleEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            text-align: center;
+            width: 100%;
+        }
+
+        .gold-banner {
+            background: var(--ewc-gold-gradient);
+            color: #070A10;
+            font-size: 1rem;
+            font-weight: 900;
+            padding: 8px 36px;
             letter-spacing: 6px;
+            clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+            animation: bannerEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s forwards;
             opacity: 0;
-            transform: translateX(-150vw) scaleX(5);
-            animation: iconicStreak 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+            box-sizing: border-box;
         }
 
-        @keyframes iconicStreak {
-            0% {
-                opacity: 0;
-                transform: translateX(-150vw) scaleX(5);
-                filter: blur(30px);
-            }
-            30% {
-                opacity: 1;
-                filter: blur(15px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0) scaleX(1);
-                filter: blur(0);
-            }
+        .gold-banner-text {
+            margin-right: -6px; /* Offset trailing letter-spacing for true visual centering */
         }
 
-        .battle-box {
-            background-color: white;
-            color: #0052FF;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 1.4rem;
-            letter-spacing: -0.5px;
-            opacity: 0;
-            transform: scale(0.4) rotate(-10deg);
-            animation: battleEvolve 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s forwards;
+        .hud-footer {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 50;
         }
 
-        @keyframes battleEvolve {
-            0% {
-                opacity: 0;
-                transform: scale(0.4) rotate(-10deg);
-                filter: blur(8px);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) rotate(0deg);
-                filter: blur(0);
-            }
+        .progress-track {
+            position: relative;
+            width: 100%;
+            height: 4px;
+            background: #CBD5E1;
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
 
-        #fade-overlay {
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--ewc-dark);
+            transition: width 0.1s linear;
+        }
+
+        @keyframes titleEntrance {
+            0% { opacity: 0; transform: translateY(15px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes bannerEntrance {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        #screen-wipe {
             position: fixed;
             inset: 0;
-            background-color: white;
+            background: #ECEFF1;
+            z-index: 200;
             opacity: 0;
             pointer-events: none;
-            z-index: 100;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .fade-to-white {
+        #screen-wipe.active {
             opacity: 1 !important;
-        }
-
-        .ambient-light {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: rgba(255, 255, 255, 0.08);
-            filter: blur(120px);
-            border-radius: 50%;
-            z-index: -1;
-            animation: moveGlow 6s infinite alternate;
-        }
-
-        @keyframes moveGlow {
-            from { transform: translate(-10%, -10%) scale(1); }
-            to { transform: translate(10%, 10%) scale(1.2); }
         }
     </style>
 </head>
-<body>
+<body class="w-screen h-screen flex items-center justify-center relative">
 
-    <div id="fade-overlay"></div>
+    <div id="screen-wipe"></div>
+    <div class="light-grid"></div>
 
-    <div id="stage">
-        <div class="ambient-light"></div>
-        
-        <div class="brand-container">
-            <span class="iconic-text">PIXEL</span>
-            <div class="battle-box">Arena</div>
+    <!-- Header Telemetry -->
+    <div class="telemetry-header">
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#070A10]"></span>
+            <span class="text-[10px] text-slate-600 font-bold tracking-widest uppercase"></span>
+        </div>
+        <span class="text-slate-800 font-bold"></span>
+    </div>
+
+    <!-- Branding Stage -->
+    <div class="brand-stage">
+        <h1 class="main-title uppercase">
+            PIXEL
+        </h1>
+
+        <div class="gold-banner uppercase">
+            <span class="gold-banner-text">ARENA</span>
+            <i class="fa-solid fa-bolt text-xs text-[#070A10]"></i>
+        </div>
+    </div>
+
+    <!-- Progress Loader -->
+    <div class="hud-footer">
+        <div class="progress-track">
+            <div id="progress-bar" class="progress-fill"></div>
         </div>
     </div>
 
     <script>
-        window.onload = function() {
-            const overlay = document.getElementById('fade-overlay');
+        let progress = 0;
+        const bar = document.getElementById('progress-bar');
+        const wipe = document.getElementById('screen-wipe');
 
-            setTimeout(() => {
-                overlay.classList.add('fade-to-white');
+        const interval = setInterval(() => {
+            progress += Math.floor(Math.random() * 8) + 6;
+            if (progress > 100) progress = 100;
+
+            bar.style.width = progress + '%';
+
+            if (progress >= 100) {
+                clearInterval(interval);
                 setTimeout(() => {
-                    window.location.replace('login.html');
-                }, 800);
-            }, 2600);
-        };
+                    enterArena();
+                }, 180);
+            }
+        }, 45);
+
+        function enterArena() {
+            if (navigator.vibrate) navigator.vibrate(10);
+            wipe.classList.add('active');
+            setTimeout(() => {
+                window.location.replace('login.html');
+            }, 500);
+        }
     </script>
 </body>
 </html>

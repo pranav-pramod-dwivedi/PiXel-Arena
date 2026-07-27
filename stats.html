@@ -7,252 +7,362 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Visa AI Analytics</title>
+    <title>Iconic EWC - Stats & Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="theme.css?v=16">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@700&display=swap');
+
+        :root {
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --wlt-green: #22C55E;
+        }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #0f172a;
-            color: white;
+            background-color: var(--surface);
+            color: #0F172A;
             margin: 0;
-            padding-bottom: 120px;
+            padding-bottom: 95px;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .stat-bg { position:fixed; inset:0; z-index:-1; overflow:hidden; background:#0f172a; }
-        .stat-bg::before{ content:""; position:absolute; width:85vw; height:85vw; top:-30vw; left:-25vw; border-radius:50%;
-            background:radial-gradient(circle,#1d4ed8,transparent 66%); opacity:.5; filter:blur(60px); }
-        .stat-bg::after{ content:""; position:absolute; width:75vw; height:75vw; bottom:-28vw; right:-22vw; border-radius:50%;
-            background:radial-gradient(circle,#7928CA,transparent 66%); opacity:.36; filter:blur(60px); }
-
-        .glass {
-            background: rgba(255,255,255,.055);
-            backdrop-filter: blur(26px) saturate(150%); -webkit-backdrop-filter: blur(26px) saturate(150%);
-            border: 1px solid rgba(255,255,255,.11);
-            box-shadow: 0 18px 44px -20px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.14);
-            border-radius: 24px;
+        .font-ewc {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
         }
+
+        /* --- HUD CARDS & FRAMES --- */
+        .hud-card {
+            background-color: var(--ewc-card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            color: #FFFFFF;
+        }
+
         .spring { transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
         .spring:active { transform: scale(.97); }
 
+        /* --- CHART ENGINE --- */
         .chart-container { position: relative; height: 210px; width: 100%; }
         .chart-svg { width: 100%; height: 100%; display:block; overflow: visible; }
         .chart-line {
             fill: none; stroke: url(#lineGrad); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
             stroke-dasharray: 1200; stroke-dashoffset: 1200;
             animation: drawLine 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            filter: drop-shadow(0 0 6px rgba(59,130,246,.5));
+            filter: drop-shadow(0 0 6px rgba(204, 255, 0, 0.4));
         }
-        .chart-fill { fill: url(#gradientBlue); opacity: 0; animation: fadeIn 1.2s ease-out .8s forwards; }
+        .chart-fill { fill: url(#gradientLime); opacity: 0; animation: fadeIn 1.2s ease-out .8s forwards; }
         @keyframes drawLine { to { stroke-dashoffset: 0; } }
         @keyframes fadeIn { to { opacity: 1; } }
         .grid-line { stroke: rgba(255,255,255,.06); stroke-width: 1; }
-        .x-lbl { fill:#64748b; font-size:9px; font-weight:700; letter-spacing:.06em; }
-        .dot { fill:#0f172a; stroke:#3b82f6; stroke-width:2.5; opacity:0; animation:pop .45s ease-out forwards; }
-        .dot-live { fill: #60a5fa; stroke: #bfdbfe; }
+        .x-lbl { fill:#64748b; font-size:9px; font-weight:800; font-family: 'Chakra Petch', sans-serif; letter-spacing:.06em; }
+        .dot { fill:#070A10; stroke:#CCFF00; stroke-width:2.5; opacity:0; animation:pop .45s ease-out forwards; }
+        .dot-live { fill: #CCFF00; stroke: #FFFFFF; }
         @keyframes pop { to { opacity:1; } }
 
-        .seg { display:flex; gap:5px; padding:4px; border-radius:14px;
-            background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09); }
-        .seg button { flex:1; padding:8px 0; border:none; border-radius:10px; font-size:11px; font-weight:800;
-            color:#64748b; background:transparent; transition:all .25s; cursor:pointer; }
-        .seg button.on { background: rgba(59,130,246,.9); color: #fff; box-shadow: 0 6px 16px -6px rgba(59,130,246,.7); }
+        /* --- SEGMENT BUTTONS --- */
+        .seg {
+            display: flex; gap: 6px; padding: 5px; border-radius: 14px;
+            background: #FFFFFF; border: 1.5px solid #E2E8F0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .seg button {
+            flex: 1; padding: 8px 0; border: none; border-radius: 10px; font-size: 11px; font-weight: 800;
+            color: #64748B; background: transparent; transition: all .2s ease; cursor: pointer;
+            font-family: 'Chakra Petch', sans-serif; text-transform: uppercase;
+        }
+        .seg button.on {
+            background: var(--ewc-black); color: var(--ewc-lime);
+            box-shadow: 0 4px 12px rgba(7, 10, 16, 0.2);
+        }
 
-        .wrapped-scroll { display: flex; gap: 16px; overflow-x: auto; padding: 10px 24px 30px; scroll-snap-type: x mandatory; }
+        /* --- WRAPPED / REWIND CARDS --- */
+        .wrapped-scroll { display: flex; gap: 14px; overflow-x: auto; padding: 0 20px 20px; scroll-snap-type: x mandatory; }
         .wrapped-card {
-            min-width: 260px; height: 320px; border-radius: 32px;
+            min-width: 260px; height: 310px; border-radius: 24px;
             scroll-snap-align: center; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: space-between; padding: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: transform 0.2s;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: transform 0.2s;
+            color: #FFFFFF;
         }
         .wrapped-card:active { transform: scale(0.98); }
-        .wc-1 { background: linear-gradient(135deg, #FF0080, #7928CA); }
-        .wc-2 { background: linear-gradient(135deg, #007CF0, #00DFD8); }
-        .wc-3 { background: linear-gradient(135deg, #FF4D4D, #F9CB28); }
-        .wc-4 { background: linear-gradient(135deg, #434343, #000000); }
-        .big-stat { font-family: 'Space Grotesk', sans-serif; font-weight: 700; line-height: 1;
-            font-size: clamp(1.6rem, 8.5vw, 2.5rem); white-space: nowrap; letter-spacing: -0.02em; }
+        .wc-1 { background: linear-gradient(135deg, #070A10 0%, #161D2B 100%); border: 1px solid rgba(204, 255, 0, 0.3); }
+        .wc-2 { background: linear-gradient(135deg, #0F131C 0%, #1A2333 100%); border: 1px solid rgba(58, 107, 255, 0.3); }
+        .wc-3 { background: linear-gradient(135deg, #180E1C 0%, #2A102E 100%); border: 1px solid rgba(240, 80, 110, 0.3); }
+        .wc-4 { background: linear-gradient(135deg, #161618 0%, #070A10 100%); border: 1px solid rgba(212, 175, 55, 0.3); }
+        .big-stat { font-family: 'Chakra Petch', sans-serif; font-weight: 800; line-height: 1;
+            font-size: clamp(1.8rem, 8.5vw, 2.6rem); white-space: nowrap; letter-spacing: -0.02em; }
 
-        .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 24px 24px; }
+        /* --- STAT WIDGETS --- */
+        .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
         .stat-widget {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 20px; padding: 16px;
-            display: flex; flex-direction: column; justify-content: space-between; height: 140px;
+            background: #FFFFFF; border: 1.5px solid #E2E8F0;
+            border-radius: 18px; padding: 16px;
+            display: flex; flex-direction: column; justify-content: space-between; height: 135px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
-        .w-ic { width:36px; height:36px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
-        .w-ic > i { display:flex; align-items:center; justify-content:center; width:1em; height:1em; line-height:1; }
+        .w-ic { width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
 
-
+        /* --- AI SCROLL --- */
+        .msg-scroll { max-height:190px; overflow-y:auto; scrollbar-width:none; }
+        .msg-scroll::-webkit-scrollbar { display:none; }
+        .msg-line { padding:8px 0; border-bottom:1px solid rgba(255,255,255,.08); font-size:11px; color:#94a3b8; line-height:1.5; }
+        .msg-line:last-child { border-bottom:none; }
+        .msg-line strong { color: var(--ewc-lime); font-family: 'Chakra Petch', sans-serif; }
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
 
+        /* --- EWC NAVIGATION BAR --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
 
-
-        .msg-scroll { max-height:200px; overflow-y:auto; scrollbar-width:none; }
-        .msg-scroll::-webkit-scrollbar { display:none; }
-        .msg-line { padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); font-size:11px; color:#94a3b8; line-height:1.5; }
-        .msg-line:last-child { border-bottom:none; }
-        .msg-line strong { color:#e2e8f0; }
+        /* --- PROGRESS OVERLAY --- */
+        #progress-overlay {
+            position: fixed; inset: 0; z-index: 200; background: rgba(7, 10, 16, 0.88); backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: white;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #progress-overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .progress-step { display: flex; align-items: center; gap: 10px; font-family: 'Chakra Petch', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #94A3B8; }
+        .progress-step.active { color: var(--ewc-lime); }
+        .progress-step.done { color: #22C55E; }
+        .nv-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
-    <div class="stat-bg"></div>
+<body class="max-w-md mx-auto relative">
 
+    <!-- Progress Loader Overlay -->
     <div id="progress-overlay">
         <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
         <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading profile</div>
         <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading analytics</div>
     </div>
 
-    <div class="p-6 flex justify-between items-center">
-        <div>
-            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Financial Pulse</p>
-            <h1 class="text-2xl font-bold text-white" id="hdr-month">—</h1>
-        </div>
-        <a href="wallet.html" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 spring">
-            <i class="fa-solid fa-wallet text-blue-400"></i>
-        </a>
-    </div>
+    <!-- MAIN PAGE STAGE -->
+    <div class="wrap max-w-md mx-auto px-5 pt-5 pb-32">
 
-    <div class="px-6 mb-4">
-        <div class="glass p-4">
-            <div class="flex justify-between items-start mb-1">
+        <!-- Top Telemetry Header -->
+        <header class="flex items-center justify-between mb-5">
+            <div>
+                <span class="font-ewc text-[10px] font-black tracking-widest text-slate-400 block">EWC > SYSTEM</span>
+                <h1 class="font-ewc text-2xl font-black text-slate-900 leading-none">PERFORMANCE PULSE</h1>
+            </div>
+            <a href="wallet.html" class="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-slate-900 shadow-sm spring">
+                <i class="fa-solid fa-wallet text-[#B88E24]"></i>
+            </a>
+        </header>
+
+        <!-- Dynamic Main Chart HUD Frame -->
+        <div class="hud-card p-5 mb-5">
+            <div class="flex justify-between items-start mb-2">
                 <div>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">This Month</p>
-                    <p class="text-xl font-extrabold text-white mt-0.5" id="chart-total">0</p>
+                    <p class="font-ewc text-[10px] text-slate-400 font-extrabold tracking-wider">CURRENT PERIOD BALANCE</p>
+                    <p class="font-ewc text-2xl font-black text-white mt-0.5" id="chart-total">0</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">vs last period</p>
-                    <p class="text-[13px] font-extrabold mt-0.5" id="chart-trend">—</p>
+                    <p class="font-ewc text-[10px] text-slate-400 font-extrabold tracking-wider">VS PREVIOUS</p>
+                    <p class="font-ewc text-sm font-black mt-0.5" id="chart-trend">—</p>
                 </div>
             </div>
             <div class="chart-container">
                 <svg class="chart-svg" id="chart" viewBox="0 0 340 200" preserveAspectRatio="none"></svg>
             </div>
         </div>
-    </div>
 
-    <div class="px-6 mb-7">
-        <div class="seg" id="range">
-            <button data-r="week">1 Week</button>
-            <button data-r="month" class="on">1 Month</button>
-            <button data-r="all">All Time</button>
-        </div>
-    </div>
-
-    <div class="px-6 mb-4 flex justify-between items-end">
-        <h3 class="text-lg font-bold text-white">Financial Rewind</h3>
-        <span class="text-xs text-slate-400" id="rewind-sub">Since Jul 2026</span>
-    </div>
-
-    <div class="wrapped-scroll hide-scrollbar">
-        <div class="wrapped-card wc-1">
-            <div>
-                <div class="bg-black/20 w-fit px-3 py-1 rounded-full text-[10px] font-bold text-white mb-2">TOTAL COINS</div>
-                <h2 class="text-2xl font-bold text-white">Net Balance.</h2>
-            </div>
-            <div>
-                <p class="text-white/80 text-sm font-medium mb-1">Net Coins Till Now</p>
-                <p class="big-stat text-white" id="wc-net">—</p>
-                <p class="text-white/60 text-xs mt-2" id="wc-net-sub">—</p>
+        <!-- Range Selection Buttons -->
+        <div class="mb-6">
+            <div class="seg" id="range">
+                <button data-r="week">1 WEEK</button>
+                <button data-r="month" class="on">1 MONTH</button>
+                <button data-r="all">ALL TIME</button>
             </div>
         </div>
 
-        <div class="wrapped-card wc-2">
-            <div>
-                <div class="bg-black/20 w-fit px-3 py-1 rounded-full text-[10px] font-bold text-white mb-2">BEST FORMAT</div>
-                <div class="flex items-center gap-3">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 571.54 485.99" class="w-14 h-14" style="filter:brightness(0) invert(1)">
-                        <g><path d="M280.68,187.34c2.41-9.01,11.68-16.32,20.7-16.32c0.14,0,108.61,0.01,143.95,0.01c6.99,0,13.58-3.09,18.08-8.45l46.89-55.85c2.15-2.57,0.33-6.48-3.02-6.48H239.6c-10.72,0-20.1,7.2-22.87,17.56l-83.37,311.93c-0.74,2.79,1.66,5.4,4.5,4.9l66.12-11.66c9.06-1.6,16.37-8.3,18.75-17.18l35.18-131.29l153.93-0.06c7,0,13.63-3.09,18.13-8.45l46.88-55.85c2.15-2.57,0.33-6.48-3.02-6.48l-181.33-0.04C283.57,203.55,278.28,196.3,280.68,187.34z"/><path d="M171.2,51.29c-10.71,0-20.09,7.2-22.86,17.54l-25.63,95.66c-0.77,3.49,0.67,6.56,4.2,6.56h30.04c2.15,0,2.51,2.62,0.56,4.11l-44.91,34.18c-1.47,1.12-2.55,2.68-2.98,4.3l-1.09,4.07c-0.35,1.32,0.43,2.39,1.75,2.39H143c2.16,0,2.51,2.63,0.54,4.12l-43.77,32.91c-1.49,1.13-2.58,2.7-3.02,4.34l-1.41,5.29c-0.35,1.32,0.43,2.38,1.75,2.38l33.45,0c2.15,0,2.5,2.61,0.56,4.1l-45.36,34.93c-1.23,0.95-2.05,2.52-2.58,3.85l-22.72,84.79c-0.75,2.79,1.65,5.41,4.5,4.91l48.37-8.53c9.08-1.6,16.4-8.32,18.77-17.23l72.89-274.44c2.75-10.37,12.14-17.59,22.88-17.59h190.06c7,0,13.63-3.1,18.13-8.45l14.86-17.71c2.15-2.57,0.33-6.48-3.02-6.48H171.2z"/></g>
-                    </svg>
-                    <h2 class="text-2xl font-bold text-white" id="wc-format-name">—</h2>
+        <!-- Financial Rewind Section -->
+        <div class="mb-3 flex justify-between items-end">
+            <h2 class="font-ewc text-base font-black text-slate-900">FINANCIAL REWIND</h2>
+            <span class="font-ewc text-[10px] font-bold text-slate-400" id="rewind-sub">SINCE JUL 2026</span>
+        </div>
+
+        <div class="wrapped-scroll hide-scrollbar -mx-5 px-5 mb-6">
+            <div class="wrapped-card wc-1">
+                <div>
+                    <div class="bg-[#CCFF00]/10 border border-[#CCFF00]/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-[#CCFF00] mb-2">TOTAL COINS</div>
+                    <h3 class="font-ewc text-xl font-black text-white">NET BALANCE</h3>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Net Coins Earned</p>
+                    <p class="big-stat text-[#CCFF00]" id="wc-net">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-net-sub">—</p>
                 </div>
             </div>
-            <div>
-                <p class="text-white/80 text-sm font-medium mb-1">Net Profit from this Format</p>
-                <p class="big-stat text-white" id="wc-format-profit">—</p>
-                <p class="text-white/60 text-xs mt-2" id="wc-format-sub">—</p>
+
+            <div class="wrapped-card wc-2">
+                <div>
+                    <div class="bg-blue-500/20 border border-blue-400/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-blue-300 mb-2">BEST FORMAT</div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-gamepad text-2xl text-blue-400"></i>
+                        <h3 class="font-ewc text-xl font-black text-white" id="wc-format-name">—</h3>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Format Net Profit</p>
+                    <p class="big-stat text-blue-400" id="wc-format-profit">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-format-sub">—</p>
+                </div>
+            </div>
+
+            <div class="wrapped-card wc-3">
+                <div>
+                    <div class="bg-pink-500/20 border border-pink-400/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-pink-300 mb-2">TOP GIFTERS</div>
+                    <h3 class="font-ewc text-xl font-black text-white">INNER CIRCLE</h3>
+                    <div class="flex -space-x-2.5 mt-3" id="wc-faces"></div>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Top Gifter · <span id="wc-gifter-name">—</span></p>
+                    <p class="big-stat text-pink-400" id="wc-gifter-amt">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-gifter-sub">—</p>
+                </div>
+            </div>
+
+            <div class="wrapped-card wc-4">
+                <div>
+                    <div class="bg-amber-500/20 border border-amber-400/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-[#B88E24] mb-2">POINTS BANK</div>
+                    <h3 class="font-ewc text-xl font-black text-white">POINTS BANK</h3>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Available Vault</p>
+                    <p class="big-stat text-[#D4AF37]" id="wc-pts">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-pts-sub">—</p>
+                </div>
             </div>
         </div>
 
-        <div class="wrapped-card wc-3">
-            <div>
-                <div class="bg-black/20 w-fit px-3 py-1 rounded-full text-[10px] font-bold text-white mb-2">TOP GIFTERS</div>
-                <h2 class="text-2xl font-bold text-white">Inner Circle.</h2>
-                <div class="flex -space-x-3 mt-3" id="wc-faces"></div>
-            </div>
-            <div>
-                <p class="text-white/80 text-sm font-medium mb-1">Top Gifter · <span id="wc-gifter-name">—</span></p>
-                <p class="big-stat text-white" id="wc-gifter-amt">—</p>
-                <p class="text-white/60 text-xs mt-2" id="wc-gifter-sub">—</p>
-            </div>
-        </div>
+        <!-- At a Glance Metric Grid -->
+        <div class="mb-3"><h2 class="font-ewc text-base font-black text-slate-900">AT A GLANCE</h2></div>
+        <div class="widget-grid -mx-5 px-5 mb-5" id="widgets"></div>
 
-        <div class="wrapped-card wc-4">
-            <div>
-                <div class="bg-white/10 w-fit px-3 py-1 rounded-full text-[10px] font-bold text-white mb-2">WALLET</div>
-                <h2 class="text-2xl font-bold text-white">Points Bank.</h2>
-            </div>
-            <div>
-                <p class="text-white/80 text-sm font-medium mb-1">Balance</p>
-                <p class="big-stat text-white" id="wc-pts">—</p>
-                <p class="text-white/60 text-xs mt-2" id="wc-pts-sub">—</p>
+        <!-- AI Tactical Telemetry Block -->
+        <div class="mb-3"><h2 class="font-ewc text-base font-black text-slate-900">AI ANALYTICS</h2></div>
+
+        <div class="hud-card p-4 mb-5 border-emerald-500/30">
+            <div class="flex gap-3.5 items-start">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#CCFF00]/10 border border-[#CCFF00]/30 text-[#CCFF00]">
+                    <i class="fa-solid fa-robot text-sm"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="font-ewc text-sm font-black text-white mb-1" id="ai-headline">—</p>
+                    <div class="msg-scroll" id="ai-messages"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="px-6 mb-3"><h3 class="text-[15px] font-bold text-white">At a Glance</h3></div>
-    <div class="widget-grid" id="widgets"></div>
+        <div class="widget-grid -mx-5 px-5 mb-6" id="analytics-grid"></div>
 
-    <div class="px-6 mb-3"><h3 class="text-[15px] font-bold text-white">AI Analytics</h3></div>
-
-    <div class="px-6 mb-4">
-        <div class="glass p-4 flex gap-3.5" style="border-color:rgba(96,165,250,.25)">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(96,165,250,.15);color:#60a5fa">
-                <i class="fa-solid fa-robot text-[15px]"></i>
-            </div>
-            <div>
-                <p class="text-[13px] font-bold text-white mb-1" id="ai-headline">—</p>
-                <div class="msg-scroll" id="ai-messages"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="widget-grid" id="analytics-grid"></div>
-
-    <div class="px-6 mb-24">
-        <a href="wallet.html" class="glass spring p-5 flex items-center gap-4"
-           style="background:linear-gradient(120deg,rgba(49,46,129,.6),rgba(30,58,138,.5))">
-            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white text-lg flex-shrink-0">
+        <!-- Link to Wallet Footer Card -->
+        <a href="wallet.html" class="hud-card p-4 flex items-center gap-4 spring border-[#B88E24]/40 hover:border-[#CCFF00]">
+            <div class="w-10 h-10 rounded-xl bg-black border border-[#B88E24]/50 flex items-center justify-center text-[#D4AF37] text-base shrink-0">
                 <i class="fa-solid fa-wallet"></i>
             </div>
             <div class="min-w-0">
-                <h4 class="font-bold text-white text-sm">Wallet</h4>
-                <p class="text-xs text-indigo-200">View your coin balance</p>
+                <h3 class="font-ewc text-sm font-black text-white">MY WALLET</h3>
+                <p class="text-xs text-slate-400 font-medium">Manage transactions & balance</p>
             </div>
-            <i class="fa-solid fa-chevron-right text-white/50 text-sm ml-auto flex-shrink-0"></i>
+            <i class="fa-solid fa-chevron-right text-slate-400 text-xs ml-auto shrink-0"></i>
         </a>
+
     </div>
 
-    <div class="nv-dock">
-        <a href="home.html" class="nv-item" data-nav="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a href="wallet.html" class="nv-item" data-nav="wallet"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a href="stats.html" class="nv-item on" data-nav="tournament"><i class="fa-solid fa-trophy"></i><span>Tournament</span></a>
-        <a href="pay.html" class="nv-item" data-nav="live"><i class="fa-solid fa-bolt"></i><span>Live</span></a>
-        <a href="user.html" class="nv-item" data-nav="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
-    </div>
+    <!-- EWC BOTTOM NAVIGATION BAR WITH SHARP VECTOR ICONS -->
+    <nav class="app-bottom-nav">
+        <a href="home.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="wallet.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="1"/>
+                <path d="M16 12h.01"/>
+                <path d="M2 10h20"/>
+            </svg>
+            <span>Wallet</span>
+        </a>
+        <a href="TOURNAMENTS.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Tournament</span>
+        </a>
+        <a href="stats.html" class="nav-item active-ewc">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M18 20V10"/>
+                <path d="M12 20V4"/>
+                <path d="M6 20v-6"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="user.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
 
+    <!-- DATA CALCULATION & CHART SCRIPT -->
     <script>
-        const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
         let _userData = {};
         let _gifts = [];
-        let _txHistory = [];
 
         function fmt(val) {
             if (val == null) return '0';
@@ -261,7 +371,6 @@
 
         function generateChartData(range) {
             const coins = _userData.coins || 0;
-
             let buckets = [], maxPoints = 10;
             const now = Date.now();
             const day = 86400000;
@@ -299,7 +408,8 @@
                     const chunk = buckets.slice(i, i + step);
                     merged.push({
                         label: chunk[0].label,
-                        val: Math.round(chunk.reduce((s, b) => s + b.val, 0) / chunk.length)
+                        val: Math.round(chunk.reduce((s, b) => s + b.val, 0) / chunk.length),
+                        ts: chunk[0].ts
                     });
                 }
                 return merged;
@@ -308,7 +418,7 @@
                 const now = new Date();
                 for (let i = 6; i >= 0; i--) {
                     const d = new Date(now - i * 86400000);
-                    buckets.push({ label: MONTHS[d.getMonth()] + ' ' + d.getDate(), val: 0 });
+                    buckets.push({ label: MONTHS[d.getMonth()] + ' ' + d.getDate(), val: 0, ts: d.getTime() });
                 }
             }
             return buckets;
@@ -327,7 +437,13 @@
         function drawChart(data) {
             const W = 340, H = 200, PL = 8, PR = 8, PT = 20, PB = 26;
             const iw = W - PL - PR, ih = H - PT - PB;
-            if (!data.length) { const d=new Date(); for(let i=6;i>=0;i--){ const dd=new Date(d-i*86400000); data.push({val:0,label:MONTHS[dd.getMonth()]+' '+dd.getDate(),ts:dd.getTime()}); } }
+            if (!data.length) {
+                const d = new Date();
+                for (let i = 6; i >= 0; i--) {
+                    const dd = new Date(d - i * 86400000);
+                    data.push({ val: 0, label: MONTHS[dd.getMonth()] + ' ' + dd.getDate(), ts: dd.getTime() });
+                }
+            }
             const max = Math.max(...data.map(p => p.val)) * 1.2 || 1;
 
             const minTs = Math.min(...data.map(p => p.ts));
@@ -361,13 +477,13 @@
 
             document.getElementById('chart').innerHTML = `
                 <defs>
-                    <linearGradient id="gradientBlue" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.4"/>
-                        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+                    <linearGradient id="gradientLime" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#CCFF00" stop-opacity="0.35"/>
+                        <stop offset="100%" stop-color="#CCFF00" stop-opacity="0"/>
                     </linearGradient>
                     <linearGradient id="lineGrad" x1="0" x2="1" y1="0" y2="0">
-                        <stop offset="0%" stop-color="#1d4ed8"/>
-                        <stop offset="100%" stop-color="#60a5fa"/>
+                        <stop offset="0%" stop-color="#D4AF37"/>
+                        <stop offset="100%" stop-color="#CCFF00"/>
                     </linearGradient>
                 </defs>
                 ${grid}
@@ -377,14 +493,14 @@
 
             const last = data[data.length-1].val;
             const prev = data.length > 1 ? data[data.length-2].val : 0;
-            document.getElementById('chart-total').textContent = fmt(last);
+            document.getElementById('chart-total').textContent = fmt(last) + ' COINS';
 
             const el = document.getElementById('chart-trend');
             if (!prev) { el.textContent = '—'; el.style.color = '#64748b'; return; }
             const pct = prev ? Math.round((last - prev) / prev * 100) : 0;
             const up = pct >= 0;
             el.innerHTML = `<i class="fa-solid fa-arrow-${up?'up':'down'} text-[10px]"></i> ${Math.abs(pct)}%`;
-            el.style.color = up ? '#f0506e' : '#12b886';
+            el.style.color = up ? '#22C55E' : '#EF4444';
         }
 
         function renderRewind() {
@@ -396,28 +512,28 @@
 
             const formats = _userData.favouriteFormats || [];
             const best = formats.length ? formats[0] : null;
-            document.getElementById('wc-format-name').textContent = best || '—';
+            document.getElementById('wc-format-name').textContent = best ? best.toUpperCase() : '—';
             const formatProfit = best ? Math.floor(coins * 0.3) : 0;
             document.getElementById('wc-format-profit').textContent = best ? '+' + fmt(formatProfit) : '—';
-            document.getElementById('wc-format-sub').textContent = best ? `Best performing format` : 'Play tournaments to find your best format';
+            document.getElementById('wc-format-sub').textContent = best ? `Best performing format` : 'Play matches to unlock format analytics';
 
             const gifterMap = {};
             _gifts.forEach(g => { if (g.from) gifterMap[g.from] = (gifterMap[g.from] || 0) + 1; });
             const topGifter = Object.entries(gifterMap).sort((a,b) => b[1] - a[1])[0];
             document.getElementById('wc-gifter-name').textContent = topGifter ? topGifter[0] : '—';
-            document.getElementById('wc-gifter-amt').textContent = topGifter ? String(topGifter[1]) + ' gifts' : '—';
-            document.getElementById('wc-gifter-sub').textContent = topGifter ? `Most generous!` : 'No gifts received yet. Play tournaments to earn gifts!';
+            document.getElementById('wc-gifter-amt').textContent = topGifter ? String(topGifter[1]) + ' GIFTS' : '—';
+            document.getElementById('wc-gifter-sub').textContent = topGifter ? `Most generous supporter` : 'Earn gifts in tournament play!';
 
             const faces = _gifts.filter(g => g.from).slice(0, 4);
             document.getElementById('wc-faces').innerHTML = faces.length ? faces.map(g => {
-                const fallback = 'https://ui-avatars.com/api/?background=fff&color=FF4D4D&bold=true&name=' + encodeURIComponent(g.from);
-                return `<img class="w-10 h-10 rounded-full border-2 border-white object-cover shrink-0"
+                const fallback = 'https://ui-avatars.com/api/?background=0F131C&color=CCFF00&bold=true&name=' + encodeURIComponent(g.from);
+                return `<img class="w-9 h-9 rounded-full border-2 border-[#0F131C] object-cover shrink-0"
                              src="${g.img || fallback}" alt="${g.from}" title="${g.from}"
                              onerror="this.onerror=null;this.src='${fallback}'">`;
-            }).join('') : '<p class="text-xs text-white/50">No gifters yet</p>';
+            }).join('') : '<p class="text-xs text-slate-400 font-bold">No gifters recorded</p>';
 
             document.getElementById('wc-pts').textContent = (coins || 0).toLocaleString();
-            document.getElementById('wc-pts-sub').textContent = `Wallet Balance · ${fmt(won)} coins`;
+            document.getElementById('wc-pts-sub').textContent = `Vault Coins · ${fmt(won)} earned`;
         }
 
         function renderWidgets() {
@@ -426,33 +542,33 @@
             const kills = _userData.kills || 0;
             document.getElementById('widgets').innerHTML = `
                 <div class="stat-widget">
-                    <div class="w-ic" style="background:rgba(18,184,134,.15);color:#12b886"><i class="fa-solid fa-gamepad text-[13px]"></i></div>
+                    <div class="w-ic bg-blue-50 text-blue-600"><i class="fa-solid fa-gamepad text-sm"></i></div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Matches</p>
-                        <p class="text-[19px] font-extrabold text-white mt-1">${matches}</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">MATCHES PLAYED</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches}</p>
                     </div>
                 </div>
                 <div class="stat-widget">
-                    <div class="w-ic" style="background:rgba(240,80,110,.15);color:#f0506e"><i class="fa-solid fa-crosshairs text-[13px]"></i></div>
+                    <div class="w-ic bg-red-50 text-red-600"><i class="fa-solid fa-crosshairs text-sm"></i></div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Kills</p>
-                        <p class="text-[19px] font-extrabold text-white mt-1">${kills}</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">TOTAL KILLS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${kills}</p>
                     </div>
                 </div>
                 <div class="stat-widget">
-                    <div class="w-ic" style="background:rgba(245,158,11,.15);color:#f59e0b"><i class="fa-solid fa-trophy text-[13px]"></i></div>
+                    <div class="w-ic bg-amber-50 text-[#B88E24]"><i class="fa-solid fa-trophy text-sm"></i></div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Win Rate</p>
-                        <p class="text-[19px] font-extrabold text-white mt-1">${matches ? Math.round((kills/2/matches)*100) : 0}%</p>
-                        <p class="text-[9px] text-slate-500 font-semibold mt-0.5 truncate">${matches ? kills/2 + ' wins' : 'No matches'}</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">EST. WIN RATE</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches ? Math.round((kills/2/matches)*100) : 0}%</p>
+                        <p class="text-[9px] text-slate-400 font-bold mt-0.5 truncate">${matches ? Math.floor(kills/2) + ' victories' : 'No matches'}</p>
                     </div>
                 </div>
                 <div class="stat-widget">
-                    <div class="w-ic" style="background:rgba(168,85,247,.15);color:#a855f7"><i class="fa-solid fa-star text-[13px]"></i></div>
+                    <div class="w-ic bg-emerald-50 text-emerald-600"><i class="fa-solid fa-coins text-sm"></i></div>
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Points</p>
-                        <p class="text-[19px] font-extrabold text-white mt-1">${(coins||0).toLocaleString()}</p>
-                        <p class="text-[9px] text-slate-500 font-semibold mt-0.5">Wallet Coins</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">VAULT COINS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${(coins||0).toLocaleString()}</p>
+                        <p class="text-[9px] text-slate-400 font-bold mt-0.5">Available Balance</p>
                     </div>
                 </div>`;
         }
@@ -461,1395 +577,22 @@
             'not-played': [
                 'You haven\'t played any tournaments yet. The arena awaits!',
                 'Zero matches played — every champion starts somewhere.',
-                'Your first tournament is just a click away. Jump in!',
-                'No battles fought yet. Ready to make your debut?',
-                'The leaderboard is empty without you. Play your first match!',
-                'Tournaments are waiting for a new contender. That\'s you!',
-                'You\'re missing all the action. Join a tournament today!',
-                'First match, first victory. It all begins with one click.',
-                'The competition is fierce, but you\'ll never know until you try.',
-                'Don\'t let fear hold you back. Enter your first tournament now!',
-                'Even the greatest players started with match one.',
-                'Your gaming journey hasn\'t begun yet. Start today!',
-                'Zero matches means unlimited potential. Go play!',
-                'The only way to get better is to play. Start now!',
-                'What are you waiting for? Your first win is out there!',
-                'Every legend has a first game. Make yours count!',
-                'Step into the arena — your first tournament awaits.',
-                'No experience? No problem. Everyone starts somewhere!',
-                'You can\'t win if you don\'t play. Join a tournament!',
-                'The community is growing. Don\'t get left behind!',
-                'Your skills are untested. Time to prove yourself!',
-                'First tournaments are free. What have you got to lose?',
-                'Ready to see where you rank? Play your first match!',
-                'The spotlight is waiting for you. Step up!',
-                'Don\'t just watch the action — be the action!',
-                'Your first opponent is waiting. Accept the challenge!',
-                'New players welcome! Start your journey today.',
-                'No tournaments played yet? Let\'s change that!',
-                'The path to glory starts with a single match.',
-                'Zero on the board means zero experience. Play to learn!',
-                'Every pro was once a rookie. Take your first step!',
-                'Don\'t overthink it. Just play your first game!',
-                'Your future self will thank you for starting today.',
-                'One match can change everything. Play now!',
-                'The only bad tournament is the one you don\'t play.',
-                'Join the thousands already competing. Start now!',
-                'Your first win is waiting to be earned.',
-                'No stats to show yet? Time to build them!',
-                'The beginner bracket is perfect for first-timers.',
-                'You have nothing to lose and everything to gain. Play!',
-                'Start small, dream big. Your first tournament awaits.',
-                'Every match teaches something new. Start learning!',
-                'Don\'t wait for the perfect moment — create it!',
-                'The arena is open 24/7. Join whenever you\'re ready.',
-                'Your first victory lap starts with a single game.',
-                'No pressure — just play and have fun!',
-                'Curious about your skill level? Find out today!',
-                'The best time to start was yesterday. The next best is now.',
-                'Tournaments are more fun when you\'re in them. Join!',
-                'Zero matches, infinite possibilities. Go for it!',
-                'Be the player you were meant to be. Play now!',
-                'Your first tournament is the start of something big.',
-                'Don\'t let inexperience stop you. Everyone starts at zero.',
-                'The competition welcomes all skill levels. Join today!',
-                'Your gaming story hasn\'t been written yet. Start now!',
-                'First tournament anxiety is normal. Overcome it today!',
-                'You\'ll never know your potential until you compete.',
-                'Take the leap. Your first match is just a click away.',
-                'The arena doesn\'t judge — it welcomes. Play now!',
-                'Your journey to greatness starts with one tournament.',
-                'No better time than now to play your first game.',
-                'Rookies rise too. Start your climb today!',
-                'Your first opponent is just as nervous as you. Play!',
-                'Don\'t let zero matches define you. Change it today!',
-                'Every champion has a first win. Get yours!',
-                'The ladder is waiting for you to climb it.',
-                'Start your legacy today. Play your first tournament!',
-                'No tournaments, no problem. There\'s a first time for everything.',
-                'Your skills are a mystery even to you. Unlock them!',
-                'Play one game. That\'s all it takes to get started.',
-                'The only requirement to play is showing up. Do it!',
-                'Your first tournament experience is priceless. Start now!',
-                'Don\'t be a spectator. Be a competitor!',
-                'One click. One match. One step closer to greatness.',
-                'The tournament scene is vibrant and waiting for you.',
-                'Zero matches today means zero stories to tell. Change that!',
-                'Your first match could be your most memorable. Play now!',
-                'No warm-up needed. Jump straight into the action!',
-                'You\'re one tournament away from a new obsession.',
-                'The beginner lobbies are calling your name.',
-                'Your first win is out there — go claim it!',
-                'Don\'t wait for skill. Skill comes from playing!',
-                'The only way to the top is through the brackets. Start!',
-                'First match free — no strings attached. Try it!',
-                'Your future highlight reel needs a first clip. Play now!',
-                'Zero experience is just untapped potential. Tap it!',
-                'Even the best were beginners once. Your turn!',
-                'One tournament can spark a lifelong passion.',
-                'You\'re already thinking about it. Just do it!',
-                'The community welcomes new players every day. Be next!',
-                'Your first victory is waiting to be written.',
-                'No matches = no growth. Play to improve!',
-                'Start your tournament journey today. You won\'t regret it!',
-                'The thrill of competition is unmatched. Experience it!',
-                'Your first opponent is ready. Are you?',
-                'Don\'t let zero hold you back. Play your first match!',
-                'Tournaments are more exciting when you\'re part of them.',
-                'One game could reveal a hidden talent. Find out!',
-                'The only bad move is not playing at all.',
-                'Your first tournament is a rite of passage. Complete it!',
-                'No matches yet = fresh start. Make it count!',
-                'The arena is open and the competition awaits. Join now!',
-                'Stop thinking and start playing. Your first match is ready!'
+                'The leaderboard is empty without you. Play your first match!'
             ],
             'few-matches': [
                 'You\'ve played a few matches. Time to ramp it up!',
                 'Good start! Now build on those early games.',
-                'A handful of matches is just the beginning. Play more!',
-                'You\'re warming up. The real action starts now!',
-                'Early days yet. Keep the momentum going!',
-                'You\'ve dipped your toes in. Time to dive deep!',
-                'Those first matches were practice. Now compete for real!',
-                'Great start! Consistency is key — play regularly.',
-                'You\'ve tasted competition. Now develop a habit!',
-                'A few matches in and the hunger is real. Feed it!',
-                'Your journey has begun. Don\'t stop now!',
-                'Early progress is promising. Keep showing up!',
-                'You\'ve broken the ice. Now build a streak!',
-                'First few games down. Time to multiply that number!',
-                'The beginning of something great. Play another match!',
-                'You\'ve started. Now build momentum!',
-                'Those early wins and losses shape you. Keep going!',
-                'Every match adds to your experience. Play more!',
-                'You\'ve got the basics. Now refine your skills!',
-                'A few tournaments in and you\'re already learning. Great!',
-                'Keep that energy up! More matches, more growth.',
-                'The early matches are the foundation. Build higher!',
-                'You\'ve proven you can compete. Now prove you can dominate!',
-                'Good start, but consistency creates champions. Play daily!',
-                'You\'re in the early grind. Embrace it and push harder!',
-                'Those first matches matter. Keep adding to them!',
-                'Progress is progress, no matter how small. Keep playing!',
-                'You\'ve taken the first steps. Now run the marathon!',
-                'Early days mean huge potential. Unlock it!',
-                'The sample size is small. Grow your experience!',
-                'You\'re just getting started. The best is ahead!',
-                'First few matches show promise. Build on it!',
-                'Don\'t stop at a few. Aim for dozens, then hundreds!',
-                'Your early stats are a preview. Write the full story!',
-                'The start of your climb. Every match is a step up!',
-                'You\'ve entered the arena. Now make it your home!',
-                'Great players play often. Start building the habit!',
-                'Those early games are gold. Keep mining for more!',
-                'You\'ve started your journey. Now accelerate!',
-                'Early experience is invaluable. Keep stacking it!',
-                'The first few matches teach the most. Keep learning!',
-                'You\'re off the zero mark. Now aim for the top!',
-                'Progress is visible. More matches = more improvement!',
-                'Your tournament count is growing. Keep it trending up!',
-                'Early adopter energy. Turn it into veteran wisdom!',
-                'You\'ve got the bug. Now feed the addiction!',
-                'Those first matches are seeds. Water them with more games!',
-                'The start of something special. Don\'t let it fizzle!',
-                'You\'re building a base. Make it rock solid!',
-                'First few tournaments down. Hundreds more to go!',
-                'The early grind is real. Keep pushing through!',
-                'Your journey is young. Write epic chapters!',
-                'Good foundation laid. Now construct your legacy!',
-                'You\'ve started the climb. Don\'t look down!',
-                'Early success or failure — both teach. Keep playing!',
-                'The first few are always the hardest. You\'re past that!',
-                'Build on those early matches. Stack wins!',
-                'Your tournament resume is growing. Keep adding entries!',
-                'Early players have the most room to grow. Grow fast!',
-                'You\'ve entered the ecosystem. Now thrive in it!',
-                'First steps taken. Now learn to sprint!',
-                'Those matches are chapters. Write a whole book!',
-                'Your journey is just beginning. The path is long!',
-                'Early days demand consistency above all else.',
-                'You\'ve shown up. Now show out!',
-                'The sample size grows with every match. Play on!',
-                'Your foundation is set. Time to build the house!',
-                'Every match is a brick in your fortress. Keep building!',
-                'You\'ve started something great. Nurture it!',
-                'Early experience compounds. Play more to grow faster!',
-                'The first few tournaments are warm-ups. Game on!',
-                'Your journey has traction. Don\'t lose momentum!',
-                'You\'ve crossed the threshold. Now aim higher!',
-                'Those early matches are investments. Collect the returns!',
-                'The beginning of a beautiful journey. Keep going!',
-                'You\'ve got the starting spark. Fan the flames!',
-                'Early wins are sweet. Early losses are lessons. Both help!',
-                'You\'re building a habit. Make it unbreakable!',
-                'First few matches down. The real grind begins now!',
-                'Your portfolio of games is small. Diversify!',
-                'Early players have the most to gain. Play for it!',
-                'You\'ve joined the community. Now become a regular!',
-                'The start is always the hardest. You\'ve done it!',
-                'Early momentum is precious. Protect it with more games!',
-                'Your journey has begun in earnest. Full speed ahead!',
-                'Those first tournaments shape your style. Keep shaping!',
-                'You\'re no longer a rookie. Time to become a contender!',
-                'Early days are for exploration. Explore more tournaments!',
-                'Your path is forming. Walk it with purpose!',
-                'You\'ve started well. Now finish even stronger!',
-                'The foundation is laid. Now build something legendary!',
-                'Early grinders become late bloomers. Keep grinding!',
-                'Your tournament story is being written. Make it epic!',
-                'Those first matches are the prologue. Write the saga!',
-                'You\'ve taken the first step. Now take a hundred more!',
-                'Early experience shapes champions. Shape yourself!',
-                'Your journey is underway. Full throttle ahead!',
-                'The early matches are the hardest earned. Keep earning!',
-                'You\'re building a streak of experience. Keep it alive!',
-                'Early players have the most potential. Unleash yours!',
-                'Your tournament career is launching. Make it count!',
-                'The early grind builds character. Build more!',
-                'You\'ve started something real. Now make it huge!',
-                'Every match at this stage is pure growth. Grow!'
-            ],
-            'huge-loss': [
-                'Massive loss, but massive comebacks start here!',
-                'You\'re down big. That means a big comeback is brewing!',
-                'Rock bottom is solid ground for a fresh start.',
-                'That loss is just a plot twist. The story isn\'t over!',
-                'Huge losses humble champions. Rise again!',
-                'This setback is setting up a massive return.',
-                'The bigger the loss, the sweeter the recovery.',
-                'You\'ve hit a rough patch. Time to dig deep!',
-                'Losses test your resolve. Show what you\'re made of!',
-                'Every champion has a loss like this. How they respond defines them.',
-                'Your back is against the wall. Fight back!',
-                'This is the low point before the epic high. Play on!',
-                'You\'ve lost big, but you\'ve gained experience. Use it!',
-                'The only way from here is up. Start climbing!',
-                'Huge losses build the biggest winners. Your turn!',
-                'Don\'t let this loss define you. Let your comeback!',
-                'This is your breaking point or your turning point. Choose!',
-                'You\'ve been tested and found temporary weakness. Fix it!',
-                'The market of skill is volatile. You\'ll bounce back!',
-                'This loss is a footnote in your success story. Keep writing!',
-                'Giant losses precede giant comebacks. History proves it.',
-                'Your tournament journey hit turbulence. Steady the course!',
-                'This is the moment champions are forged. Rise up!',
-                'You\'re in the red, but your future is green. Play on!',
-                'Massive setback incoming... massive comeback loading.',
-                'The scoreboard hurts now. Future you will thank you.',
-                'Every great player has a loss like this. Join the club!',
-                'Your resilience is being tested. Pass the test!',
-                'This valley leads to a peak. Start the ascent!',
-                'Huge losses are investments in future wisdom.',
-                'You\'ve paid the tuition. Time to learn the lesson!',
-                'This is the fire that forges champions. Get hotter!',
-                'Your lowest point is your launchpad. Fire it up!',
-                'Losses are the price of admission to greatness.',
-                'You\'ve taken a hit. Now get up and swing harder!',
-                'This loss is a chapter, not the whole book.',
-                'The deeper the hole, the more dramatic the climb out.',
-                'Your comeback story starts now. Make it legendary!',
-                'This is the struggle that makes victory sweet.',
-                'Huge losses reveal character. Show yours!',
-                'This is temporary. Your skill is permanent. Trust it!',
-                'You\'ve hit a wall. Time to go through it!',
-                'The loss stings now. The comeback will heal everything.',
-                'This is the bottom. The only direction is up!',
-                'Your journey has turbulence. Buckle up and push through!',
-                'Great players are defined by how they handle defeat.',
-                'This loss is a detour, not a dead end. Keep moving!',
-                'You\'re building scar tissue. That\'s where strength comes from.',
-                'The score doesn\'t define you. Your response does!',
-                'Huge losses are redirections. Find your new path!',
-                'This is the dip before the peak. Keep climbing!',
-                'Your portfolio took a hit. Diversify and recover!',
-                'Losses are lessons in disguise. Learn everything!',
-                'You\'ve been knocked down. The comeback is mandatory!',
-                'This is adversity. Embrace it and grow!',
-                'The best players have the worst losses. You\'re in good company.',
-                'Your loss today is the setup for tomorrow\'s win.',
-                'This is the storm before the calm. Weather it!',
-                'Huge losses reshape great players. Let it reshape you!',
-                'Your tournament life has seasons. This winter will pass!',
-                'The loss is heavy, but your potential is heavier.',
-                'This is a test of will. Prove you have it!',
-                'You\'ve been bloodied. Now you\'re battle-ready!',
-                'The biggest losses create the biggest drives. Channel it!',
-                'This setback is a setup for a major breakthrough.',
-                'Your skill isn\'t gone. It\'s just hiding. Find it!',
-                'This is the price of ambition. Pay it and proceed!',
-                'Huge losses hurt. Huge comebacks heal. Start yours!',
-                'You\'ve lost the battle, not the war. Fight on!',
-                'This loss is character-building. Build strong!',
-                'The depths you\'ve reached will make the heights sweeter.',
-                'Your comeback starts with one small win. Get it!',
-                'This is rock bottom. Build your foundation here!',
-                'Losses measure your courage. Show bravery!',
-                'You\'ve experienced the worst. The best is yet to come!',
-                'This loss is a comma, not a period. Continue!',
-                'The pain of loss is temporary. The lessons are forever.',
-                'Your graph dipped. Graphs recover. So will you!',
-                'This is adversity training. Level up!',
-                'Huge losses reveal your limits. Then you break them!',
-                'Your comeback will be legendary. Start writing it!',
-                'This loss is fertilizer for future growth. Absorb it!',
-                'You\'ve been humbled. Now get hungry!',
-                'The fall is hard. The rise will be even harder. Embrace it!',
-                'This loss is a pivot point. Redirect your focus!',
-                'Your journey has setbacks. Every great one does.',
-                'This is the difficulty that makes victory worthwhile.',
-                'You\'ve lost big. Now win bigger!',
-                'The score is temporary. Your growth is permanent.',
-                'This loss is the prologue to your comeback saga.',
-                'You\'ve hit a speed bump. Accelerate through it!',
-                'Huge losses require huge responses. Respond!',
-                'Your potential hasn\'t changed. Your situation has. Fix it!',
-                'This is the adversity that shapes legends.',
-                'You\'ve paid your dues. Time to collect!',
-                'The bottom is solid ground. Build upward!',
-                'Your loss today is tomorrow\'s motivation. Use it!',
-                'This is the fire that tempers steel. Get stronger!',
-                'Huge losses don\'t define careers. Comebacks do.',
-                'You\'ve been tested and found capable of enduring. Keep going!',
-                'This loss is an investment in your future resilience.',
-                'Your story needs conflict. This is it. Write the resolution!',
-                'The loss is real. The comeback is inevitable. Play on!'
-            ],
-            'big-loss': [
-                'Significant loss, but you\'ve got what it takes to recover!',
-                'You\'re down, but definitely not out. Regroup and push!',
-                'Big losses build big resilience. Keep your head up!',
-                'A noticeable dip — time to analyze and adjust!',
-                'Losses like this separate the dedicated from the casual.',
-                'This is a speed bump, not a roadblock. Push through!',
-                'Your skill hasn\'t changed. Your luck has. It\'ll swing back!',
-                'Take the lesson and leave the loss behind.',
-                'Big losses come before bigger wins. Stay patient!',
-                'This is when growth happens. Embrace the struggle!',
-                'You\'re down, but your potential is still up. Reach for it!',
-                'Every loss is a setup for a stronger return.',
-                'Your graph shows a dip. Markets always recover!',
-                'This loss is temporary. Your skill is permanent.',
-                'Don\'t overreact. Breathe, analyze, play again!',
-                'Big losses reveal what needs work. Fix it!',
-                'Your comeback is already in progress. Trust the process!',
-                'This is a chapter of struggle before the breakthrough.',
-                'Losses like this hone your edge. Sharpen it!',
-                'You\'ve been here before. You\'ll get through it again!',
-                'This is where patience pays off. Stay the course!',
-                'The numbers are down, but your drive should be up!',
-                'Big losses are just big data points. Learn from them!',
-                'Your resilience is being built. Keep constructing!',
-                'This is a test of your tournament stamina. Endure!',
-                'You\'re losing now to win bigger later. Trust the cycle!',
-                'Every dip has a corresponding peak. Yours is coming!',
-                'This loss is refining your strategy. Get sharper!',
-                'Significant setback, but you\'re still in the game!',
-                'Your journey has waves. This is the trough. The crest is next!',
-                'Losses like this teach what wins can\'t. Pay attention!',
-                'You\'re down but not broken. That\'s what matters!',
-                'This dip is just a shadow. The light is ahead!',
-                'Big losses are character investments. Collect dividends!',
-                'You\'re being tested. Pass the test with persistence!',
-                'This loss is a course correction. Adjust and advance!',
-                'Your potential is intact. Your results will follow!',
-                'This is the hard part of the journey. Keep walking!',
-                'Losses like this forge unshakeable confidence. Build it!',
-                'You\'ve got the skills. Now develop the patience!',
-                'This is a temporary setback for a permanent comeback.',
-                'Your graph will green again. Play through the red!',
-                'Big losses are the tuition for advanced skill. Pay up!',
-                'This is the resistance that makes you stronger!',
-                'Your next win is already being prepared by this loss.',
-                'Don\'t let the numbers discourage you. Let them educate you.',
-                'This is the valley before the peak. Start climbing!',
-                'You\'re accumulating experience. The results will catch up!',
-                'Significant loss today, significant growth tomorrow.',
-                'Your journey has rough patches. Keep the wheels on!',
-                'This is the grind that greats talk about. Live it!',
-                'Big losses require big adjustments. Adapt and overcome!',
-                'Your story needs drama. This is it. Great comeback loading!',
-                'This loss is a stepping stone, not a stumbling block!',
-                'You\'re in the red zone. Time to execute!',
-                'This is adversity. Your response defines your trajectory.',
-                'Losses like this build the strongest players. Keep going!',
-                'Your portfolio is down. Time to trade smarter!',
-                'This is the night before the dawn. Hold on!',
-                'Big losses are wake-up calls. Answer the call!',
-                'You\'re experiencing growing pains. Growth is coming!',
-                'This setback is saving you from complacency. Thank it!',
-                'Your skills are being stress-tested. They\'ll pass!',
-                'This loss is a filter. Only the dedicated push through!',
-                'You\'ve got the foundation. Now weather the storm!',
-                'Big losses separate phases. A new phase is beginning!',
-                'This is the price of ambition. Pay it gladly!',
-                'Your comeback story needs this chapter. Write it well!',
-                'Losses are reference points for future wins. Note them!',
-                'This is where you dig deep. Dig!',
-                'Your tournament IQ is growing through this loss.',
-                'This dip is buying time before the rise. Be patient!',
-                'Big losses test commitment. Show yours!',
-                'You\'re building an immunity to setbacks. Get stronger!',
-                'This loss is the shadow before the spotlight. Wait for it!',
-                'Your graph has room to grow. From here, it\'s upward!',
-                'This is a reality check. Cash it and move forward!',
-                'The loss is part of the process. Trust the process!',
-                'You\'re in a rough patch. Rough patches end!',
-                'Big losses create big motivation. Channel it!',
-                'Your skills are being honed by hardship. Keep going!',
-                'This is the difficult middle of your journey. Push through!',
-                'Losses like this build unshakeable mentality. Build it!',
-                'You\'re down, but your trajectory is up. Keep playing!',
-                'This is a test of patience. The patient win in the end!',
-                'Your comeback is under construction. Let it build!',
-                'This loss is a redirection to greater things. Trust it!',
-                'The numbers will turn. Stay consistent and they will!',
-                'Big losses are the soil where big wins grow. Fertilize!',
-                'You\'re building battle scars. Wear them with pride!',
-                'This is temporary discomfort for permanent gain.',
-                'Your journey isn\'t linear. This dip is natural. Push on!',
-                'Losses like this are speed bumps. Slow down, then accelerate!',
-                'You\'ve got the tools. Now build the mindset!',
-                'This is the friction that creates heat. Get hot!',
-                'Your potential is like a spring. The further down, the higher up!',
-                'Big losses demand big reflections. Reflect and return!',
-                'This is part of your growth curve. It\'s going up from here!',
-                'Your tournament life has seasons. Spring is coming!',
-                'This loss is a comma, not a full stop. Continue!',
-                'You\'re building resilience capital. Spend it wisely!'
-            ],
-            'moderate-loss': [
-                'Small loss, big lesson. Keep playing!',
-                'A minor dip is just a setup for a rise. Play on!',
-                'Losses happen. Champions keep going regardless.',
-                'This loss is barely a blip. Keep your focus!',
-                'Slight setback, but your trajectory is still up!',
-                'Minor losses are part of the game. Stay consistent!',
-                'A small loss today prevents a big loss tomorrow. Learn!',
-                'Your balance dipped slightly. Nothing to worry about!',
-                'This is just noise in your upward trend. Ignore it!',
-                'Small losses are the cost of doing business. Pay it!',
-                'You\'re still in a good position. Don\'t let this shake you!',
-                'Minor setback for a major comeback. Keep playing!',
-                'This loss is a gentle reminder. Stay sharp!',
-                'Your foundation is solid. This won\'t shake it!',
-                'Slight red is still in the game. Green is coming!',
-                'This is a blip on the radar. Focus on the long game!',
-                'A small step back for a giant leap forward.',
-                'Losses like this keep you grounded. Stay humble!',
-                'Your graph is healthy. This is a minor correction!',
-                'Don\'t overthink one small loss. Think about the next win!',
-                'This loss is data. Analyze and move on!',
-                'Minor losses are tuition for wisdom. Learn cheap!',
-                'Your balance is resilient. This won\'t affect it much!',
-                'Small dips are natural in any competitive journey.',
-                'This is a tiny detour. Your destination is still ahead!',
-                'Losses are part of the rhythm. Dance through it!',
-                'Your portfolio is diversified. One loss won\'t hurt!',
-                'This is a whisper, not a warning. Keep going!',
-                'Slight setback, massive comeback potential!',
-                'One loss doesn\'t define your session. Your response does!',
-                'This is a grain of sand on a vast beach. Move on!',
-                'Minor losses build micro-resilience. Stack them!',
-                'Your journey has small bumps. This is one. Drive on!',
-                'This loss is a footnote. The main text is still being written!',
-                'You\'re still winning overall. This is a tiny dip!',
-                'Small losses keep ego in check. Stay hungry!',
-                'This is a minor adjustment. Course correct and continue!',
-                'Your average is still strong. Don\'t let one point sway you!',
-                'This loss is a pebble in your shoe. Shake it off!',
-                'Minor setback for a major mindset shift. Shift up!',
-                'The trend is your friend. This is a temporary blip!',
-                'Slight loss, but your strategy is sound. Trust it!',
-                'This is a hiccup, not a catastrophe. Keep playing!',
-                'Small losses are speed bumps for the wise. Slow and go!',
-                'Your skill level is unchanged. Results will follow!',
-                'This loss is a motivational nudge. Get back in there!',
-                'A minor dip means a minor adjustment. Tweak and go!',
-                'Your journey has micro-volatility. That\'s normal!',
-                'This loss is soon forgotten. Your wins are remembered!',
-                'Don\'t let a small loss occupy big space in your mind!',
-                'This is part of the learning curve. Absorb it!',
-                'Your balance is still healthy. This is a tiny scratch!',
-                'Minor losses refine your edge. Sharpen up!',
-                'This is a small wave in a big ocean. Surf it!',
-                'One loss can\'t stop your momentum. Prove it!',
-                'This is a minor stress test. You passed!',
-                'Small loss, small lesson. Bigger wins ahead!',
-                'Your graph shows a tiny dip. The trend remains up!',
-                'This is a blip in an otherwise solid performance.',
-                'Minor losses are reminders to stay focused. Refocus!',
-                'This loss is a drop in the bucket. Keep filling!',
-                'Slight red today, significant green tomorrow!',
-                'A minor setback is a setup for a minor comeback. Easy!',
-                'Your consistency will iron out this small wrinkle.',
-                'This loss is statistical noise. Don\'t amplify it!',
-                'Small losses are the price of trying. Worth it!',
-                'Your journey is trending up. This is a minor pause!',
-                'This loss is a check engine light. Check and proceed!',
-                'Minor dip, major opportunity to learn. Grab it!',
-                'Slight loss now, significant gain later. Patience!',
-                'This is a tiny step back before a giant leap.',
-                'Your balance took a small hit. Your confidence shouldn\'t!',
-                'This loss is a speed bump on the highway. Keep driving!',
-                'One small loss can\'t derail your journey. Stay on track!',
-                'This is a minor correction in an uptrend. Healthy!',
-                'Small losses build character. Build on!',
-                'Your game is solid. This loss doesn\'t change that.',
-                'This is a fleeting moment in a long career. Move on!',
-                'A slight dip is just part of the cycle. The upswing is next!',
-                'Minor loss, major perspective. Keep your eyes on the prize!',
-                'This loss is a dot in your rearview mirror. Focus ahead!',
-                'Your progress is undeniable. This is a tiny hiccup!',
-                'Small losses are reminders that nothing is guaranteed. Earn it!',
-                'This is a light tap on the brakes. Then accelerate!',
-                'Your skill set is growing. This loss is tuition. Paid!',
-                'This loss is a minor chapter in a great book. Keep writing!',
-                'Slight dip now, strong rebound later. Trust the pattern!',
-                'Your potential far outweighs this small loss. Show it!',
-                'This is a bump in the road, not a roadblock. Keep moving!',
-                'Minor losses are just reality checks. You\'re on track!',
-                'This loss is background noise. Your focus is the signal!',
-                'A small step back fuels a bigger step forward. Use it!',
-                'Your balance will recover. This is temporary!',
-                'This loss is a feather in the wind. Blow it away!',
-                'Small losses are part of the champion\'s diet. Digest it!',
-                'Your mindset determines your trajectory. Stay positive!',
-                'This is a tiny wrinkle in a smooth journey. Iron it!',
-                'One loss doesn\'t undo your progress. Keep building!',
-                'Your stats are still strong. This is a minor anomaly!',
-                'This loss is a whisper. Listen, learn, and leave it!'
-            ],
-            'small-loss': [
-                'Barely a loss. You\'re practically break-even. Keep going!',
-                'So close to positive! One more match could tip the scales!',
-                'Negligible loss — your next win will erase it entirely.',
-                'You\'re right on the edge of profitability. Push harder!',
-                'Almost there! This tiny gap closes with one good game.',
-                'A marginal loss means you\'re doing almost everything right.',
-                'You\'re within striking distance of green. Go get it!',
-                'This loss is essentially a rounding error. Ignore and play!',
-                'So close to break-even. Your next match changes everything.',
-                'A hairline loss. The slightest improvement flips it!',
-                'You\'re right at the threshold. One win tips you over!',
-                'This tiny red will turn green with one solid performance.',
-                'Marginal loss, marginal gain needed. Easy fix!',
-                'You\'re breathing down the neck of profitability. Strike!',
-                'The gap is microscopic. Your next session closes it!',
-                'Barely negative. Your potential is clearly positive!',
-                'This loss is a technicality. Your play is winning quality!',
-                'You\'re so close to turning the corner. One more push!',
-                'Negligible red means your strategy is nearly perfect.',
-                'A thin line between loss and profit. Cross it!',
-                'You\'re on the cusp of positive. Teeter over!',
-                'This tiny loss is practically a win. You\'re almost there!',
-                'Your performance is winning-level. Results will follow!',
-                'Micro-loss today, macro-win tomorrow. Keep the faith!',
-                'You\'re within 1% of green. That\'s mental. Close it!',
-                'The smallest tweak turns this loss into a trend of wins.',
-                'You\'re right on the money line. One play breaks it!',
-                'This is as close to break-even as it gets. Keep pushing!',
-                'Your game is solid. This tiny loss is an outlier.',
-                'Negligible setback, negligible concern. Play on!',
-                'You\'re almost at parity. Your breakthrough is imminent!',
-                'This loss doesn\'t move the needle. Your next win will!',
-                'So close you can taste it. One more tournament!',
-                'Marginal loss = marginal adjustment. Tweak and triumph!',
-                'Your graph is nearly flat. One push makes it climb!',
-                'The line between loss and profit is invisible. Cross it!',
-                'You\'re on the verge of something great. Don\'t stop now!',
-                'This tiny dip is the setup for your next peak. Climb!',
-                'Barely in the red means you\'re almost in the green. Go!',
-                'Your skill is winning. Your stats will catch up soon!',
-                'This is the closest loss. The next one will be a win!',
-                'Marginal loss, massive motivation. Channel it!',
-                'So close to profitability. Your persistence will pay!',
-                'This loss is a rounding error in your success story.',
-                'You\'re operating at near-peak efficiency. Minor refinement!',
-                'The gap is tiny. Your talent bridges it easily!',
-                'Negligible red = imminent green. The math works!',
-                'You\'re right on the edge. One good decision flips it!',
-                'Your performance deserves a win. Keep delivering!',
-                'This loss is the exception, not the rule. Trust your game!',
-                'The difference between you and profit is minimal. Capture it!',
-                'You\'re almost at your breakthrough point. Persist!',
-                'This tiny loss is a launchpad. Your next win lifts off!',
-                'Marginal results mean you\'re close to optimizing. Optimize!',
-                'So close to the green zone. Accelerate through!',
-                'Barely negative performance means barely positive potential!',
-                'Your approach is sound. This loss is statistical noise.',
-                'The threshold is within reach. Extend and grab it!',
-                'A sliver of red today, a streak of green tomorrow!',
-                'You\'re nearly at equilibrium. Your next match tips it!',
-                'This loss is a whisper of what could be. Listen and adjust!',
-                'Negligible loss = negligible concern = full confidence!',
-                'You\'re practically break-even. The trend is your friend!',
-                'Marginal performance today, optimal performance tomorrow!',
-                'The gap is closing. Your next session locks in profit!',
-                'Barely in the red today, firmly in the green tomorrow!',
-                'Your game is almost there. One refinement unlocks it!',
-                'This loss is a tiny shadow. The sun is right behind it!',
-                'You\'re on the verge. The verge is where breakthroughs happen!',
-                'So close you can almost feel the win. One more match!',
-                'This loss is the smallest hurdle. Leap over it!',
-                'Your trajectory is upward. This tiny dip is an illusion!',
-                'Marginal loss, exponential growth on the horizon!',
-                'The equation is nearly balanced. Your next input wins it!',
-                'You\'re right where break-even lives. Step into profit!',
-                'This loss is a footnote in your rise to the top!',
-                'Negligible setback, significant lesson. Worth it!',
-                'Your skill gap is already closed. Results pending!',
-                'The trendline is your friend. This is just noise!',
-                'Barely negative means you\'re barely from positive. Go!',
-                'This loss is a dot on the graph. The line is still up!',
-                'You\'re one match away from flipping the script. Play it!',
-                'Marginal loss today, major win tomorrow. Stay consistent!',
-                'Your quality of play is above this result. Trust the process!',
-                'So close to the break-even point. Your next move decides!',
-                'The distance to profit is a single good game. Play it!',
-                'This loss is the last before the green streak begins!',
-                'You\'re practically there. One more tournament seals it!',
-                'The red is barely visible. The green is blindingly close!',
-                'This is the final dip before your upward trajectory!',
-                'Negligible loss = negligible lesson. Move on quickly!',
-                'Your performance metrics say win. The score will follow!',
-                'You\'re at the inflection point. Your next match defines it!',
-                'This loss is a blip in an upward trend. Trends persist!',
-                'Barely red today, strongly green tomorrow. Guaranteed!',
-                'The margin is razor-thin. Your razor is sharp. Cut it!',
-                'Effortless recovery from this tiny loss. Your next match!',
-                'You\'re so close to profit you can taste it. Feast!',
-                'This loss is the last red you\'ll see for a while!',
-                'Your fundamentals are winning-caliber. Trust them!',
-                'The numbers will turn in your favor. They always do!',
-                'Marginal loss today, massive gain tomorrow. Simple math!'
-            ],
-            'break-even': [
-                'Dead even! Your next move breaks the tie. Play now!',
-                'Perfect balance. Time to tip the scales in your favor!',
-                'Break-even is safe, but profit is better. Push harder!',
-                'You\'re at zero. Every match from here is pure opportunity!',
-                'Neutral ground. Your next tournament decides your direction!',
-                'Neither up nor down. Steady is good, growth is better!',
-                'Square position. Time to go long on yourself!',
-                'You\'ve stabilized. Now build upward momentum!',
-                'Break-even is the new starting line. Race ahead!',
-                'Balanced scorecard. Your next play creates the trend!',
-                'Zero is the middle. Greatness is above. Reach for it!',
-                'You\'re at parity. Now seek advantage!',
-                'Neutral territory. Time to conquer new ground!',
-                'Break-even today, breakthrough tomorrow!',
-                'Square is comfortable, but profit is exciting. Get excited!',
-                'No loss, no gain. Time to create gain!',
-                'You\'ve held the line. Now advance it!',
-                'Balance achieved. Now imbalance in your favor!',
-                'The slate is clean. Write your winning story!',
-                'Zero is the foundation. Build your empire on it!',
-                'Neither ahead nor behind. Perfect position to accelerate!',
-                'Break-even is the calm before the profit storm. Storm in!',
-                'You\'re at ground zero of your next uptrend. Launch!',
-                'Neutral is a launching pad. Fire away!',
-                'Square today, soaring tomorrow. The trajectory is yours!',
-                'You\'ve found equilibrium. Now disrupt it!',
-                'Break-even means no damage. All upside from here!',
-                'Zero risk position. Time to take calculated risks!',
-                'Balance is beautiful, but momentum is better. Build it!',
-                'You\'re perfectly positioned for a breakout. Break out!',
-                'Neutral ground is the best place to push off. Push!',
-                'Break-even is the starting pistol. Race!',
-                'You\'re at the inflection point. Your choice decides everything!',
-                'Stable base established. Time to scale!',
-                'Zero is where every champion started. Follow their path!',
-                'Neither loss nor gain. Pure potential. Unleash it!',
-                'Break-even is a springboard. Compress and launch!',
-                'You\'ve neutralized the downside. Now maximize the upside!',
-                'Square position is a position of strength. Strengthen it!',
-                'Balance achieved. Now achieve growth!',
-                'You\'re right on the fulcrum. Leverage yourself upward!',
-                'Break-even means opportunity cost is zero. Seize opportunity!',
-                'Neutral performance, unlimited potential. Show it!',
-                'The foundation is level. Now build upward!',
-                'Zero deficit means full focus on gains. Focus!',
-                'Break-even today is the prelude to profit tomorrow!',
-                'You\'ve perfectly tread water. Time to swim forward!',
-                'Balance is a gift. Use it to spring forward!',
-                'Neither up nor down means you control the next move. Control it!',
-                'Break-even is a breather. Now catch your second wind!',
-                'Square is safe, but greatness awaits above. Climb!',
-                'The middle is comfortable. The top is worth it. Push!',
-                'You\'re at equilibrium. Your next match creates disequilibrium!',
-                'Zero is the launch point for your upward trajectory!',
-                'Break-even is a clean slate. Paint a masterpiece!',
-                'Neutral today, network effects tomorrow. Build connections!',
-                'You\'ve stopped the bleeding. Now start the feeding!',
-                'Balance is a platform. Jump higher!',
-                'Break-even means you\'re in control. Take command!',
-                'Square position is power position. Exercise power!',
-                'You\'re perfectly positioned. The next move is yours!',
-                'Neutral is a resting point. Rest and then rocket!',
-                'Break-even is a promise. Fulfill it with profit!',
-                'Zero liability, zero loss, all opportunity. Seize it!',
-                'You\'ve established a beachhead. Now advance inland!',
-                'Balance is the first step to dominance. Dominate!',
-                'Break-even is the foundation of your empire. Build it!',
-                'Neutral ground is fertile ground. Plant winning seeds!',
-                'You\'re at the start line of your next race. Sprint!',
-                'Zero is your launchpad. Ignition sequence start!',
-                'Break-even means the game is yours to win. Win it!',
-                'Square is a position of flexibility. Bend toward profit!',
-                'You\'ve consolidated. Time to expand!',
-                'Balance achieved. Now imbalance dramatically in your favor!',
-                'Break-even is the starting point of every success story.',
-                'Neutral performance is the canvas. Paint your victory!',
-                'You\'re at the equilibrium. Time to disequilibrate upward!',
-                'Zero net position = zero net stress. Play freely!',
-                'Break-even is a promise of potential. Deliver on it!',
-                'Square is where you reset for the climb. Climb on!',
-                'You\'ve held steady. Now surge forward!',
-                'Balance is the body of water. Create waves!',
-                'Break-even today, break records tomorrow!',
-                'Neutral is underrated. It means you\'re in the game. Win it!',
-                'You\'re at parity with the market. Outperform it!',
-                'Zero is the middle of the arc. Your trajectory goes up!',
-                'Break-even is the baseline. Exceed it!',
-                'Square position, unlimited upside. Go long!',
-                'You\'ve mastered neutral. Now master positive!',
-                'Balance is a foundation. Foundations support skyscrapers!',
-                'Break-even is where stories pivot. Make yours a success!',
-                'Neutral today, net positive tomorrow. Inevitable!',
-                'You\'re at the fulcrum. Leverage your skills upward!',
-                'Zero deficit means pure potential. Actualize it!',
-                'Break-even is the calm. The storm of profit is coming!',
-                'Square is secure. Now seek spectacular!',
-                'You\'ve stabilized your ship. Now set sail for profit!',
-                'Balance is a beautiful base. Build your monument!',
-                'Break-even is the foundation of your fortune. Lay bricks!',
-                'Neutral performance, positive trajectory. Keep going!',
-                'You\'re at the starting line. The race is yours to run!'
-            ],
-            'small-profit': [
-                'Small profit is still profit! Build on it!',
-                'Green is green, no matter the size. Keep growing!',
-                'Positive territory! Now compound those gains!',
-                'You\'re in the profit zone. Expand your lead!',
-                'A win is a win. Stack them up!',
-                'Profit is profit. Scale it up!',
-                'You\'re ahead. Now stay ahead and push further!',
-                'Slight profit, strong foundation. Build higher!',
-                'The green is real. Now make it grow!',
-                'Positive momentum is yours. Ride it upward!',
-                'Profit today, bigger profit tomorrow. Consistency wins!',
-                'You\'re in the black. Stay there and expand!',
-                'A little green goes a long way. Keep earning!',
-                'Positive numbers are the best numbers. Multiply them!',
-                'You\'ve broken into profit. Now break records!',
-                'Your margin is positive. Now make it massive!',
-                'Profit is the goal. You\'ve achieved it. Scale it!',
-                'Green on the board means you\'re doing right. Keep doing!',
-                'You\'re winning. Now win bigger!',
-                'Positive territory is your new home. Decorate with wins!',
-                'Small gains add up to big wealth. Keep stacking!',
-                'You\'re in the green zone. The sky is the limit!',
-                'Profit achieved. Now optimize for more!',
-                'You\'re ahead of where you started. That\'s victory!',
-                'Positive balance is a beautiful thing. Beautify it more!',
-                'Your profit is proof of skill. Prove more!',
-                'You\'re making progress. Progress compounds!',
-                'Green is the color of success. Paint a masterpiece!',
-                'You\'re in profit. Now protect and grow!',
-                'Ahead by a bit is still ahead. Push the lead!',
-                'Your positive balance is a launchpad. Launch higher!',
-                'Profit today, prosperity tomorrow. Keep the chain!',
-                'You\'re winning. Don\'t stop now!',
-                'Positive territory feels good. Make it feel even better!',
-                'Your gains are real. Now multiply them!',
-                'You\'ve found the green. Now cultivate it!',
-                'Profit margin positive. Margin for expansion is huge!',
-                'You\'re in the black. Own it and grow it!',
-                'Small profit seeds grow into wealth trees. Water them!',
-                'Green is green. Scale it with consistency!',
-                'Your profitability is confirmed. Now maximize it!',
-                'Positive is powerful. Wield that power!',
-                'You\'re ahead. Double down on what works!',
-                'Profit is the reward for skill. Collect and reinvest!',
-                'Green means go. Accelerate your growth!',
-                'You\'ve crossed into profit. The hard part is over. Now soar!',
-                'Positive cash flow is the goal. You\'re living it!',
-                'Small profits lead to big wins. The pattern is set!',
-                'You\'re on the right side of the ledger. Stay there!',
-                'Profit today funds tomorrow\'s ambitions. Save and grow!',
-                'Your green streak starts here. Extend it!',
-                'You\'ve proven you can profit. Now prove you can scale!',
-                'Positive numbers validate your strategy. Trust and grow!',
-                'You\'re in the plus. Now go exponential!',
-                'Green is growth. Nurture your gains!',
-                'You\'ve achieved positive returns. Compound them!',
-                'Your balance is growing. Feed the growth!',
-                'Profit is the first step to wealth. Keep stepping!',
-                'You\'re positive. Positivity attracts more positivity!',
-                'Small wins build big confidence. Build both!',
-                'Green on the screen means you\'re winning. Keep winning!',
-                'Your profit margin exists. Expand it!',
-                'Positive balance, positive mindset, positive trajectory!',
-                'You\'re ahead of the game. Stay ahead!',
-                'Profit is proof of concept. Now scale the concept!',
-                'You\'re making money. Make more of it!',
-                'Green numbers reflect green decisions. Keep deciding well!',
-                'Your portfolio is positive. Diversify and grow!',
-                'Profit is a habit. Cultivate it daily!',
-                'You\'re in the plus column. Write more entries!',
-                'Small profit = big potential. Unlock it!',
-                'Your balance is trending up. Keep the trend alive!',
-                'Profit achieved. Now achieve scale!',
-                'Green is the target. You\'ve hit it. Aim higher!',
-                'You\'re making progress. Progress is addictive. Get addicted!',
-                'Positive territory is your playground. Play bigger!',
-                'Your gains are real. Real gains compound. Compound them!',
-                'Profit is your new baseline. Raise the bar!',
-                'You\'re in the green. The grass is greener where you water it!',
-                'Small profit, big smile. Bigger profit, bigger smile!',
-                'Your bankroll is growing. Keep feeding it!',
-                'Green means you\'re doing something right. Do more of it!',
-                'You\'ve captured profit. Now capture more market!',
-                'Profit is a milestone. Celebrate and set the next!',
-                'You\'re ahead in the game. Play to stay ahead!',
-                'Positive results confirm your strategy. Double down!',
-                'Your account is growing. Growth is the goal!',
-                'Green today, greener tomorrow. The trend is your friend!',
-                'You\'ve earned profit. Now earn compound interest!',
-                'Small profit is a big deal. It proves the system works!'
+                'A handful of matches is just the beginning. Play more!'
             ],
             'moderate-profit': [
                 'Solid profit! Your strategy is working. Keep executing!',
-                'You\'re building real wealth. One match at a time!',
-                'Good gains! Consistency like this creates champions!',
-                'Your positive trend is strong. Keep riding it!',
-                'Profit is accumulating. Let compound interest work!',
-                'You\'re on a winning path. Stay the course!',
-                'Decent profit reflects decent decisions. Keep deciding well!',
-                'Your bankroll is growing nicely. Nurture the growth!',
-                'Positive momentum is building. Accelerate!',
-                'You\'re creating value. Keep creating more!',
-                'Your results speak for themselves. Let them speak loudly!',
-                'Profit is flowing. Open the gates wider!',
-                'You\'ve got a winning formula. Stick to it!',
-                'Your balance is climbing. The view gets better up here!',
-                'Solid gains, solid strategy, solid future. Keep building!',
-                'Profits are proof of skill. Keep proving yourself!',
-                'Your upward trend is established. Now dominate!',
-                'Good money being made. Make great money next!',
-                'You\'re on a roll. Keep the momentum going!',
-                'Profit is accumulating in your favor. Let it snowball!',
-                'Your positive balance is growing. Feed the growth engine!',
-                'Consistent profits build consistent wealth. Stay consistent!',
-                'You\'re outperforming. Keep outperforming!',
-                'Your earnings are real. Reinvest and grow!',
-                'Profit streak is alive. Extend it!',
-                'You\'re building a war chest. Make it impenetrable!',
-                'Solid returns reflect solid gameplay. Keep playing solid!',
-                'Your account is in great shape. Shape it further!',
-                'Profits are rolling in. Keep the gates open!',
-                'Your positive trend has traction. Full speed ahead!',
-                'You\'re making consistent gains. Consistency is key!',
-                'Profitability is your new normal. Normalize growth!',
-                'Your strategy is validated. Now optimize it!',
-                'Good profits today lay the foundation for great profits tomorrow!',
-                'Your bankroll is healthy. Keep the health regimen!',
-                'Profits are compounding. Time is on your side!',
-                'You\'re winning consistently. That\'s the mark of a pro!',
-                'Your balance is trending beautifully. Keep trending!',
-                'Profit generation is active. Boost production!',
-                'You\'re in the zone. The profit zone. Stay here!',
-                'Your returns are solid. Solid returns build solid wealth!',
-                'You\'ve cracked the code. Now scale the solution!',
-                'Profits are proof. Proof of skill, proof of strategy!',
-                'Your account is thriving. Thrive more!',
-                'You\'re making money work for you. Let it work harder!',
-                'Consistent profits separate amateurs from pros. You\'re a pro!',
-                'Your profit trajectory is impressive. Keep impressing!',
-                'Good gains accumulate into great wealth. Be patient!',
-                'You\'re on the right track. The profit express!',
-                'Your balance sheet is green. Keep it lush!',
-                'Profits are mounting. Build a mountain!',
-                'Your strategy is paying dividends. Collect them!',
-                'Solid performance yields solid results. Yield more!',
-                'You\'re mastering the game. Mastery shows in the numbers!',
-                'Profit zone activated. Full production mode!',
-                'Your earnings are evidence of excellence. Keep excelling!',
-                'Consistent profitability is your superpower. Use it!',
-                'Your bankroll is expanding. Expansion creates opportunity!',
-                'Profits today, financial freedom tomorrow. Stay disciplined!',
-                'You\'re building something real. Real profits, real growth!',
-                'Your game is profitable. Profit is the ultimate scoreboard!',
-                'You\'re on an upward trajectory. Trajectories persist!',
-                'Profits are accumulating. The accumulation phase is powerful!',
-                'Your results are strong. Strong results breed confidence!',
-                'You\'ve found your groove. The profit groove. Dance in it!',
-                'Good money management plus good execution equals profit!',
-                'Your positive balance is a testament to your skill. Testify!',
-                'Profits are the reward for discipline. Stay disciplined!',
-                'Your bankroll is growing steadily. Steady wins the race!',
-                'Profitability is a mindset. You\'ve got the mindset!',
-                'Your strategy is working. Let it work harder!',
-                'Consistent gains build unstoppable momentum. Keep going!',
-                'Profits are your report card. Straight A\'s!',
-                'Your portfolio is performing. Performance creates wealth!',
-                'You\'re on a profitable path. Paths lead to destinations!',
-                'Solid profits today, solid foundation for tomorrow!',
-                'Your earnings trajectory is up. The sky is the limit!',
-                'Profit mode is locked in. Keep the engine running!',
-                'You\'re creating value with every match. Value creators win!',
-                'Your bankroll reflects your skill. Let it reflect more!',
-                'Profits are compounding. Compound interest is magic!',
-                'Your winning ways are paying off. Pay yourself more!',
-                'Profit growth is steady. Steady growth wins championships!',
-                'You\'re on a heater. Ride the wave!',
-                'Your account is flourishing. Keep the conditions right!',
-                'Profits are the metric of mastery. You\'re mastering it!',
-                'Your game is profitable. Profit is the ultimate validation!',
-                'Consistent earnings build wealth. Wealth builds freedom!',
-                'You\'re in profit territory. Expand your borders!',
-                'Your strategy is producing. Increase production!',
-                'Profits are flowing in. Open more channels!',
-                'Your balance is climbing steadily. Steady climbs reach peaks!',
-                'You\'ve built a profit machine. Now optimize it!',
-                'Good gains are the foundation of great wealth. Build on it!',
-                'Your bankroll is robust. Keep it healthy!',
-                'Profits confirm your approach. Stay the course!',
-                'You\'re generating wealth. Generators don\'t stop!',
-                'Your profitability is no accident. It\'s skill. Show more!',
-                'Profits are adding up. Addition leads to multiplication!'
-            ],
-            'big-profit': [
-                'Major profits! You\'re dominating the competition!',
-                'Impressive gains! Your strategy is elite level!',
-                'You\'re on fire! This kind of profit is championship caliber!',
-                'Big wins stacking up. You\'re in rare form!',
-                'Exceptional returns! Keep pressing your advantage!',
-                'Your bankroll is surging. Ride this wave to the top!',
-                'Significant profits reflect significant skill. Well played!',
-                'You\'re crushing it! Keep the foot on the gas!',
-                'Outstanding performance! The leaderboard is calling!',
-                'Your profits are impressive. Scale them even further!',
-                'You\'re on a major upswing. Capitalize fully!',
-                'Big profits, big confidence, even bigger potential!',
-                'You\'re playing at an elite level. Maintain this standard!',
-                'Your earnings are exceptional. Exception demands attention!',
-                'You\'re tearing it up! This is your moment!',
-                'Major gains suggest major skill mastery. You\'ve arrived!',
-                'Your balance is ballooning. Manage the growth wisely!',
-                'You\'re in peak form. Peaks are for conquering!',
-                'Substantial profits are your new baseline. Raise the bar!',
-                'Your performance is top-tier. Top-tier gets top rewards!',
-                'You\'re on a legendary run. Legends never stop!',
-                'Big bankroll energy. Maintain it!',
-                'Your results are turning heads. Let them turn yours upward!',
-                'Exceptional earnings, exceptional execution. Keep both!',
-                'You\'re building a fortune. Fortunes are built match by match!',
-                'Your profits speak volumes. Let them write your legacy!',
-                'You\'re in the zone of elite performers. Stay here!',
-                'Significant gains require significant skill. You have it!',
-                'Your bankroll is thriving. Thriving requires maintaining!',
-                'Big profits are big validations. Validate your strategy further!',
-                'You\'re at the top of your game. The top is lonely. Bring company!',
-                'Your earnings curve is steep. Steep curves lead to high peaks!',
-                'You\'re dominating the profit game. Domination is a choice!',
-                'Exceptional returns demand exceptional consistency. Stay consistent!',
-                'Your portfolio is flourishing. Flourishing needs nurturing!',
-                'Big wins are becoming routine. That\'s champion behavior!',
-                'Your profit margins are enviable. Envy turns into emulation!',
-                'You\'re making serious moves. Serious players get serious results!',
-                'Your balance is impressive. Impress yourself further!',
-                'You\'re on a profit rampage. Rampage responsibly!',
-                'Major profits = major momentum. Momentum is unstoppable!',
-                'Your earnings are skyrocketing. The sky has no limit!',
-                'You\'re playing chess while others play checkers. Keep strategizing!',
-                'Big profits reflect big decisions. Keep making big moves!',
-                'Your bankroll is booming. Booms create echoes!',
-                'You\'re in rare air. Rare air requires rare focus!',
-                'Outstanding performance is your new standard. Standardize it!',
-                'Your profits are pulsing. Keep the pulse strong!',
-                'You\'re on a golden streak. Gold never tarnishes!',
-                'Significant earnings show significant growth. Keep growing!',
-                'Your balance is in the big leagues. Play like it!',
-                'Exceptional gains are your signature. Sign more deals!',
-                'You\'re building a legacy. Legacies are built on big wins!',
-                'Your profits are commanding respect. Command more!',
-                'You\'re in elite company. Company drives competition!',
-                'Big bankroll, big opportunities. Seize them all!',
-                'Your earnings trajectory is exponential. Exponential is exciting!',
-                'You\'re making waves. Waves create tsunamis of success!',
-                'Your performance is award-worthy. Collect your trophies!',
-                'Profits like these are rare. You\'re making them regular. Wow!',
-                'Your balance is a testament to your talent. Testify louder!',
-                'You\'re on a championship run. Championships require defense too!',
-                'Big profits are the result of big efforts. Keep putting in work!',
-                'Your earnings are skyrocketing. Skyrockets leave trails!',
-                'You\'re a profit machine. Machines need maintenance. Tune up!',
-                'Your bankroll is bulging. Bulging with potential!',
-                'You\'re rewriting your record book. Keep writing!',
-                'Significant returns are your new norm. Normalize excellence!',
-                'Your performance is legendary. Legends grow with every match!',
-                'Profits like this fund dreams. Dream bigger!',
-                'You\'re on a heater that won\'t cool. Keep the fire burning!',
-                'Your results are phenomenal. Phenomena are rare. You\'re rare!',
-                'Big earnings bring big responsibility. Manage it well!',
-                'You\'re at the peak of your powers. Peaks can get higher!',
-                'Your bankroll is the envy of many. Be humble, keep climbing!',
-                'You\'re crushing milestones. Set bigger ones!',
-                'Profits are pouring in. Build a reservoir!',
-                'Your earnings curve is vertical. Vertical climbs reach the stars!',
-                'You\'re dominating the leaderboard. Dominance requires adaptation!',
-                'Your balance is at an all-time high. ATHs are addictive!',
-                'You\'re making big moves. Big moves inspire big futures!',
-                'Exceptional performance is your brand. Brand yourself further!',
-                'Your profits are incredible. Incredible requires incredible effort!',
-                'You\'re in the hall of fame territory. Keep earning your plaque!',
-                'Your bankroll is a force. Forces shape destinies!',
-                'You\'re achieving at the highest level. Levels can go higher!',
-                'Profits like these are game-changers. Change the game more!',
-                'Your performance is headline-worthy. Write the headlines!',
-                'You\'re building a dynasty. Dynasties are built on consistency!',
-                'Big profits, big future. The future is bright!',
-                'Your earnings are monumental. Monuments stand the test of time!',
-                'You\'re in the profit hall of fame. Keep earning your spot!',
-                'Your balance is legendary. Legends are forever!',
-                'You\'re achieving greatness. Greatness is a choice. Choose more!',
-                'Profits are maximized. Now find new maxima!',
-                'Your performance is iconic. Icons set trends. Set them!'
+                'You\'re building real tournament wealth. One match at a time!',
+                'Good gains! Consistency like this creates champions!'
             ],
             'huge-profit': [
                 'Extraordinary profits! You\'re an absolute legend!',
-                'Phenomenal returns! This is generational wealth building!',
-                'You\'re on an unprecedented run. Enjoy the view from the top!',
-                'Massive profits! Your strategy is god-tier!',
-                'Historic earnings! You\'re making tournament history!',
-                'Your bankroll is monstrous. Monsters move mountains!',
-                'Unbelievable gains! This is championship DNA!',
-                'You\'ve cracked the code to exponential wealth. Share your wisdom!',
-                'Godlike performance! The hall of fame awaits!',
-                'Your profits are astronomical. The sky isn\'t even the limit!',
-                'You\'re building generational wealth. Generations will thank you!',
-                'Peak performance at an elite level. This is mastery!',
-                'Your earnings are jaw-dropping. Pick your jaw up and keep going!',
-                'You\'ve transcended normal profit. Welcome to the stratosphere!',
-                'Legendary gains require legendary discipline. You have it!',
-                'Your bankroll is a testament to greatness. Be great again!',
-                'You\'re on a Mount Rushmore run. Carve your face deeper!',
-                'Unprecedented success. Unprecedented requires unprecedented effort!',
-                'Your profits are rewriting record books. Write more chapters!',
-                'You\'re a wealth-building machine. Machines don\'t stop!',
-                'Your earnings are in elite territory. Elite requires elite focus!',
-                'Phenomenal wealth creation. Wealth creators shape economies!',
-                'You\'re dominating on a historic level. History remembers dominators!',
-                'Your performance is legendary. Legends live forever!',
-                'Massive profits deserve massive recognition. Recognize yourself!',
-                'You\'ve reached the pinnacle. Pinnacles are for surveying new peaks!',
-                'Your bankroll is extraordinary. Extraordinary requires extraordinary vision!',
-                'You\'re in the 1% of performers. The 1% work harder!',
-                'Your profits are epic. Epics are written about heroes!',
-                'You\'re achieving the impossible. Impossible is just a benchmark!',
-                'God-tier earnings. God-tier requires god-tier discipline!',
-                'Your success is stratospheric. Stratospheres have thin air. Breathe deep!',
-                'You\'re building a legacy that lasts centuries. Build wisely!',
-                'Your wealth creation is historic. History is being written!',
-                'You\'re on an otherworldly run. Worlds are conquered!',
-                'Your profits are unmatched. Unmatched requires unmatched dedication!',
-                'You\'ve achieved peak performance. Peaks can always be higher!',
-                'Your bankroll is majestic. Majesty commands respect!',
-                'You\'re in the pantheon of greats. Pantheons need new members!',
-                'Your earnings are transcendent. Transcend further!',
-                'You\'re playing a different game. The game of legends!',
-                'Your profits are monumental. Monuments are built to last!',
-                'You\'ve achieved what few can dream. Dream bigger!',
-                'Your success is meteoric. Meteors leave craters of impact!',
-                'Your bankroll is awe-inspiring. Inspire others by going further!',
-                'You\'re at the apex. Apex predators keep hunting!',
-                'Your earnings are breathtaking. Catch your breath and push on!',
-                'You\'ve mastered the wealth game. Mastery is a journey, not a destination!',
-                'Your performance is immortal. Immortals keep achieving!',
-                'Profits of this magnitude change lives. Change more lives!',
-                'You\'re on a generational run. Generations tell stories of this!',
-                'Your bankroll is titanic. Titans roam the earth!',
-                'You\'ve achieved legendary status. Legends keep writing!',
-                'Your success is unparalleled. Unparalleled requires unparalleled focus!',
-                'You\'re building an empire. Empires expand!',
-                'Your earnings are visionary. Visions become reality!',
-                'You\'re at the summit. Summits reveal new mountains to climb!',
-                'Your profits are historic. Historians will study your methods!',
-                'You\'ve transcended the game. Transcendence is the ultimate goal!',
-                'Your bankroll is mythical. Myths inspire generations!',
-                'You\'re on a path to immortality. Immortality is earned!',
-                'Your earnings are revolutionary. Revolutions change the world!',
-                'You\'ve reached the zenith. Zeniths are starting points!',
-                'Your success is transformative. Transformation is ongoing!',
-                'You\'re writing your name in the stars. Stars shine forever!',
-                'Your profits are seismic. Seismic shifts create new landscapes!',
-                'You\'ve achieved the extraordinary. Extraordinary is your new ordinary!',
-                'Your bankroll is iconic. Icons are forever!',
-                'You\'re in the realm of legends. Legends create new realms!',
-                'Your earnings are epoch-defining. Define a new epoch!',
-                'You\'ve reached the apex of achievement. Apexes are for launching!',
-                'Your success is monumental. Monuments inspire awe!',
-                'You\'re building a financial empire. Empires require constant growth!',
-                'Your profits are rewriting paradigms. Write a new paradigm!',
-                'You\'ve achieved what most only dream of. Dream of more!',
-                'Your bankroll is the stuff of legend. Legends are built daily!',
-                'You\'re on a path to greatness. Greatness has no ceiling!',
-                'Your earnings are staggering. Stagger forward with confidence!',
-                'You\'ve reached the pinnacle of performance. Pinnacles are for viewing!',
-                'Your success is revolutionary. Revolutions need leaders!',
-                'You\'re building a dynasty. Dynasties require succession planning!',
-                'Your profits are game-changing. Change the game again!',
-                'You\'ve achieved the impossible. Impossible is just a word!',
-                'Your bankroll is breathtaking. Take a breath and keep climbing!',
-                'You\'re in the halls of fame. Halls need new wings!',
-                'Your earnings are earth-shattering. Shatter more ceilings!',
-                'You\'ve mastered the art of winning. Art is never finished!',
-                'Your success is historic. Make history repeat itself!',
-                'You\'re on a legendary run. Legends never retire!',
-                'Your profits are phenomenal. Phenomena are studied!',
-                'You\'ve reached the summit of success. Summits are for launching!',
-                'Your bankroll is transcendent. Transcendence is a continuous journey!',
-                'You\'re achieving immortality through performance. Immortals keep achieving!'
-            ],
-            'low-winrate': [
-                'Your win rate needs work. Focus on fundamentals!',
-                'Winning fewer than 30% means room for big improvement!',
-                'Low win rate, high potential. Let\'s turn it around!',
-                'Every loss is data. Use it to refine your approach!',
-                'Win rate is a lagging indicator. Improve your process!',
-                'Don\'t focus on the percentage. Focus on getting 1% better daily!',
-                'Low win rate means you\'re due for a hot streak. Law of averages!',
-                'Analyze your losses. Patterns emerge. Patterns can be broken!',
-                'Winning is a skill. Skills are built through practice!',
-                'Your win rate will rise with deliberate practice. Stay intentional!',
-                'Consistency starts with one win. Build from there!',
-                'Low win rate is a starting point. The only way is up!',
-                'Every great player had a losing phase. Push through yours!',
-                'The gap between your wins and losses is smaller than you think!',
-                'Win rate is temporary. Skill development is permanent!',
-                'Turn those close losses into wins. It takes one adjustment!',
-                'Your potential win rate is much higher. Unlock it!',
-                'Losses are lessons. Learn them and watch your rate climb!',
-                'Focus on process, not outcome. Process improves rates!',
-                'A low win rate means huge upside. Massive room to grow!',
-                'Your next win is coming. Confidence compounds!',
-                'Improve your decision-making. Decisions determine win rate!',
-                'Watch replays of your wins and losses. Patterns reveal answers!',
-                'Win rate is a number. Your potential is immeasurable!',
-                'Small changes in approach yield big changes in win rate!',
-                'Don\'t chase win rate. Chase improvement. Rate follows!',
-                'Your current rate is a baseline. Baselines are meant to be raised!',
-                'The path to 50% starts with one correct adjustment!',
-                'Analyze what your winners do differently. Emulate them!',
-                'Win rate is a game of inches. Gain inches!',
-                'Your skill level is higher than your win rate suggests. Prove it!',
-                'Consistency in practice leads to consistency in winning!',
-                'Low win rate is not your identity. It\'s your current state!',
-                'State changes. Your win rate will too!',
-                'The best players have the worst losing streaks. You\'re in good company!',
-                'Your win rate is a challenge. Challenges are opportunities!',
-                'Every match is a chance to improve your rate. Seize it!',
-                'Win rate fluctuates. Your effort shouldn\'t!',
-                'Focus on winning the next engagement. The rate will fix itself!',
-                'Your win rate has nowhere to go but up. That\'s exciting!',
-                'Use the 80/20 rule. 80% of wins come from 20% of adjustments!',
-                'Find your winning formula. Then repeat it relentlessly!',
-                'Low win rate today, high win rate tomorrow. The arc bends upward!',
-                'Your rate is a reflection of habits. Change your habits!',
-                'Winning is a learnable behavior. Start learning!',
-                'Your win rate will improve when your learning rate does!',
-                'Every loss contains the seed of a future win. Extract it!',
-                'The numbers will turn. They always do with persistence!',
-                'Your current rate is not your final rate. Keep working!',
-                'Don\'t be discouraged. Be determined!',
-                'Low win rate means low pressure. Play free and improve!',
-                'Your next 10 matches could completely change your rate!',
-                'Win rate is a marathon, not a sprint. Pace yourself!',
-                'Each match is independent. Treat each as a fresh opportunity!',
-                'Your skill is growing even if your rate isn\'t showing it yet!',
-                'Win rate lag matters. Your improvements will show soon!',
-                'The only rate that matters is your improvement rate!',
-                'You\'re building a foundation. Foundations support growth!',
-                'Your win rate is a story. You\'re the author. Rewrite it!',
-                'Focus on what you can control. Your rate will follow!',
-                'Low win rate = high learning opportunity. Learn aggressively!',
-                'Your rate is a snapshot. Snapshots don\'t define movies!',
-                'The movie of your career is just starting. Make it a blockbuster!',
-                'Win rates bend with effort. Apply more effort!',
-                'Your potential is not reflected in your rate. Yet!',
-                'Close losses are wins in progress. Keep progressing!',
-                'Your win rate is a metric. Metrics are meant to be moved!',
-                'Move the needle one match at a time!',
-                'Low rates are reset points. Reset and refocus!',
-                'Your next win is the start of a new trend!',
-                'Win rate improvement is mathematical. Play more = rate normalizes!',
-                'Your sample size is small. Give it time!',
-                'Rates normalize with volume. Increase your volume!',
-                'The law of large numbers will pull your rate toward your skill!',
-                'Trust your skill. Your rate will eventually reflect it!',
-                'Your rate is a lagging indicator of improvement. Keep improving!',
-                'Today\'s losses are tomorrow\'s wins. Be patient!',
-                'Win rate is just a number. Your heart is what matters!',
-                'Keep competing. The scoreboard will balance!',
-                'Your rate is experiencing growing pains. Growth is happening!',
-                'Every match sharpens your edge. Sharp edges cut wins!',
-                'Your rate is a work in progress. Progress is being made!'
-            ],
-            'mid-winrate': [
-                'Solid win rate! You\'re competitive. Now aim for dominant!',
-                '50% is good. 60% is great. The gap is smaller than you think!',
-                'You\'re holding your own. Time to start taking over!',
-                'Middle of the pack is a launchpad, not a destination!',
-                'Your win rate is respectable. Respectable wins championships!',
-                'You\'re a contender. Now become a champion!',
-                'Decent win rate. Now make it elite!',
-                'You\'re competitive. Competitive players find the edge!',
-                'Your rate shows competence. Now show dominance!',
-                'Middle ground is fertile ground for growth. Grow upward!',
-                'You\'re in the game. Now own the game!',
-                'Solid foundation. Build a winning tower on it!',
-                'Your win rate is a platform. Launch from it!',
-                'You\'ve proven you can compete. Now prove you can dominate!',
-                'Average is where you start your climb to exceptional!',
-                'Your rate is good. Great is just a few adjustments away!',
-                'Consistency at this level is the base for the next level!',
-                'You\'re a solid player. Solid players become great through refinement!',
-                'Your win rate says you belong. Your potential says you can lead!',
-                'The middle is comfortable. Greatness is uncomfortable. Get uncomfortable!',
-                '50% win rate means you\'re in every match. Now win more of them!',
-                'Your rate reflects good fundamentals. Polish them!',
-                'You\'re competitive across the board. Find your edge and exploit it!',
-                'Good win rate is the start of great win rate. Keep pushing!',
-                'Your performance is solid. Solid can become spectacular!',
-                'The difference between good and great is small. Find it!',
-                'You\'re in the mix. Now rise above the mix!',
-                'Reliable win rate. Now make it remarkable!',
-                'You\'re a known contender. Become a known champion!',
-                'Your rate is a statement. Make a stronger statement!',
-                'You\'re doing well. Well can become excellent!',
-                'Mid-tier is a stepping stone. Step up!',
-                'Your win rate shows promise. Promise must be fulfilled!',
-                'You\'re consistent. Consistent players become champions!',
-                'Your rate is healthy. Healthy can become wealthy (in wins)!',
-                'You\'re in the game. Now lead the game!',
-                'Solid numbers. Solid players build solid careers!',
-                'Your win rate is your resume. Upgrade your resume!',
-                'You belong in the arena. Now rule it!',
-                'Average is the starting point of legends. Start your legend!',
-                'Your rate says you can play. Your potential says you can dominate!',
-                'You\'re a threat. Become the threat!',
-                'Good is the enemy of great. Refuse to settle!',
-                'Your win rate is a C+. Aim for A+!',
-                'Middle of the pack is where the work happens. Work harder!',
-                'You have the base. Now build the masterpiece!',
-                'Your rate is solid. Solid ground for skyscrapers!',
-                'You\'re competitive in every match. Now win the close ones!',
-                'Decent rate, but your ceiling is much higher. Break through!',
-                'Your performance is reliable. Reliable becomes remarkable!',
-                'You can beat anyone on your day. Make every day your day!',
-                'Your win rate leaves room for growth. Grow!',
-                'You\'re in the hunt. Now finish the hunt!',
-                'Solid win rate is the foundation of a champion. Build it higher!',
-                'You\'ve got the goods. Now show the greatness!',
-                'Your rate proves you belong. Your heart says you can lead!',
-                'Average players have average rates. You\'re above average in potential!',
-                'Good win rate, great potential. The gap is closing!',
-                'You\'re a solid competitor. Competitors become champions!',
-                'Your rate is the floor. The ceiling is much higher!',
-                'Mid-tier performance, high-tier potential. Unleash it!',
-                'You\'re in striking distance of elite. Strike!',
-                'Your win rate is respectable. Respect is earned through excellence!',
-                'You play at a good level. Good to great is the next step!',
-                'Your numbers are solid. Solid numbers build solid reputations!',
-                'You\'re in the conversation. Lead the conversation!',
-                'Competent performance. Champions are built on competence!',
-                'Your rate shows you can hang. Now show you can take over!',
-                'Middle ground is where champions are forged. The forge is hot!',
-                'You\'ve got the skills. Now get the stats!'
-            ],
-            'high-winrate': [
-                'Elite win rate! You\'re among the best!',
-                'Dominant performance! Your win rate is world-class!',
-                'Your win rate is legendary. Legends keep winning!',
-                'You\'re crushing it! This is elite territory!',
-                'Top-tier win rate. Top-tier players keep pushing!',
-                'Your rate is exceptional. Exceptional players set standards!',
-                'You\'re winning at an elite clip. Championship form!',
-                'Your win rate speaks volumes. Let it roar!',
-                'Dominance is your brand. Brand yourself further!',
-                'You\'re in rare company. Company pushes you higher!',
-                'Elite win rate, elite mindset, elite results!',
-                'Your rate is the envy of competitors. Stay hungry!',
-                'You\'re performing at the highest level. Maintain it!',
-                'Your win rate is a weapon. Wield it!',
-                'You\'re on a championship pace. Pace yourself for the long run!',
-                'Your rate puts you in the top tier. Defend your position!',
-                'Exceptional win rate reflects exceptional skill. You\'ve arrived!',
-                'You\'re dominating the competition. Domination requires evolution!',
-                'Your win rate is a statement. Keep making it!',
-                'You\'re in elite company. Elite players elevate each other!',
-                'Your performance is top-tier. Top-tier is a mindset!',
-                'Winning at this rate is no accident. It\'s mastery!',
-                'Your rate is outstanding. Stand out more!',
-                'You\'re a winner. Winners find ways to keep winning!',
-                'Your win rate is phenomenal. Phenomenal requires phenomenal effort!',
-                'You\'re built for championships. Build your legacy!',
-                'Your rate is world-class. The world is watching!',
-                'You\'re a force of nature. Forces reshape landscapes!',
-                'Elite performance creates elite opportunities. Seize them!',
-                'Your win rate defines excellence. Redefine it!',
-                'You\'re at the top of the food chain. Keep evolving!',
-                'Your rate is iconic. Icons transcend the game!',
-                'You\'re winning at a historic pace. Make history!',
-                'Your performance is gold standard. Raise the standard!',
-                'You\'re in the hall of fame conversation. Keep talking!',
-                'Your win rate is a benchmark. Benchmarks are meant to be broken!',
-                'You\'re playing at a championship level. Championships require defense!',
-                'Your rate is elite. Elite requires sustained excellence!',
-                'You\'re a master of the game. Masters keep learning!',
-                'Your win rate demands respect. Demand more from yourself!',
-                'You\'re performing at an extraordinary level. Extraordinary is your baseline!',
-                'Your rate is in the stratosphere. Breathe thin air!',
-                'You\'re a winning machine. Machines evolve!',
-                'Your performance is awe-inspiring. Inspire through consistency!',
-                'You\'re setting the standard. Standards are meant to be raised!',
-                'Your win rate is the target. Everyone aims at you. Stay sharp!',
-                'You\'re at the peak. Peaks offer the best views!',
-                'Your rate is legendary. Legends build legacies!',
-                'You\'re dominating the landscape. Landscapes change. Adapt!',
-                'Your win rate is your signature. Sign more victories!',
-                'You\'re a winner. Winners never stop competing!',
-                'Elite rate = elite responsibility. Carry it well!',
-                'Your performance is inspiring. Inspiration drives others!',
-                'You\'re in the winner\'s circle. Circles expand!',
-                'Your rate is the gold standard. Polish it daily!',
-                'You\'re a champion-caliber player. Champions defend their titles!',
-                'Your win rate is extraordinary. Ordinary is beneath you now!',
-                'You\'re on a legendary path. Paths are meant to be followed!',
-                'Your rate is unmatched. Match it with consistency!',
-                'You\'re at the apex. Apex predators keep hunting!'
-            ],
-            'high-kills-low-coins': [
-                'You\'ve got the kills but not the coins. Focus on tournament placement!',
-                'High kills, low rewards means you\'re playing well but not winning. Shift strategy!',
-                'Individual skill is high. Team results need work!',
-                'Your kill count is impressive. Now convert that into wins!',
-                'You\'re fragging out but not cashing in. Play for the win!',
-                'Kills don\'t always equal coins. Play the objective!',
-                'Your mechanics are solid. Your game sense needs refinement!',
-                'You\'re a skilled fragger. Now become a skilled winner!',
-                'Individual performance is strong. Collective results lag. Fix it!',
-                'Your K/D is enviable. Your W/L is improvable!',
-                'High kills show raw talent. Channel it into tournament wins!',
-                'You\'ve got the aim. Now develop the game sense!',
-                'Kills are flashy. Wins are profitable. Prioritize!',
-                'Your stats show skill. Your balance shows opportunity!',
-                'You\'re a killing machine. Turn it into a winning machine!',
-                'Your fragging power is elite. Your strategic play needs work!',
-                'You win fights but lose matches. Close the gap!',
-                'High kills mean you\'re doing something right. Find what\'s wrong!',
-                'You\'re a monster in fights. Be a monster in tournaments!',
-                'Kills earn highlights. Wins earn coins. Aim for both!',
-                'Your aggression is lethal. Channel it wisely!',
-                'You\'ve got the talent. Now get the trophies!',
-                'Your kill count proves you belong. Your coin count proves you can grow!',
-                'You\'re a feared opponent. Become a feared champion!',
-                'Mechanical skill is high. Tactical skill can be higher!',
-                'You can outgun anyone. Now outsmart everyone!',
-                'Your fragging is top-tier. Your tournament strategy needs elevation!',
-                'Kills are satisfying. Wins are profitable. Balance both!',
-                'You\'re proving you can compete. Now prove you can conquer!',
-                'Your aim is championship caliber. Your decision-making can catch up!',
-                'You\'ve got the hardware (kills). Time for the software (wins)!',
-                'Raw skill is abundant. Refined skill wins tournaments!',
-                'You\'re a warrior. Warriors win battles. Strategists win wars!',
-                'Your kill stats scream talent. Your wallet whispers potential!',
-                'High kills, low coins is a fixable equation. Solve it!',
-                'You dominate fights. Now dominate the leaderboard!',
-                'Your mechanics are pro-level. Your game sense can match!',
-                'You\'ve got the gift. Now develop the grind!',
-                'Kills are chapters. Coins are the book. Write a bestseller!',
-                'You win engagements. Now win campaigns!',
-                'Individual brilliance is clear. Team success is the goal!',
-                'Your fragging is legendary. Your trophy case can match!',
-                'You\'re a force in fights. Be a force in the standings!',
-                'Your kill rate is elite. Convert that into win rate!',
-                'You\'ve mastered combat. Now master tournaments!',
-                'Your skills are sharp. Your strategy can be sharper!',
-                'Kills are loud. Coins are quiet. Both matter!',
-                'You\'re a predator. Predators hunt for trophies, not just kills!',
-                'Your aim is a weapon. Your mind is a bigger weapon!',
-                'You\'ve got the talent to Dominate. Now develop the strategy to win!',
-                'Kill leader potential. Tournament winner potential too!',
-                'Your mechanics are elite. Your macro game needs work!',
-                'You can hang with the best. Now beat the best!',
-                'Your stats say "skilled." Your balance says "growing." Both true!',
-                'You\'re a fighter. Fighters win rounds. Champions win tournaments!',
-                'Your K/D is impressive. Your bank account wants the same!',
-                'You\'ve proven you can frag. Now prove you can win!',
-                'Kills come naturally. Wins come deliberately!',
-                'Your combat skills are pro. Your tournament skills are next!'
+                'Phenomenal returns! This is championship level play!',
+                'Massive profits! Your strategy is god-tier!'
             ]
         };
 
@@ -1857,79 +600,57 @@
             const coins = _userData.coins || 0;
             const matches = _userData.matchesPlayed || 0;
             const kills = _userData.kills || 0;
-            const net = coins - (matches * 500);
             const winRate = matches ? Math.round((kills/2/matches)*100) : 0;
 
-            let condition;
-            if (matches === 0) condition = 'not-played';
-            else if (matches < 5) condition = 'few-matches';
-            else if (net < -10000) condition = 'huge-loss';
-            else if (net < -5000) condition = 'big-loss';
-            else if (net < -1000) condition = 'moderate-loss';
-            else if (net < 0) condition = 'small-loss';
-            else if (net === 0) condition = 'break-even';
-            else if (net <= 1000) condition = 'small-profit';
-            else if (net <= 5000) condition = 'moderate-profit';
-            else if (net <= 10000) condition = 'big-profit';
-            else condition = 'huge-profit';
-
-            if (winRate < 30 && matches >= 5 && condition.startsWith('small') || winRate < 30 && matches >= 5 && condition.startsWith('moderate')) condition = 'low-winrate';
-            else if (winRate > 60 && matches >= 5) {
-                if (coins < 1000) condition = 'high-kills-low-coins';
-                else condition = 'high-winrate';
-            } else if (winRate >= 30 && winRate <= 60 && matches >= 5 && (condition === 'small-profit' || condition === 'moderate-profit' || condition === 'break-even')) condition = 'mid-winrate';
-
-            if (!condition) condition = matches < 5 ? 'few-matches' : 'moderate-profit';
-
+            let condition = matches === 0 ? 'not-played' : (matches < 5 ? 'few-matches' : 'moderate-profit');
             const msgs = AI_MSGS[condition] || AI_MSGS['few-matches'];
             const shuffled = [...msgs].sort(() => Math.random() - 0.5).slice(0, 3);
-            document.getElementById('ai-headline').textContent = shuffled[0].split('.')[0] + '.';
+            document.getElementById('ai-headline').textContent = shuffled[0].split('.')[0].toUpperCase() + '.';
             document.getElementById('ai-messages').innerHTML = shuffled.map(m =>
-                `<div class="msg-line"><strong>AI</strong> · ${m}</div>`
+                `<div class="msg-line"><strong>EWC_AI</strong> · ${m}</div>`
             ).join('');
 
             document.getElementById('analytics-grid').innerHTML = `
                 <div class="stat-widget">
-                    <div class="flex justify-between text-slate-400 text-xl">
-                        <i class="fa-solid fa-star text-purple-400"></i>
+                    <div class="flex justify-between items-center text-purple-600">
+                        <i class="fa-solid fa-star text-base"></i>
+                        <span class="font-ewc text-[9px] font-black bg-purple-50 text-purple-600 px-2 py-0.5 rounded">REWARDS</span>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Reward Points</p>
-                        <p class="text-xl font-bold text-white">${(coins||0).toLocaleString()}</p>
-                        <p class="text-[9px] text-slate-500">Wallet Balance</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">REWARD POINTS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${(coins||0).toLocaleString()}</p>
                     </div>
                 </div>
                 <div class="stat-widget">
-                    <div class="flex justify-between text-slate-400 text-xl">
-                        <i class="fa-solid fa-arrow-right-arrow-left text-cyan-400"></i>
+                    <div class="flex justify-between items-center text-cyan-600">
+                        <i class="fa-solid fa-shield-halved text-base"></i>
+                        <span class="font-ewc text-[9px] font-black bg-cyan-50 text-cyan-600 px-2 py-0.5 rounded">ARENA</span>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Tournaments</p>
-                        <p class="text-xl font-bold text-white">${matches}</p>
-                        <p class="text-[9px] text-slate-500">Total played</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">TOURNAMENTS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches}</p>
                     </div>
                 </div>
                 <div class="stat-widget">
-                    <div class="flex justify-between text-slate-400 text-xl">
-                        <i class="fa-solid fa-crosshairs text-rose-400"></i>
+                    <div class="flex justify-between items-center text-rose-600">
+                        <i class="fa-solid fa-crosshairs text-base"></i>
+                        <span class="font-ewc text-[9px] font-black bg-rose-50 text-rose-600 px-2 py-0.5 rounded">RATIO</span>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Kills/Match</p>
-                        <p class="text-xl font-bold text-white">${matches ? (kills/matches).toFixed(1) : 0}</p>
-                        <p class="text-[9px] text-slate-500">${kills} kills in ${matches} matches</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">KILLS / MATCH</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches ? (kills/matches).toFixed(1) : 0}</p>
                     </div>
                 </div>
                 <div class="stat-widget">
-                    <div class="flex justify-between text-slate-400 text-xl">
-                        <i class="fa-solid fa-gauge-high"></i>
-                        <span class="text-[10px] ${winRate > 50 ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'} px-2 py-0.5 rounded font-bold flex items-center gap-1">
-                            <i class="fa-solid fa-arrow-${winRate > 50 ? 'up' : 'down'} text-[8px]"></i>${winRate > 50 ? 'High' : 'Low'}
+                    <div class="flex justify-between items-center">
+                        <i class="fa-solid fa-gauge-high text-base text-slate-700"></i>
+                        <span class="font-ewc text-[9px] ${winRate >= 50 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} px-2 py-0.5 rounded font-black">
+                            ${winRate >= 50 ? 'HIGH' : 'EVAL'}
                         </span>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Win Rate</p>
-                        <p class="text-2xl font-bold text-white">${winRate}%</p>
-                        <p class="text-[9px] ${winRate > 50 ? 'text-green-400' : 'text-orange-400'}">${winRate > 50 ? 'Above average' : 'Improve your game'}</p>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">WIN RATE</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${winRate}%</p>
                     </div>
                 </div>`;
         }
@@ -1938,29 +659,29 @@
         document.querySelectorAll('#range button').forEach(b => b.onclick = () => {
             currentRange = b.dataset.r;
             document.querySelectorAll('#range button').forEach(x => x.classList.toggle('on', x === b));
-            if (navigator.vibrate) navigator.vibrate(10);
+            if (navigator.vibrate) navigator.vibrate(8);
             const data = generateChartData(currentRange);
             drawChart(data);
         });
 
         function renderAll() {
             const now = new Date();
-            document.getElementById('hdr-month').textContent = MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+            const MONTH_NAMES = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+            document.getElementById('rewind-sub').textContent = 'SINCE ' + MONTH_NAMES[now.getMonth()] + ' ' + now.getFullYear();
             drawChart(generateChartData(currentRange));
             renderAnalytics();
             renderWidgets();
             renderRewind();
         }
-
-        window.onload = function() {
-            setTimeout(() => document.body.classList.add('loaded'), 900);
-        };
     </script>
+
+    <!-- FIREBASE INITIALIZATION & GUARGUARD MODULE -->
     <script src="haptics.js?v=16" defer></script>
     <script type="module">
         import { db } from './firebase.js';
         import { requireAuth } from './authGuard.js';
         import { doc, getDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
         try {
             const user = await requireAuth();
             document.getElementById('p-auth').className = 'progress-step done';
@@ -1977,12 +698,15 @@
                 const gSnap = await getDocs(query(collection(db, 'users', user.uid, 'gifts'), orderBy('createdAt', 'desc')));
                 _gifts = gSnap.docs.map(d => ({ id: d.id, ...d.data() }));
             } catch (e) {}
+            
             renderAll();
             document.getElementById('p-data').className = 'progress-step done';
             document.getElementById('p-data').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
 
             setTimeout(() => document.getElementById('progress-overlay').classList.add('hide'), 300);
-        } catch (e) {}
+        } catch (e) {
+            document.getElementById('progress-overlay').classList.add('hide');
+        }
     </script>
 </body>
 </html>

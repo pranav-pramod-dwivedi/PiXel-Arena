@@ -7,103 +7,159 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Iconic</title>
+    <title>Iconic EWC - Wallet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="theme.css?v=16">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+
         :root {
-            --wlt-cream: #fbf9f2;
-            --wlt-yellow: #f8be14;
-            --wlt-yellow-dark: #e5ab00;
-            --wlt-dark: #262a2d;
-            --wlt-text: #111111;
-            --wlt-muted: #8e8e93;
-            --wlt-action: #f4efe2;
-            --wlt-green: #27ae60;
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --wlt-green: #22C55E;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--surface);
+            color: #0F172A;
             margin: 0;
+            padding-bottom: 95px;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .wlt-bg { background-color: var(--wlt-cream); }
-        .wrap { position: relative; z-index: 2; min-height: 100vh; background: var(--wlt-cream); }
+        .font-ewc {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+        }
 
+        /* --- EWC NAVIGATION --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
+
+        /* --- HERO CARD --- */
         .hero-card {
             border-radius: 20px;
             display: flex;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(248, 190, 20, 0.25);
+            background: var(--ewc-card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            min-height: 145px;
         }
 
         .hero-sidebar {
             width: 48px;
-            background-color: #111;
+            background-color: var(--ewc-black);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             padding: 16px 0;
             flex-shrink: 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .hero-sidebar .v-date {
             writing-mode: vertical-rl;
             transform: rotate(180deg);
-            color: #fff;
-            font-size: 11px;
-            letter-spacing: 1px;
-            opacity: 0.8;
+            color: var(--ewc-lime);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .hero-sidebar .sdots {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             align-items: center;
+            margin-top: auto;
+            padding-top: 14px;
         }
 
         .hero-sidebar .sdot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background-color: #555;
+            background-color: #334155;
         }
 
-        .hero-sidebar .sdot.on { background-color: var(--wlt-yellow); }
+        .hero-sidebar .sdot.on { background-color: var(--ewc-gold); }
 
         .hero-main {
             flex: 1;
-            background: linear-gradient(135deg, #fbc02d 0%, #f57f17 100%);
             padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            color: #FFFFFF;
         }
 
         .hero-main .bl-title {
-            font-size: 12px;
-            color: rgba(0, 0, 0, 0.6);
-            font-weight: 600;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 11px;
+            color: #94A3B8;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .hero-main .bl-amt {
-            font-size: 26px;
-            font-weight: 900;
-            color: var(--wlt-text);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: #FFFFFF;
             margin-top: 4px;
             letter-spacing: -0.5px;
         }
 
         .hero-main .bl-amt span {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 700;
-            margin-left: 2px;
-            opacity: 0.7;
+            color: var(--ewc-gold);
+            margin-left: 4px;
         }
 
         .hero-main .bl-stat {
@@ -112,15 +168,21 @@
             gap: 8px;
             font-size: 14px;
             font-weight: 800;
-            color: var(--wlt-text);
+            color: #FFFFFF;
+            margin-top: 14px;
         }
 
         .hero-main .stat-badge {
             color: var(--wlt-green);
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
+            background: rgba(34, 197, 94, 0.15);
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
+        /* --- ACTION CARDS --- */
         .actions-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -128,39 +190,46 @@
         }
 
         .action-card {
-            background-color: var(--wlt-action);
-            border-radius: 16px;
+            background-color: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 18px;
             padding: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         .action-card span {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--wlt-text);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #0F172A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .action-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background-color: var(--wlt-dark);
-            color: #fff;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background-color: var(--ewc-black);
+            color: var(--ewc-lime);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
             border: none;
             cursor: pointer;
-            transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+            transition: transform .2s ease;
+            box-shadow: 0 4px 12px rgba(7, 10, 16, 0.2);
         }
 
-        .action-btn:active { transform: scale(.88); }
+        .action-btn:active { transform: scale(.92); }
 
+        /* --- TRANSACTIONS --- */
         .tx-header {
             display: flex;
             justify-content: space-between;
@@ -168,21 +237,28 @@
         }
 
         .tx-header h2 {
-            font-size: 16px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 15px;
             font-weight: 800;
-            color: var(--wlt-text);
+            color: #0F172A;
+            text-transform: uppercase;
         }
 
         .tx-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .tx-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            padding: 14px 16px;
+            border-radius: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
         .tx-info {
@@ -192,72 +268,97 @@
         }
 
         .tx-av-wrap {
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(248,190,20,0.2) 0%, rgba(255,255,255,0) 70%);
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         .tx-av {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
 
         .tx-detail .tx-time {
-            font-size: 11px;
-            color: var(--wlt-muted);
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748B;
             margin-bottom: 2px;
+            text-transform: uppercase;
         }
 
         .tx-detail .tx-name {
+            font-family: 'Chakra Petch', sans-serif;
             font-size: 13px;
-            font-weight: 700;
-            color: var(--wlt-text);
+            font-weight: 800;
+            color: #0F172A;
         }
 
         .tx-amt {
-            font-size: 14px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 15px;
             font-weight: 800;
         }
 
-        .tx-amt.pos { color: var(--wlt-text); }
-        .tx-amt.neg { color: var(--wlt-yellow-dark); }
+        .tx-amt.pos { color: #16A34A; }
+        .tx-amt.neg { color: var(--ewc-gold); }
 
         .tx-empty {
             text-align: center;
             padding: 40px 20px;
-            color: var(--wlt-muted);
-            font-size: 14px;
+            color: #64748B;
+            font-size: 13px;
+            font-weight: 600;
+            background: #FFFFFF;
+            border: 1.5px dashed #CBD5E1;
+            border-radius: 16px;
         }
 
         .tx-empty i {
             font-size: 32px;
             display: block;
             margin-bottom: 12px;
-            opacity: 0.4;
+            color: #94A3B8;
         }
+
+        #progress-overlay {
+            position: fixed; inset: 0; z-index: 200; background: rgba(7, 10, 16, 0.85); backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: white;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #progress-overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .progress-step { display: flex; align-items: center; gap: 10px; font-family: 'Chakra Petch', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #94A3B8; }
+        .progress-step.active { color: var(--ewc-lime); }
+        .progress-step.done { color: #22C55E; }
+        .nv-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
-    <div class="aurora"></div>
+<body class="max-w-md mx-auto relative">
 
-    <div class="wrap max-w-md mx-auto px-5 pt-6 pb-32">
+    <div class="wrap max-w-md mx-auto px-5 pt-5 pb-32">
         <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-extrabold" style="color:var(--wlt-text);letter-spacing:-0.5px">My Wallet</h1>
-            <div class="w-7 h-7 rounded-full border-2" style="border-color:var(--wlt-text);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;color:var(--wlt-text)">◌</div>
-        </div>
+        <header class="flex items-center justify-between mb-6">
+            <div>
+                <span class="font-ewc text-[10px] font-black tracking-widest text-slate-400 block">EWC > SYSTEM</span>
+                <h1 class="font-ewc text-2xl font-black text-slate-900 leading-none">MY WALLET</h1>
+            </div>
+            <div class="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-slate-900 shadow-sm">
+                <i class="fa-solid fa-coins text-[#B88E24]"></i>
+            </div>
+        </header>
 
         <!-- Hero Card -->
         <div class="hero-card mb-5">
             <div class="hero-sidebar">
-                <span class="v-date" id="hero-date">Today</span>
+                <span class="v-date" id="hero-date">TODAY</span>
                 <div class="sdots">
                     <div class="sdot on"></div>
                     <div class="sdot"></div>
@@ -266,8 +367,8 @@
             </div>
             <div class="hero-main">
                 <div>
-                    <div class="bl-title">Available Balance</div>
-                    <div class="bl-amt"><span id="bl-amt">0</span> <span>coins</span></div>
+                    <div class="bl-title">AVAILABLE BALANCE</div>
+                    <div class="bl-amt"><span id="bl-amt">0</span> <span>COINS</span></div>
                 </div>
                 <div class="bl-stat">
                     <span id="bl-earned">+0</span> <span class="stat-badge" id="bl-pct">↑ +0%</span>
@@ -275,35 +376,78 @@
             </div>
         </div>
 
-        <!-- Actions -->
         <div class="actions-grid mb-6">
             <div class="action-card">
-                <span>Add Money</span>
-                <button class="action-btn" onclick="alert('Payment gateway coming soon')">⤴</button>
+                <span>ADD MONEY</span>
+                <button class="action-btn" onclick="alert('Payment gateway coming soon')"><i class="fa-solid fa-plus"></i></button>
             </div>
             <div class="action-card">
-                <span>Transfer</span>
-                <button class="action-btn" onclick="alert('Payment gateway coming soon')">⇄</button>
+                <span>TRANSFER</span>
+                <button class="action-btn" onclick="alert('Payment gateway coming soon')"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
             </div>
         </div>
 
-        <!-- Transactions -->
+        <!-- Transactions Header -->
         <div class="tx-header mb-4">
-            <h2>Transactions</h2>
-            <a href="transactions.html" style="font-weight:bold;letter-spacing:2px;color:var(--wlt-text);text-decoration:none">••</a>
+            <h2>TRANSACTIONS HISTORY</h2>
+            <a href="transactions.html" class="font-ewc text-xs font-black text-blue-600 hover:text-black uppercase tracking-wider">VIEW ALL</a>
         </div>
 
         <div class="tx-list" id="tx-list">
-            <div class="tx-empty"><i class="fa-solid fa-receipt"></i>No transactions yet</div>
+            <div class="tx-empty">
+                <i class="fa-solid fa-receipt"></i>
+                NO TRANSACTIONS YET
+            </div>
         </div>
     </div>
 
-    <div class="nv-dock">
-        <a href="home.html" class="nv-item" data-nav="home"><i class="fa-solid fa-house"></i><span>Home</span></a>
-        <a href="wallet.html" class="nv-item on" data-nav="wallet"><i class="fa-solid fa-wallet"></i><span>Wallet</span></a>
-        <a href="stats.html" class="nv-item" data-nav="tournament"><i class="fa-solid fa-trophy"></i><span>Tournament</span></a>
-        <a href="pay.html" class="nv-item" data-nav="live"><i class="fa-solid fa-bolt"></i><span>Live</span></a>
-        <a href="user.html" class="nv-item" data-nav="profile"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    <nav class="app-bottom-nav">
+        <a href="home.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="wallet.html" class="nav-item active-ewc">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="1"/>
+                <path d="M16 12h.01"/>
+                <path d="M2 10h20"/>
+            </svg>
+            <span>Wallet</span>
+        </a>
+        <a href="TOURNAMENTS.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Tournament</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M18 20V10"/>
+                <path d="M12 20V4"/>
+                <path d="M6 20v-6"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="user.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Progress Loader -->
+    <div id="progress-overlay">
+        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
+        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading wallet</div>
+        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading transactions</div>
     </div>
 
     <script>
@@ -323,44 +467,38 @@
             document.getElementById('bl-pct').textContent = '↑ +' + pct + '%';
 
             const d = new Date();
-            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
             document.getElementById('hero-date').textContent = d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear();
         }
 
         function renderTransactions(txns) {
             const el = document.getElementById('tx-list');
             if (!txns || !txns.length) {
-                el.innerHTML = '<div class="tx-empty"><i class="fa-solid fa-receipt"></i>No transactions yet</div>';
+                el.innerHTML = '<div class="tx-empty"><i class="fa-solid fa-receipt"></i>NO TRANSACTIONS YET</div>';
                 return;
             }
             el.innerHTML = txns.map(t => `
                 <div class="tx-item">
                     <div class="tx-info">
                         <div class="tx-av-wrap">
-                            <img class="tx-av" src="${t.avatar || 'https://ui-avatars.com/api/?background=f4efe2&color=111&name='+encodeURIComponent(t.name)}" alt="${t.name}" loading="lazy">
+                            <img class="tx-av" src="${t.avatar || 'https://ui-avatars.com/api/?background=f8fafc&color=070A10&name='+encodeURIComponent(t.name || 'User')}" alt="${t.name || 'User'}" loading="lazy">
                         </div>
                         <div class="tx-detail">
-                            <div class="tx-time">${t.createdAt?.toDate ? formatTime(t.createdAt.toDate()) : ''}</div>
-                            <div class="tx-name">${t.name}</div>
+                            <div class="tx-time">${t.createdAt?.toDate ? formatTime(t.createdAt.toDate()) : 'RECENT'}</div>
+                            <div class="tx-name">${t.name || 'Transaction'}</div>
                         </div>
                     </div>
-                    <div class="tx-amt ${t.type === 'credit' ? 'pos' : 'neg'}">${t.type === 'credit' ? '+' : '-'} ${fmt(t.amount)}</div>
+                    <div class="tx-amt ${t.type === 'credit' ? 'pos' : 'neg'}">${t.type === 'credit' ? '+' : '-'} ${fmt(t.amount || 0)}</div>
                 </div>
             `).join('');
         }
 
         function formatTime(d) {
             const pad = n => String(n).padStart(2, '0');
-            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
             return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' - ' + pad(d.getDate()) + ' ' + months[d.getMonth()];
         }
     </script>
-
-    <div id="progress-overlay">
-        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
-        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading wallet</div>
-        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading transactions</div>
-    </div>
 
     <script src="haptics.js?v=16" defer></script>
     <script type="module">
@@ -395,7 +533,9 @@
             renderTransactions(txns);
 
             setTimeout(() => document.getElementById('progress-overlay').classList.add('hide'), 300);
-        } catch (e) {}
+        } catch (e) {
+            document.getElementById('progress-overlay').classList.add('hide');
+        }
     </script>
 </body>
 </html>
