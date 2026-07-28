@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iconic EWC · Splash</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700;800;900&family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap');
+
+        :root {
+            --ewc-bg: #ECEFF1;
+            --ewc-dark: #070A10;
+            --ewc-card: #FFFFFF;
+            --ewc-border: #CBD5E1;
+            --ewc-lime: #CCFF00;
+            --ewc-gold-gradient: linear-gradient(135deg, #FFE57F 0%, #D4AF37 50%, #8C6D10 100%);
+            --ewc-muted: #64748B;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--ewc-bg);
+            color: #0F172A;
+            font-family: 'Chakra Petch', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body > * {
+            flex-shrink: 0;
+        }
+
+        /* Subtle Light Grid Texture */
+        .light-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .telemetry-header {
+            position: absolute;
+            top: 28px;
+            left: 32px;
+            right: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--ewc-muted);
+            letter-spacing: 2px;
+            z-index: 50;
+        }
+
+        .brand-stage {
+            position: relative;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            width: 100%;
+            max-width: 480px;
+            margin: auto;
+            box-sizing: border-box;
+            min-height: 0;
+        }
+
+        /* Letter spacing offset fix: margin-right compensates trailing letter-spacing */
+        .main-title {
+            font-size: clamp(2.8rem, 12vw, 5rem);
+            line-height: 0.88;
+            font-weight: 900;
+            letter-spacing: clamp(4px, 3vw, 12px);
+            margin-right: clamp(-4px, -3vw, -12px);
+            color: var(--ewc-dark);
+            margin-bottom: clamp(8px, 2vh, 16px);
+            text-shadow: 0 4px 20px rgba(7, 10, 16, 0.12);
+            animation: titleEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            text-align: center;
+            width: 100%;
+        }
+
+        .gold-banner {
+            background: var(--ewc-gold-gradient);
+            color: #070A10;
+            font-size: 1rem;
+            font-weight: 900;
+            padding: 8px 36px;
+            letter-spacing: 6px;
+            clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+            animation: bannerEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s forwards;
+            opacity: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+            box-sizing: border-box;
+        }
+
+        .gold-banner-text {
+            margin-right: -6px; /* Offset trailing letter-spacing for true visual centering */
+        }
+
+        .hud-footer {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .progress-track {
+            position: relative;
+            width: 100%;
+            height: 4px;
+            background: #CBD5E1;
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--ewc-dark);
+            transition: width 0.1s linear;
+        }
+
+        @keyframes titleEntrance {
+            0% { opacity: 0; transform: translateY(15px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes bannerEntrance {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        #screen-wipe {
+            position: fixed;
+            inset: 0;
+            background: #ECEFF1;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #screen-wipe.active {
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+<body class="w-screen relative">
+
+    <div id="screen-wipe"></div>
+    <div class="light-grid"></div>
+
+    <!-- Header Telemetry -->
+    <div class="telemetry-header">
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#070A10]"></span>
+            <span class="text-[10px] text-slate-600 font-bold tracking-widest uppercase"></span>
+        </div>
+        <span class="text-slate-800 font-bold"></span>
+    </div>
+
+    <!-- Branding Stage -->
+    <div class="brand-stage">
+        <h1 class="main-title uppercase">
+            PIXEL
+        </h1>
+
+        <div class="gold-banner uppercase">
+            <span class="gold-banner-text">ARENA</span>
+            <i class="fa-solid fa-bolt text-xs text-[#070A10]"></i>
+        </div>
+    </div>
+
+    <!-- Progress Loader -->
+    <div class="hud-footer">
+        <div class="progress-track">
+            <div id="progress-bar" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <script>
+        if (location.protocol === 'file:') {
+            var servers = ['http://localhost:5500', 'http://localhost:8080', 'http://localhost:8081'];
+            var retries = 0;
+            var maxRetries = 50;
+            var currentServer = 0;
+
+            document.body.innerHTML = [
+                '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;max-height:100vh;overflow:hidden;background:#0A0E17;color:#FFFFFF;font-family:\'Chakra Petch\',sans-serif;text-align:center;padding:20px;box-sizing:border-box">',
+                '<div style="width:64px;height:64px;border:3px solid rgba(204,255,0,0.15);border-top-color:#CCFF00;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:24px;flex-shrink:0"></div>',
+                '<h1 style="font-size:clamp(1.2rem,5vw,1.6rem);font-weight:700;color:#CCFF00;margin:0 0 8px;flex-shrink:0">Starting PiXel Arena</h1>',
+                '<p style="font-size:0.85rem;color:#64748B;margin:0">Initializing local server...</p>',
+                '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>',
+                '</div>'
+            ].join('\n');
+
+            function tryConnect() {
+                var url = servers[currentServer];
+                var x = new XMLHttpRequest();
+                x.open('GET', url, true);
+                x.timeout = 2000;
+                x.onload = function () {
+                    window.location.replace(url);
+                };
+                x.onerror = x.ontimeout = function () {
+                    retries++;
+                    if (retries >= maxRetries) {
+                        document.body.innerHTML = [
+                            '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;max-height:100vh;overflow:hidden;background:#0A0E17;color:#FFFFFF;font-family:\'Chakra Petch\',sans-serif;text-align:center;padding:20px;box-sizing:border-box">',
+                            '<div style="width:64px;height:64px;border:3px solid rgba(204,255,0,0.15);border-top-color:#CCFF00;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:24px;flex-shrink:0"></div>',
+                            '<h1 style="font-size:clamp(1.2rem,5vw,1.6rem);font-weight:700;color:#CCFF00;margin:0 0 8px;flex-shrink:0">Server Not Found</h1>',
+                            '<p style="font-size:clamp(0.75rem,2.5vw,0.9rem);color:#64748B;max-width:360px;line-height:1.6;margin:0 0 16px;flex-shrink:0">Run this in the project folder:</p>',
+                            '<code style="background:#070A10;color:#CCFF00;padding:10px 20px;border-radius:8px;font-size:clamp(0.8rem,2.5vw,0.9rem);font-weight:700;display:inline-block;flex-shrink:0">npm start</code>',
+                            '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>',
+                            '<p style="font-size:0.8rem;color:#475569;margin-top:20px">Retrying automatically...</p>',
+                            '</div>'
+                        ].join('\n');
+                    }
+                    currentServer = (currentServer + 1) % servers.length;
+                    setTimeout(tryConnect, 1500);
+                };
+                x.send();
+            }
+            tryConnect();
+        } else {
+            let progress = 0;
+            const bar = document.getElementById('progress-bar');
+            const wipe = document.getElementById('screen-wipe');
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 6;
+                if (progress > 100) progress = 100;
+
+                bar.style.width = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        enterArena();
+                    }, 180);
+                }
+            }, 45);
+
+            function enterArena() {
+                if (navigator.vibrate) navigator.vibrate(10);
+                wipe.classList.add('active');
+                setTimeout(() => {
+                    window.location.replace('login.html');
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>

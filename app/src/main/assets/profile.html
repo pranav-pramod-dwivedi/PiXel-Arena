@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PLAYT24 by PIXEL ARENA - Settings</title>
+    <script src="app.js?v=16"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;0,800;0,900;1,700&family=JetBrains+Mono:wght@600;700;800&display=swap');
+
+        :root {
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --wlt-green: #22C55E;
+        }
+
+        /* --- UNIFIED FONT: ALL TEXT USES CHAKRA PETCH --- */
+        * {
+            font-family: 'Chakra Petch', sans-serif !important;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        .font-mono-num {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
+
+        body {
+            background-color: var(--surface);
+            color: #0F172A;
+            margin: 0;
+            overflow-x: hidden;
+            padding-bottom: 95px;
+        }
+
+        .font-ewc {
+            text-transform: uppercase;
+        }
+
+        /* --- SKELETON SHIMMER --- */
+        .skeleton-block {
+            background: #E2E8F0;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .skeleton-block::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            animation: shimmer 0.8s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        #skeleton-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--surface);
+            z-index: 100;
+            transition: opacity 0.4s ease-out;
+        }
+
+        .loaded #skeleton-screen { opacity: 0; pointer-events: none; }
+        #main-content { opacity: 0; transform: translateY(10px); transition: 0.4s ease-out; }
+        .loaded #main-content { opacity: 1; transform: translateY(0); }
+
+        /* --- EWC SHARP PANELS --- */
+        .info-group {
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(7, 10, 16, 0.05);
+        }
+
+        .locked-field {
+            background-color: #F1F5F9;
+        }
+
+        /* --- VECTOR ICON BADGES --- */
+        .row-ic {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(7, 10, 16, 0.12);
+        }
+
+        .ic-blue { background: rgba(37, 99, 235, 0.12); color: #1D4ED8; }
+        .ic-green { background: rgba(34, 197, 94, 0.12); color: #15803D; }
+        .ic-purple { background: rgba(147, 51, 234, 0.12); color: #7E22CE; }
+        .ic-orange { background: rgba(217, 119, 6, 0.12); color: #B45309; }
+        .ic-red { background: rgba(220, 38, 38, 0.12); color: #B91C1C; }
+        .ic-grey { background: rgba(71, 85, 105, 0.12); color: #334155; }
+
+        /* --- EWC TACTICAL SWITCH TOGGLE --- */
+        .tog {
+            width: 48px;
+            height: 26px;
+            border-radius: 4px;
+            background: #94A3B8;
+            position: relative;
+            border: 1.5px solid #64748B;
+            flex-shrink: 0;
+            transition: background .2s ease, border-color .2s ease;
+            cursor: pointer;
+        }
+
+        .tog::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 2px;
+            background: #FFFFFF;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transition: transform .2s cubic-bezier(.2, 1, .3, 1);
+        }
+
+        .tog.on {
+            background: var(--ewc-black);
+            border-color: var(--ewc-lime);
+        }
+
+        .tog.on::after {
+            transform: translateX(22px);
+            background: var(--ewc-lime);
+        }
+
+        .spring { transition: transform .2s ease; }
+        .spring:active { transform: scale(.96); }
+
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(236,239,241,.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1.5px solid #CBD5E1;
+        }
+
+        .cap-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- EWC NAVIGATION BAR --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1.5px solid #CBD5E1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
+
+        .section-head {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #475569;
+        }
+    </style>
+</head>
+<body class="max-w-md mx-auto relative">
+
+    <!-- 1. Skeleton Shimmer -->
+    <div id="skeleton-screen" class="p-6">
+        <div class="w-10 h-10 rounded-md skeleton-block mb-8"></div>
+        <div class="flex flex-col items-center mb-10">
+            <div class="w-24 h-24 rounded-full skeleton-block mb-4"></div>
+            <div class="w-32 h-6 rounded-md skeleton-block mb-2"></div>
+            <div class="w-20 h-3 rounded-md skeleton-block"></div>
+        </div>
+        <div class="space-y-6">
+            <div class="h-32 w-full rounded-md skeleton-block"></div>
+            <div class="h-48 w-full rounded-md skeleton-block"></div>
+        </div>
+    </div>
+
+    <!-- 2. Main Content -->
+    <div id="main-content" class="min-h-screen pb-32" style="padding-top: 58px;">
+        
+        <!-- Header -->
+        <header class="sticky-header">
+            <a href="tournaments.html" class="cap-btn spring">
+                <svg class="w-4 h-4 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M15 18l-6-6 6-6"/></svg>
+            </a>
+            <h1 class="font-ewc text-base font-black text-slate-900 tracking-wider">SETTINGS</h1>
+            <a href="help.html" class="cap-btn spring">
+                <svg class="w-4 h-4 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3v4zM3 19a2 2 0 002 2h1v-6H3v4z"/></svg>
+            </a>
+        </header>
+
+        <!-- Profile Hero -->
+        <section class="flex flex-col items-center px-5 mb-6 mt-4">
+            <div class="relative mb-3 cursor-pointer" onclick="document.getElementById('avatar-file').click()">
+                <div class="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-slate-900 to-amber-500 shadow-xl">
+                    <img id="profile-avatar" src="" class="w-full h-full rounded-full object-cover border-4 border-white" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?background=0F131C&color=CCFF00&bold=true&name=PD'">
+                </div>
+                <div class="absolute bottom-0 right-0 w-7 h-7 bg-[#070A10] border-2 border-white rounded-md flex items-center justify-center shadow-lg">
+                    <svg class="w-3.5 h-3.5 text-[#CCFF00]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                </div>
+                <input type="file" id="avatar-file" accept="image/*" class="hidden">
+            </div>
+            <div class="flex items-center gap-1.5 mb-1">
+                <span id="p-name" class="font-ewc text-xl font-black text-slate-900 uppercase">Pranav D.</span>
+                <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+        </section>
+
+        <div class="px-5 space-y-6">
+            <!-- Group 1: Identity -->
+            <div class="space-y-2">
+                <h3 class="section-head px-1">Account Identity</h3>
+                <div class="info-group">
+                    <div class="p-4 border-b border-slate-200 flex justify-between items-center locked-field">
+                        <div class="space-y-0.5">
+                            <p class="font-ewc text-[10px] font-bold text-slate-500 uppercase">Legal Name</p>
+                            <p class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Pranav Dwivedi</p>
+                        </div>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    </div>
+                    <div class="p-4 border-b border-slate-200 flex justify-between items-center locked-field">
+                        <div class="space-y-0.5">
+                            <p class="font-ewc text-[10px] font-bold text-slate-500 uppercase">Email</p>
+                            <p class="font-ewc text-[13px] font-bold text-slate-900 uppercase">hkdy****@gmail.com</p>
+                        </div>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    </div>
+                    <a href="editprofile.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-green">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M20 14.66V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h5.34"/><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Edit Profile</span>
+                        </div>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Group 2: Preferences -->
+            <div class="space-y-2">
+                <h3 class="section-head px-1">App Configuration</h3>
+                <div class="info-group">
+                    <a href="noti.html" class="p-4 border-b border-slate-200 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-orange">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Notifications Setup</span>
+                        </div>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
+                    </a>
+                    <a href="security.html" class="p-4 border-b border-slate-200 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-green">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 11c0 3-1 6-3 8M12 2a10 10 0 00-7 17M12 6a7 7 0 00-5 12M12 15a2 2 0 100-4 2 2 0 000 4z"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Security & Biometrics</span>
+                        </div>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
+                    </a>
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Push Notifications</span>
+                        </div>
+                        <button id="tog-notif" class="tog" onclick="toggle('notifications')"></button>
+                    </div>
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-grey">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.45 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Hide Balance</span>
+                        </div>
+                        <button id="tog-hide" class="tog" onclick="toggle('hideBalance')"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group 3: Alerts & Legal -->
+            <div class="space-y-2">
+                <h3 class="section-head px-1">Alerts & Legal</h3>
+                <div class="info-group">
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-red">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            </div>
+                            <div>
+                                <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Fraud Alerts</span>
+                                <p class="font-ewc text-[10px] text-slate-500 font-bold uppercase">Instant security alerts</p>
+                            </div>
+                        </div>
+                        <button id="tog-fraud" class="tog" onclick="toggle('fraudAlerts')"></button>
+                    </div>
+                    <a href="legal.html" class="p-4 flex items-center justify-between active:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="row-ic ic-blue">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            </div>
+                            <span class="font-ewc text-[13px] font-bold text-slate-900 uppercase">Terms & Privacy Policy</span>
+                        </div>
+                        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Logout Section -->
+            <div class="pb-6">
+                <a href="index.html" class="info-group p-4 flex items-center justify-between active:scale-98 transition-transform border-red-300 bg-red-100/50">
+                    <div class="flex items-center gap-3.5">
+                        <div class="row-ic ic-red">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M18.36 6.64a9 9 0 11-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                        </div>
+                        <span class="font-ewc text-[13px] font-extrabold text-red-700 uppercase">Sign Out Session</span>
+                    </div>
+                    <svg class="w-3.5 h-3.5 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        const toggleMap = {
+            'notifications': 'tog-notif',
+            'hideBalance':   'tog-hide',
+            'fraudAlerts':   'tog-fraud'
+        };
+
+        const defaultSettings = {
+            'notifications': true,
+            'hideBalance':   false,
+            'fraudAlerts':   true
+        };
+
+        function getSettings() {
+            try {
+                const saved = localStorage.getItem('ewc_settings');
+                if (saved) return JSON.parse(saved);
+            } catch(e) {}
+            return { ...defaultSettings };
+        }
+
+        function saveSettings(settings) {
+            try {
+                localStorage.setItem('ewc_settings', JSON.stringify(settings));
+            } catch(e) {}
+            if (typeof NovaPay !== 'undefined' && NovaPay.setSetting) {
+                Object.keys(settings).forEach(k => NovaPay.setSetting(k, settings[k]));
+            }
+        }
+
+        function render() {
+            const settings = getSettings();
+            
+            if (typeof NovaPay !== 'undefined' && NovaPay.state?.settings) {
+                Object.assign(settings, NovaPay.state.settings);
+            }
+
+            for (const [key, btnId] of Object.entries(toggleMap)) {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.classList.toggle('on', !!settings[key]);
+                }
+            }
+
+            if (typeof NovaPay !== 'undefined' && NovaPay.state) {
+                const s = NovaPay.state;
+                if (s.profile?.avatar) document.getElementById('profile-avatar').src = s.profile.avatar;
+                if (s.profile?.name) document.getElementById('p-name').textContent = s.profile.name;
+            }
+        }
+
+        function toggle(key) {
+            const settings = getSettings();
+            const current = settings[key] !== undefined ? settings[key] : defaultSettings[key];
+            const updated = !current;
+            
+            settings[key] = updated;
+            saveSettings(settings);
+
+            const btnId = toggleMap[key];
+            if (btnId) {
+                const btn = document.getElementById(btnId);
+                if (btn) btn.classList.toggle('on', updated);
+            }
+
+            if (navigator.vibrate) navigator.vibrate(updated ? 12 : 8);
+        }
+
+        const avatarInput = document.getElementById('avatar-file');
+        if (avatarInput) {
+            avatarInput.addEventListener('change', async e => {
+                const file = e.target.files[0]; if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const dataUrl = ev.target.result;
+                    document.getElementById('profile-avatar').src = dataUrl;
+                    if (typeof NovaPay !== 'undefined' && NovaPay.setProfile) {
+                        NovaPay.setProfile({ avatar: dataUrl });
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        window.addEventListener('novapay:change', () => { if (typeof NovaPay !== 'undefined') { NovaPay.reload(); render(); } });
+        window.onload = function() {
+            render();
+            setTimeout(() => { document.body.classList.add('loaded'); }, 300);
+        };
+    </script>
+    <script src="haptics.js?v=16" defer></script>
+</body>
+</html>

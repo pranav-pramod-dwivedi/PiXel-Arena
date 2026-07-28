@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Championship Ranking 2026 - Esports World Cup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+        html { scroll-behavior: smooth; }
+        body { margin: 0; background-color: #ECEFF1; color: #0F172A; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
+        .font-ewc { font-family: 'Chakra Petch', sans-serif; text-transform: uppercase; }
+        /* Hide Horizontal Scrollbars */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Top Sub-Nav Links */
+        .nav-pill { font-family: 'Chakra Petch', sans-serif; font-size: 1.15rem; line-height: 1; padding: 8px 20px; color: #94A3B8; font-weight: 700; white-space: nowrap; border-radius: 6px; transition: all 0.2s ease; cursor: pointer; }
+        .nav-pill:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.05); }
+        .nav-pill.active { background-color: #FFFFFF; color: #070A10; box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15); }
+        /* Hero Video Canvas */
+        .hero-canvas { position: relative; width: 100%; height: 340px; background-color: #000000; overflow: hidden; }
+        .hero-canvas video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85) contrast(1.05); }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(7, 10, 16, 0.3) 0%, transparent 40%, rgba(7, 10, 16, 0.95) 100%), radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.65) 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .ff-logo-image { width: 100%; max-width: 280px; height: auto; filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 15px rgba(255, 255, 255, 0.2)); }
+        .subtitle-battle-style { font-family: 'Chakra Petch', sans-serif; font-size: 2.2rem; font-weight: 700; color: #CCFF00; letter-spacing: 8px; text-transform: uppercase; margin-top: 6px; text-shadow: 0 0 16px rgba(204, 255, 0, 0.4); }
+        /* Action Bar */
+        .action-bar-container { background-color: #070A10; padding: 16px; }
+        .btn-primary-tickets { width: 100%; background: #FFFFFF; color: #070A10; font-weight: 900; font-size: 0.85rem; letter-spacing: 2px; padding: 16px; text-align: center; text-transform: uppercase; border-radius: 8px; box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1); transition: all 0.2s ease; border: none; cursor: pointer; text-decoration: none; }
+        /* Base Club Card */
+        .club-card { position: relative; background-color: #0F131C; border-radius: 16px; overflow: hidden; padding: 20px; color: #FFFFFF; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); transition: transform 0.2s ease; }
+        .club-card:hover { transform: translateY(-2px); }
+        /* GOLD FILTER & CARD STYLING */
+        .card-gold { border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15); }
+        .card-gold .card-filter-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(212, 175, 55, 0.35) 0%, rgba(15, 19, 28, 0.75) 60%, rgba(10, 12, 18, 0.95) 100%); mix-blend-mode: hard-light; z-index: 1; pointer-events: none; }
+        .position-badge-gold { background: linear-gradient(135deg, #FFE57F 0%, #D4AF37 50%, #8C6D10 100%); color: #000000; border-radius: 8px; padding: 4px 10px; text-align: center; line-height: 1; box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); }
+        /* SILVER FILTER & CARD STYLING */
+        .card-silver { border: 1px solid rgba(192, 192, 192, 0.4); box-shadow: 0 8px 25px rgba(192, 192, 192, 0.15); }
+        .card-silver .card-filter-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(220, 225, 230, 0.3) 0%, rgba(20, 25, 35, 0.75) 60%, rgba(10, 12, 18, 0.95) 100%); mix-blend-mode: hard-light; z-index: 1; pointer-events: none; }
+        .position-badge-silver { background: linear-gradient(135deg, #FFFFFF 0%, #C0C0C0 50%, #708090 100%); color: #000000; border-radius: 8px; padding: 4px 10px; text-align: center; line-height: 1; box-shadow: 0 2px 10px rgba(192, 192, 192, 0.3); }
+        /* BRONZE FILTER & CARD STYLING */
+        .card-bronze { border: 1px solid rgba(205, 127, 50, 0.4); box-shadow: 0 8px 25px rgba(205, 127, 50, 0.15); }
+        .card-bronze .card-filter-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(205, 127, 50, 0.35) 0%, rgba(25, 20, 25, 0.75) 60%, rgba(10, 12, 18, 0.95) 100%); mix-blend-mode: hard-light; z-index: 1; pointer-events: none; }
+        .position-badge-bronze { background: linear-gradient(135deg, #F5B070 0%, #CD7F32 50%, #7A4210 100%); color: #FFFFFF; border-radius: 8px; padding: 4px 10px; text-align: center; line-height: 1; box-shadow: 0 2px 10px rgba(205, 127, 50, 0.3); }
+        /* Schedule Card Item Styling */
+        .schedule-card-item { background-color: #FFFFFF; border-radius: 12px; padding: 16px 20px; border: 1px solid #E2E8F0; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03); display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        /* Contained Frame Wrapper */
+        .about-frame-wrapper { position: relative; width: 100%; height: 65vh; max-height: 750px; min-height: 450px; background-color: #070A10; border-radius: 20px; overflow: hidden; border: 1px solid rgba(0, 0, 0, 0.15); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12); }
+        /* Bottom Nav */
+        .app-bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: #FFFFFF; border-top: 1px solid #E2E8F0; display: grid; grid-template-columns: repeat(3, 1fr); padding: 8px 0; box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #64748B; font-size: 10px; font-weight: 800; text-decoration: none; transition: color 0.15s ease; }
+        .nav-item.active, .nav-item:hover { color: #0F172A; }
+    </style>
+</head>
+<body>
+    <!-- Top Sub-Navigation Header -->
+    <nav class="bg-[#070A10] px-4 py-3 border-b border-white/10 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                <button id="nav-btn-results" onclick="handleNavClick('results')" class="nav-pill active">RESULTS</button>
+                <button id="nav-btn-schedule" onclick="handleNavClick('schedule')" class="nav-pill">SCHEDULE</button>
+                <button id="nav-btn-about" onclick="handleNavClick('about')" class="nav-pill">ABOUT</button>
+            </div>
+            <!-- Breadcrumb Indicator -->
+            <div class="hidden sm:flex items-center gap-1.5 font-ewc text-xs text-slate-400 font-bold tracking-wider">
+                <span>HOME</span>
+                <span>&gt;</span>
+                <span id="breadcrumb-text" class="text-[#CCFF00]">RESULTS</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN HOME VIEW CONTAINER -->
+    <div id="home-page-view">
+        <!-- 1. Hero Video Banner -->
+        <section class="hero-canvas">
+            <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&auto=format&fit=crop&q=80">
+                <source src="https://d3h9qea4qy4169.cloudfront.net/EWC_Website_loop_8a67cc67fa.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay">
+                <img src="https://dl.dir.freefiremobile.com/common/web_event/official2.ff.garena.all/202310/c118533702026f510a7a035cd91df64f.png" alt="Free Fire Logo - Battle In Style" class="ff-logo-image">
+            </div>
+        </section>
+
+        <!-- 2. Action Bar -->
+        <div class="action-bar-container max-w-7xl mx-auto">
+            <a href="play.html" class="btn-primary-tickets block text-center">
+                PLAY NOW →
+            </a>
+        </div>
+
+        <main class="bg-[#ECEFF1] min-h-screen text-slate-900 px-4 py-6">
+            <div class="max-w-7xl mx-auto space-y-12">
+                <!-- SECTION 1: RESULTS & RANKINGS -->
+                <section id="section-results" class="space-y-6 pt-2">
+                    <!-- Hero White Card -->
+                    <div class="bg-white rounded-[24px] p-6 md:p-8 shadow-sm space-y-6 border border-slate-200/60">
+                        <div class="space-y-1">
+                            <h1 class="font-ewc text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-none">
+                                FREE FIRE OFFICIAL TOURNAMENTS 2026
+                            </h1>
+                            <p class="text-xs sm:text-sm font-bold text-slate-600">
+                                Winners will claim mind-blowing cash rewards and all the glory!
+                            </p>
+                        </div>
+                        <!-- 4 Metrics Stats Row -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 border-t border-slate-100 pt-6">
+                            <div>
+                                <span class="font-ewc text-3xl sm:text-4xl font-extrabold text-[#B88E24] block leading-none">₹260,000+</span>
+                                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1 block">WINNINGS DISTRIBUTED</span>
+                            </div>
+                            <div>
+                                <span class="font-ewc text-3xl sm:text-4xl font-extrabold text-slate-900 block leading-none">50K+</span>
+                                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1 block">Tournaments</span>
+                            </div>
+                            <div>
+                                <span class="font-ewc text-3xl sm:text-4xl font-extrabold text-slate-900 block leading-none">23K+</span>
+                                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1 block">PLAYERS Tracked</span>
+                            </div>
+                            <div>
+                                <span class="font-ewc text-3xl sm:text-4xl font-extrabold text-slate-900 block leading-none">18<span class="text-slate-400 font-medium">/72</span></span>
+                                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1 block">Medals Awarded</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Player Ranking Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Player 1: Gold -->
+                        <div class="club-card card-gold">
+                            <div class="card-filter-overlay"></div>
+                            <img src="https://esportsworldcup.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fabstract-background-4.0udnhcyoni5_o.png&w=1920&q=50" alt="" loading="lazy" class="object-cover pointer-events-none" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent;z-index:0;filter:contrast(1.1) brightness(0.9);">
+                            <div class="relative z-10 flex justify-between items-start mb-6">
+                                <div>
+                                    <span class="block text-[10px] font-black uppercase text-amber-300 tracking-wider">PLAYERS</span>
+                                    <h3 class="font-ewc text-2xl font-black text-white tracking-tight leading-none mt-0.5">XOSZ</h3>
+                                    <span class="text-[10px] font-bold text-slate-300 flex items-center gap-1 mt-1.5">
+                                        <svg class="w-3 h-3 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                                        Tournaments Attending: 2
+                                    </span>
+                                </div>
+                                <div class="position-badge-gold">
+                                    <span class="block text-[8px] font-black uppercase tracking-wider text-slate-900">POSITION</span>
+                                    <span class="font-ewc text-xl font-bold leading-none">#1</span>
+                                </div>
+                            </div>
+                            <div class="relative z-10 flex items-end justify-between border-t border-amber-500/30 pt-4">
+                                <div class="flex gap-8">
+                                    <div>
+                                        <span class="block text-[9px] font-extrabold uppercase text-amber-200/80 tracking-wider">MEDALS WON</span>
+                                        <span class="font-ewc text-2xl font-bold text-white leading-none">2</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] font-extrabold uppercase text-amber-200/80 tracking-wider">TOTAL POINTS</span>
+                                        <span class="font-ewc text-2xl font-bold text-amber-300 leading-none">1750</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Player 2: Silver -->
+                        <div class="club-card card-silver">
+                            <div class="card-filter-overlay"></div>
+                            <img src="https://esportsworldcup.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fabstract-background-4.0udnhcyoni5_o.png&w=1920&q=50" alt="" loading="lazy" class="object-cover pointer-events-none" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent;z-index:0;filter:contrast(1.1) brightness(0.9);">
+                            <div class="relative z-10 flex justify-between items-start mb-6">
+                                <div>
+                                    <span class="block text-[10px] font-black uppercase text-slate-300 tracking-wider">PLAYERS</span>
+                                    <h3 class="font-ewc text-2xl font-black text-white tracking-tight leading-none mt-0.5">ΔKHIL</h3>
+                                    <span class="text-[10px] font-bold text-slate-300 flex items-center gap-1 mt-1.5">
+                                        <svg class="w-3 h-3 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                                        Tournaments Attending: 2
+                                    </span>
+                                </div>
+                                <div class="position-badge-silver">
+                                    <span class="block text-[8px] font-black uppercase tracking-wider text-slate-900">POSITION</span>
+                                    <span class="font-ewc text-xl font-bold leading-none">#2</span>
+                                </div>
+                            </div>
+                            <div class="relative z-10 flex items-end justify-between border-t border-slate-400/30 pt-4">
+                                <div class="flex gap-8">
+                                    <div>
+                                        <span class="block text-[9px] font-extrabold uppercase text-slate-300 tracking-wider">MEDALS WON</span>
+                                        <span class="font-ewc text-2xl font-bold text-white leading-none">2</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] font-extrabold uppercase text-slate-300 tracking-wider">TOTAL POINTS</span>
+                                        <span class="font-ewc text-2xl font-bold text-slate-200 leading-none">1750</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Player 3: Bronze -->
+                        <div class="club-card card-bronze">
+                            <div class="card-filter-overlay"></div>
+                            <img src="https://esportsworldcup.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fabstract-background-4.0udnhcyoni5_o.png&w=1920&q=50" alt="" loading="lazy" class="object-cover pointer-events-none" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent;z-index:0;filter:contrast(1.1) brightness(0.9);">
+                            <div class="relative z-10 flex justify-between items-start mb-6">
+                                <div>
+                                    <span class="block text-[10px] font-black uppercase text-orange-200 tracking-wider">PLAYERS</span>
+                                    <h3 class="font-ewc text-2xl font-black text-white tracking-tight leading-none mt-0.5">複SHRE𝚈ASH</h3>
+                                    <span class="text-[10px] font-bold text-slate-300 flex items-center gap-1 mt-1.5">
+                                        <svg class="w-3 h-3 text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                                        Tournaments Attending: 5
+                                    </span>
+                                </div>
+                                <div class="position-badge-bronze">
+                                    <span class="block text-[8px] font-black uppercase tracking-wider text-slate-100">POSITION</span>
+                                    <span class="font-ewc text-xl font-bold leading-none">#3</span>
+                                </div>
+                            </div>
+                            <div class="relative z-10 flex items-end justify-between border-t border-orange-500/30 pt-4">
+                                <div class="flex gap-8">
+                                    <div>
+                                        <span class="block text-[9px] font-extrabold uppercase text-orange-200/80 tracking-wider">MEDALS WON</span>
+                                        <span class="font-ewc text-2xl font-bold text-white leading-none">1</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] font-extrabold uppercase text-orange-200/80 tracking-wider">TOTAL POINTS</span>
+                                        <span class="font-ewc text-2xl font-bold text-amber-400 leading-none">1600</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: SCHEDULE SECTION ON HOME PAGE -->
+                <section id="section-schedule" class="space-y-6 border-t border-slate-300/60 pt-10">
+                    <div class="flex items-center justify-between">
+                        <h1 class="font-ewc text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-none">
+                            Schedule
+                        </h1>
+                        <span id="schedule-date-header" class="font-ewc text-xs font-black text-slate-500 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+                            TODAY'S ROUTINE
+                        </span>
+                    </div>
+
+                    <!-- Dynamic Daily Schedule List -->
+                    <div id="dynamic-schedule-container" class="space-y-2">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- SEPARATE PAGE VIEW: ABOUT PAGE -->
+    <div id="about-page-view" class="bg-[#ECEFF1] min-h-screen text-slate-900 px-4 py-6 hidden">
+        <div class="max-w-7xl mx-auto space-y-4">
+            <!-- Page Heading Container -->
+            <div class="flex items-center justify-between flex-wrap gap-2 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                <div>
+                    <h1 class="font-ewc text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none">
+                        FREE FIRE UNIVERSE
+                    </h1>
+                    <p class="text-xs font-bold text-slate-500 mt-1">Explore lore, character stories, and interactive media.</p>
+                </div>
+                <a href="https://ff.garena.com/universe/en/" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-[#0F172A] hover:bg-black text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center gap-2">
+                    <span>LAUNCH UNIVERSE</span>
+                    <svg class="w-3.5 h-3.5 text-[#CCFF00]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+            </div>
+            <!-- Bounded Frame Wrapper -->
+            <div class="about-frame-wrapper">
+                <iframe src="https://ff.garena.com/universe/en/" class="w-full h-full border-0" allow="autoplay; fullscreen" title="Free Fire Universe"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Bottom Navigation Bar -->
+    <nav class="app-bottom-nav">
+        <a href="tournaments.html" class="nav-item active">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+
+        <a href="play.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Play</span>
+        </a>
+
+        <a href="rankings.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M12 15l-2 5l9-11h-7l2-5l-9 11h7z"/>
+            </svg>
+            <span>Ranking</span>
+        </a>
+    </nav>
+
+    <!-- Navigation & Dynamic Schedule Script -->
+    <script>
+        const dailyMatches = [
+            { id: "#76115", type: "Solo", time24: "08:00", timeDisp: "08:00 AM", fee: 6 },
+            { id: "#76185", type: "Duo", time24: "08:15", timeDisp: "08:15 AM", fee: 6 },
+            { id: "#76104", type: "Squad", time24: "08:30", timeDisp: "08:30 AM", fee: 8 },
+            { id: "#76186", type: "Duo", time24: "09:00", timeDisp: "09:00 AM", fee: 8 },
+            { id: "#76137", type: "Solo", time24: "09:15", timeDisp: "09:15 AM", fee: 8 },
+            { id: "#76117", type: "Solo", time24: "09:30", timeDisp: "09:30 AM", fee: 10 },
+            { id: "#76187", type: "Duo", time24: "09:45", timeDisp: "09:45 AM", fee: 8 },
+            { id: "#76105", type: "Squad", time24: "10:00", timeDisp: "10:00 AM", fee: 13 },
+            { id: "#76118", type: "Solo", time24: "10:15", timeDisp: "10:15 AM", fee: 8 },
+            { id: "#76188", type: "Duo", time24: "10:30", timeDisp: "10:30 AM", fee: 13 },
+            { id: "#76138", type: "Solo", time24: "10:45", timeDisp: "10:45 AM", fee: 6 },
+            { id: "#76119", type: "Solo", time24: "11:00", timeDisp: "11:00 AM", fee: 13 },
+            { id: "#76189", type: "Duo", time24: "11:15", timeDisp: "11:15 AM", fee: 8 },
+            { id: "#76106", type: "Squad", time24: "11:30", timeDisp: "11:30 AM", fee: 15 },
+            { id: "#76120", type: "Solo", time24: "11:45", timeDisp: "11:45 AM", fee: 8 },
+            { id: "#76190", type: "Duo", time24: "12:00", timeDisp: "12:00 PM", fee: 15 },
+            { id: "#76139", type: "Solo", time24: "12:15", timeDisp: "12:15 PM", fee: 6 },
+            { id: "#76121", type: "Solo", time24: "12:30", timeDisp: "12:30 PM", fee: 15 },
+            { id: "#76191", type: "Duo", time24: "12:45", timeDisp: "12:45 PM", fee: 8 },
+            { id: "#76107", type: "Squad", time24: "13:00", timeDisp: "01:00 PM", fee: 18 },
+            { id: "#76122", type: "Solo", time24: "13:15", timeDisp: "01:15 PM", fee: 6 },
+            { id: "#76192", type: "Duo", time24: "13:30", timeDisp: "01:30 PM", fee: 18 },
+            { id: "#76140", type: "Solo", time24: "13:45", timeDisp: "01:45 PM", fee: 8 },
+            { id: "#76123", type: "Solo", time24: "14:00", timeDisp: "02:00 PM", fee: 18 },
+            { id: "#76193", type: "Duo", time24: "14:15", timeDisp: "02:15 PM", fee: 6 },
+            { id: "#76108", type: "Squad", time24: "14:30", timeDisp: "02:30 PM", fee: 20 },
+            { id: "#76124", type: "Solo", time24: "14:45", timeDisp: "02:45 PM", fee: 6 },
+            { id: "#76194", type: "Duo", time24: "15:00", timeDisp: "03:00 PM", fee: 20 },
+            { id: "#76141", type: "Solo", time24: "15:15", timeDisp: "03:15 PM", fee: 8 },
+            { id: "#76125", type: "Solo", time24: "15:30", timeDisp: "03:30 PM", fee: 15 },
+            { id: "#76195", type: "Duo", time24: "15:45", timeDisp: "03:45 PM", fee: 6 },
+            { id: "#76109", type: "Squad", time24: "16:00", timeDisp: "04:00 PM", fee: 15 },
+            { id: "#76126", type: "Solo", time24: "16:15", timeDisp: "04:15 PM", fee: 8 },
+            { id: "#76196", type: "Duo", time24: "16:30", timeDisp: "04:30 PM", fee: 15 },
+            { id: "#75845", type: "Solo", time24: "16:40", timeDisp: "04:40 PM", fee: 5 },
+            { id: "#76142", type: "Solo", time24: "16:45", timeDisp: "04:45 PM", fee: 6 },
+            { id: "#76127", type: "Solo", time24: "17:00", timeDisp: "05:00 PM", fee: 20 },
+            { id: "#75853", type: "Duo", time24: "17:10", timeDisp: "05:10 PM", fee: 5 },
+            { id: "#76197", type: "Duo", time24: "17:15", timeDisp: "05:15 PM", fee: 6 },
+            { id: "#76110", type: "Squad", time24: "17:30", timeDisp: "05:30 PM", fee: 13 },
+            { id: "#75837", type: "Solo", time24: "17:40", timeDisp: "05:40 PM", fee: 5 },
+            { id: "#76128", type: "Solo", time24: "17:45", timeDisp: "05:45 PM", fee: 8 },
+            { id: "#75846", type: "Solo", time24: "18:10", timeDisp: "06:10 PM", fee: 5 },
+            { id: "#76143", type: "Solo", time24: "18:15", timeDisp: "06:15 PM", fee: 6 },
+            { id: "#76129", type: "Solo", time24: "18:30", timeDisp: "06:30 PM", fee: 13 },
+            { id: "#76198", type: "Duo", time24: "18:30", timeDisp: "06:30 PM", fee: 13 },
+            { id: "#75854", type: "Duo", time24: "18:40", timeDisp: "06:40 PM", fee: 5 },
+            { id: "#76199", type: "Duo", time24: "18:45", timeDisp: "06:45 PM", fee: 8 },
+            { id: "#76111", type: "Squad", time24: "19:00", timeDisp: "07:00 PM", fee: 10 },
+            { id: "#75838", type: "Solo", time24: "19:10", timeDisp: "07:10 PM", fee: 5 },
+            { id: "#76130", type: "Solo", time24: "19:15", timeDisp: "07:15 PM", fee: 6 },
+            { id: "#76200", type: "Duo", time24: "19:30", timeDisp: "07:30 PM", fee: 15 },
+            { id: "#75847", type: "Solo", time24: "19:40", timeDisp: "07:40 PM", fee: 5 },
+            { id: "#76144", type: "Solo", time24: "19:45", timeDisp: "07:45 PM", fee: 6 },
+            { id: "#76131", type: "Solo", time24: "20:00", timeDisp: "08:00 PM", fee: 6 },
+            { id: "#75855", type: "Duo", time24: "20:10", timeDisp: "08:10 PM", fee: 5 },
+            { id: "#76201", type: "Duo", time24: "20:15", timeDisp: "08:15 PM", fee: 6 },
+            { id: "#76112", type: "Squad", time24: "20:30", timeDisp: "08:30 PM", fee: 6 },
+            { id: "#75839", type: "Solo", time24: "20:40", timeDisp: "08:40 PM", fee: 5 },
+            { id: "#76132", type: "Solo", time24: "20:45", timeDisp: "08:45 PM", fee: 6 },
+            { id: "#76202", type: "Duo", time24: "21:00", timeDisp: "09:00 PM", fee: 6 },
+            { id: "#75848", type: "Solo", time24: "21:10", timeDisp: "09:10 PM", fee: 5 },
+            { id: "#76145", type: "Solo", time24: "21:15", timeDisp: "09:15 PM", fee: 6 },
+            { id: "#76133", type: "Solo", time24: "21:30", timeDisp: "09:30 PM", fee: 6 },
+            { id: "#75856", type: "Duo", time24: "21:40", timeDisp: "09:40 PM", fee: 5 },
+            { id: "#76203", type: "Duo", time24: "21:45", timeDisp: "09:45 PM", fee: 6 },
+            { id: "#76113", type: "Squad", time24: "22:00", timeDisp: "10:00 PM", fee: 6 },
+            { id: "#75840", type: "Solo", time24: "22:10", timeDisp: "10:10 PM", fee: 5 },
+            { id: "#76134", type: "Solo", time24: "22:15", timeDisp: "10:15 PM", fee: 6 },
+            { id: "#76204", type: "Duo", time24: "22:30", timeDisp: "10:30 PM", fee: 6 },
+            { id: "#76146", type: "Solo", time24: "22:45", timeDisp: "10:45 PM", fee: 6 },
+            { id: "#76135", type: "Solo", time24: "23:00", timeDisp: "11:00 PM", fee: 6 },
+            { id: "#76205", type: "Duo", time24: "23:15", timeDisp: "11:15 PM", fee: 6 },
+            { id: "#76114", type: "Squad", time24: "23:30", timeDisp: "11:30 PM", fee: 6 },
+            { id: "#76136", type: "Solo", time24: "23:45", timeDisp: "11:45 PM", fee: 6 },
+            { id: "#76070", type: "Duo", time24: "00:00", timeDisp: "12:00 AM", fee: 6 },
+            { id: "#76048", type: "Solo", time24: "00:15", timeDisp: "12:15 AM", fee: 9 }
+        ];
+
+        function checkPassed(time24) {
+            const now = new Date();
+            const [h, m] = time24.split(':').map(Number);
+            const matchTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+            return now >= matchTime;
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('dynamic-schedule-container');
+            if (!container) return;
+
+            // Sort chronologically by 24h time
+            const sorted = [...dailyMatches].sort((a, b) => {
+                const [hA, mA] = a.time24.split(':').map(Number);
+                const [hB, mB] = b.time24.split(':').map(Number);
+                return (hA * 60 + mA) - (hB * 60 + mB);
+            });
+
+            let html = '';
+            sorted.forEach(m => {
+                const isCompleted = checkPassed(m.time24);
+                html += `
+                    <div class="schedule-card-item">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-wider block">
+                                TODAY - ${m.timeDisp}
+                            </span>
+                            <span class="inline-block px-2 py-0.5 ${isCompleted ? 'bg-slate-200 text-slate-700' : 'bg-amber-100 text-[#8C6D10] border border-amber-300'} text-[9px] font-black rounded uppercase">
+                                ${isCompleted ? 'COMPLETED TODAY' : 'UPCOMING TODAY'}
+                            </span>
+                            <span class="text-[10px] font-bold text-slate-400 block mt-1">
+                                ${m.type.toUpperCase()} BR • ENTRY ₹${m.fee}
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-extrabold text-slate-900 block">
+                                Match ${m.id}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function setPillActive(tabName) {
+            document.querySelectorAll('.nav-pill').forEach(btn => btn.classList.remove('active'));
+            const btn = document.getElementById(`nav-btn-${tabName}`);
+            if (btn) btn.classList.add('active');
+
+            const breadcrumb = document.getElementById('breadcrumb-text');
+            if (breadcrumb) breadcrumb.textContent = tabName.toUpperCase();
+        }
+
+        function handleNavClick(target) {
+            const homeView = document.getElementById('home-page-view');
+            const aboutView = document.getElementById('about-page-view');
+
+            if (target === 'about') {
+                homeView.classList.add('hidden');
+                aboutView.classList.remove('hidden');
+                setPillActive('about');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                aboutView.classList.add('hidden');
+                homeView.classList.remove('hidden');
+
+                if (target === 'results') {
+                    setPillActive('results');
+                    const el = document.getElementById('section-results');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                } else if (target === 'schedule') {
+                    setPillActive('schedule');
+                    const el = document.getElementById('section-schedule');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        // Calibrated Scroll Intersection Observer for exact schedule triggering
+        const observerOptions = {
+            root: null,
+            rootMargin: "-20% 0px -40% 0px",
+            threshold: 0.05
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const aboutView = document.getElementById('about-page-view');
+                if (aboutView.classList.contains('hidden') && entry.isIntersecting) {
+                    if (entry.target.id === 'section-results') setPillActive('results');
+                    if (entry.target.id === 'section-schedule') setPillActive('schedule');
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSchedule();
+            document.querySelectorAll('#section-results, #section-schedule').forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>

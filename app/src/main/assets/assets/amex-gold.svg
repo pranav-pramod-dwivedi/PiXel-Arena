@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" role="img" aria-label="American Express">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f9e29b"/>
+      <stop offset="0.5" stop-color="#e6c25c"/>
+      <stop offset="1" stop-color="#b8862f"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#g)" font-family="'Times New Roman', Georgia, serif" text-anchor="middle">
+    <text x="120" y="58" font-size="30" font-weight="700" letter-spacing="2">AMERICAN</text>
+    <text x="120" y="96" font-size="30" font-weight="700" letter-spacing="2">EXPRESS</text>
+  </g>
+  <rect x="30" y="116" width="180" height="3" rx="1.5" fill="url(#g)"/>
+  <rect x="30" y="30" width="180" height="3" rx="1.5" fill="url(#g)"/>
+</svg>

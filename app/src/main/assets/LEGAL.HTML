@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PIXEL ARENA - Legal & Terms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;0,800;0,900;1,700&family=JetBrains+Mono:wght@600;700;800&display=swap');
+
+        :root {
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --ewc-gold-gradient: linear-gradient(135deg, #FFE57F 0%, #D4AF37 50%, #8C6D10 100%);
+            --wlt-green: #22C55E;
+        }
+
+        /* --- UNIFIED FONT: CHAKRA PETCH FOR ALL DISPLAY & TELEMETRY --- */
+        * {
+            font-family: 'Chakra Petch', sans-serif !important;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+
+        .font-mono-num {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
+
+        body {
+            background-color: var(--surface);
+            color: #0F172A;
+            margin: 0;
+            overflow-x: hidden;
+            padding-bottom: 95px;
+        }
+
+        /* --- LIGHT TACTICAL GRID CANVAS --- */
+        .light-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrap { position: relative; z-index: 2; }
+
+        /* --- STICKY EWC HEADER --- */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(236,239,241,.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1.5px solid #CBD5E1;
+        }
+
+        .cap-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .cap-btn:active { transform: scale(0.95); }
+
+        /* --- SECTION QUICK JUMP CHIPS --- */
+        .chip-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0;
+            scrollbar-width: none;
+        }
+        .chip-scroll::-webkit-scrollbar { display: none; }
+
+        .jump-chip {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            color: #475569;
+            padding: 6px 14px;
+            border-radius: 6px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+        }
+
+        .jump-chip:hover, .jump-chip:active {
+            background: var(--ewc-black);
+            color: var(--ewc-lime);
+            border-color: var(--ewc-black);
+            box-shadow: 0 4px 12px rgba(7, 10, 16, 0.2);
+        }
+
+        /* --- LEGAL SECTION HUD CARDS --- */
+        .legal-card {
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 6px rgba(7, 10, 16, 0.04);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .legal-card:hover {
+            border-color: var(--ewc-black);
+        }
+
+        .legal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            border-top: 2px solid var(--ewc-black);
+            border-left: 2px solid var(--ewc-black);
+        }
+
+        .section-tag {
+            background: rgba(7, 10, 16, 0.06);
+            border: 1px solid rgba(7, 10, 16, 0.15);
+            color: var(--ewc-black);
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 900;
+            color: #070A10;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            line-height: 1.2;
+        }
+
+        /* --- VECTOR ICON BADGES --- */
+        .sec-ic {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(7, 10, 16, 0.12);
+        }
+
+        .ic-lime { background: rgba(7, 10, 16, 0.95); color: #CCFF00; }
+        .ic-blue { background: rgba(37, 99, 235, 0.12); color: #1D4ED8; }
+        .ic-green { background: rgba(34, 197, 94, 0.12); color: #15803D; }
+        .ic-amber { background: rgba(217, 119, 6, 0.12); color: #B45309; }
+        .ic-red { background: rgba(220, 38, 38, 0.12); color: #B91C1C; }
+        .ic-purple { background: rgba(147, 51, 234, 0.12); color: #7E22CE; }
+
+        /* --- BULLET POINT LIST ITEMS --- */
+        .term-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .term-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #334155;
+            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        .term-bullet {
+            width: 6px;
+            height: 6px;
+            background: var(--ewc-black);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        /* --- EWC NAVIGATION BAR --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1.5px solid #CBD5E1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
+    </style>
+</head>
+<body class="max-w-md mx-auto relative">
+
+    <div class="light-grid"></div>
+
+    <!-- MAIN PAGE CONTAINER -->
+    <div class="wrap min-h-screen pb-32" style="padding-top: 58px;">
+
+        <!-- Header -->
+        <header class="sticky-header">
+            <a href="profile.html" class="cap-btn">
+                <svg class="w-4 h-4 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M15 18l-6-6 6-6"/></svg>
+            </a>
+            <div class="text-center">
+                <span class="font-mono-num text-[9px] font-bold text-slate-500 uppercase tracking-widest block">OFFICIAL PLATFORM</span>
+                <h1 class="text-sm font-black text-slate-900 tracking-wider uppercase leading-none">PIXEL ARENA LEGAL</h1>
+            </div>
+            <a href="help.html" class="cap-btn">
+                <svg class="w-4 h-4 text-slate-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3v4zM3 19a2 2 0 002 2h1v-6H3v4z"/></svg>
+            </a>
+        </header>
+
+        <!-- Legal Hero Title -->
+        <section class="px-5 mt-4 mb-4">
+            <div class="bg-[#070A10] text-white p-5 border border-slate-800 shadow-lg relative overflow-hidden" style="clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[9px] font-black tracking-widest text-[#CCFF00] bg-[#CCFF00]/10 border border-[#CCFF00]/40 px-2.5 py-0.5" style="clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);">
+                        OFFICIAL POLICY
+                    </span>
+                    <span class="font-mono-num text-[9px] text-slate-400 font-bold">REV: 2026.08</span>
+                </div>
+
+                <h2 class="text-xl font-black tracking-wide text-white leading-tight uppercase">
+                    TERMS & CONDITIONS
+                </h2>
+                <p class="font-mono-num text-[10px] text-slate-300 mt-1 uppercase tracking-wider">
+                    PIXEL ARENA ESPORTS PLATFORM
+                </p>
+
+                <div class="mt-3 pt-3 border-t border-white/10 text-[11px] font-bold text-slate-300 leading-snug">
+                    Welcome to <span class="text-[#CCFF00] font-black">PIXEL ARENA</span>. By accessing or using our platform, you agree to comply with the following terms and conditions. Please read them carefully before participating in any activity.
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Jump Chips -->
+        <section class="px-5 mb-5">
+            <span class="text-[10px] font-black tracking-widest text-slate-500 uppercase block mb-2 px-1">QUICK NAVIGATION //</span>
+            <div class="chip-scroll">
+                <button onclick="scrollToSec('sec-1')" class="jump-chip">1. Eligibility</button>
+                <button onclick="scrollToSec('sec-2')" class="jump-chip">2. Fair Play</button>
+                <button onclick="scrollToSec('sec-3')" class="jump-chip">3. Payments</button>
+                <button onclick="scrollToSec('sec-4')" class="jump-chip">4. Withdrawals</button>
+                <button onclick="scrollToSec('sec-5')" class="jump-chip">5. No Refunds</button>
+                <button onclick="scrollToSec('sec-6')" class="jump-chip">6. Security</button>
+                <button onclick="scrollToSec('sec-7')" class="jump-chip">7. Penalties</button>
+                <button onclick="scrollToSec('sec-8')" class="jump-chip">8. Rights</button>
+                <button onclick="scrollToSec('sec-9')" class="jump-chip">9. Support</button>
+                <button onclick="scrollToSec('sec-10')" class="jump-chip">10. Tournament</button>
+                <button onclick="scrollToSec('sec-11')" class="jump-chip">11. Technical</button>
+                <button onclick="scrollToSec('sec-12')" class="jump-chip">12. Zero Liability</button>
+            </div>
+        </section>
+
+        <!-- 12 LEGAL CLAUSES -->
+        <div class="px-5 space-y-4">
+
+            <!-- 1. ELIGIBILITY -->
+            <div id="sec-1" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-blue">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #01</span>
+                            <h3 class="section-title mt-0.5">ELIGIBILITY</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>Users must be 18 years or older to register and participate in matches.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Only one account per user / device / IP address is strictly allowed.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Providing false, misleading, or incomplete information may result in immediate suspension or termination.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>PIXEL ARENA reserves the right to verify user identity (KYC) at any time.</span></div>
+                </div>
+            </div>
+
+            <!-- 2. FAIR PLAY POLICY -->
+            <div id="sec-2" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-green">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #02</span>
+                            <h3 class="section-title mt-0.5">FAIR PLAY POLICY</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>All matches are strictly skill-based and competitive.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Use of hacks, cheats, emulators (if restricted), or any unfair advantage is strictly prohibited.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Teaming, match-fixing, or exploiting bugs will lead to immediate strict action.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Any suspicious activity will be thoroughly investigated and may result in a permanent ban without warning.</span></div>
+                </div>
+            </div>
+
+            <!-- 3. PAYMENTS & ADD CASH -->
+            <div id="sec-3" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-amber">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #03</span>
+                            <h3 class="section-title mt-0.5">PAYMENTS & ADD CASH</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>All cash deposits and entry payments are 100% final and non-refundable.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Users must ensure correct payment details before completing any transaction.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>PIXEL ARENA is not responsible for incorrect or failed transactions due to user error.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Any attempt to use unauthorized payment methods may result in account restriction.</span></div>
+                </div>
+            </div>
+
+            <!-- 4. WITHDRAWALS -->
+            <div id="sec-4" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-purple">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><polyline points="17 11 12 6 7 11"/><line x1="12" y1="18" x2="12" y2="6"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #04</span>
+                            <h3 class="section-title mt-0.5">WITHDRAWALS</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>Withdrawals are processed subject to platform review and timing.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Users must provide accurate UPI / Bank details to avoid payout delays.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Incorrect details provided by the user may lead to failed or lost payouts.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Fraudulent activity or policy violation may result in withdrawal hold or permanent ban.</span></div>
+                </div>
+            </div>
+
+            <!-- 5. 0% REFUND POLICY -->
+            <div id="sec-5" class="legal-card border-red-300 bg-red-50/30">
+                <div class="flex items-center justify-between gap-3 border-b border-red-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-red">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag bg-red-100 text-red-700 border-red-300">STRICT NO REFUNDS</span>
+                            <h3 class="section-title text-red-800 mt-0.5">0% REFUND POLICY</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>STRICT 0% REFUND POLICY: ALL DEPOSITS, ENTRY FEES, COINS, AND PAYMENTS ARE 100% NON-REFUNDABLE UNDER ANY CIRCUMSTANCES.</span></div>
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>No refunds, compensation, or chargebacks will be issued for user mistakes, server lag, disconnects, app crashes, or accidental entries.</span></div>
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>Once money or coins are added or spent, they cannot be reverted, refunded, or credited back.</span></div>
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>Attempting chargebacks or payment disputes will result in immediate permanent account termination and legal forfeiture.</span></div>
+                </div>
+            </div>
+
+            <!-- 6. ACCOUNT SECURITY -->
+            <div id="sec-6" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-green">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #06</span>
+                            <h3 class="section-title mt-0.5">ACCOUNT SECURITY</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>Users are solely responsible for maintaining confidentiality of their account credentials.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Sharing account access with others is strictly prohibited.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>PIXEL ARENA will never ask for your password or OTP.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Any unauthorized account access must be reported immediately to official support.</span></div>
+                </div>
+            </div>
+
+            <!-- 7. PENALTIES & BAN -->
+            <div id="sec-7" class="legal-card border-red-300 bg-red-50/20">
+                <div class="flex items-center justify-between gap-3 border-b border-red-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-red">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag bg-red-100 text-red-700 border-red-300">STRICT ACTION</span>
+                            <h3 class="section-title text-red-800 mt-0.5">PENALTIES & BAN</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>Violation of any rules may result in warnings, penalties, or permanent ban.</span></div>
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>Fake screenshots, abusive behavior, multiple accounts, or impersonation lead to strict action.</span></div>
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>Repeated violations will result in permanent restriction from the platform.</span></div>
+                    <div class="term-item"><span class="term-bullet bg-red-600"></span><span>No compensation will be provided for account bans due to rule violations.</span></div>
+                </div>
+            </div>
+
+            <!-- 8. PLATFORM RIGHTS -->
+            <div id="sec-8" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-amber">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #08</span>
+                            <h3 class="section-title mt-0.5">PLATFORM RIGHTS</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>PIXEL ARENA reserves the right to modify, update, or change rules at any time without prior notice.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>The platform may suspend or terminate services for maintenance, technical updates, or security reasons.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>All decisions taken by PIXEL ARENA in disputes or investigations will be final and binding.</span></div>
+                </div>
+            </div>
+
+            <!-- 9. SUPPORT -->
+            <div id="sec-9" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-blue">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-6h3v4zM3 19a2 2 0 002 2h1v-6H3v4z"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #09</span>
+                            <h3 class="section-title mt-0.5">SUPPORT & DESK</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>Users must contact only official support channels for assistance.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Respectful and appropriate communication is mandatory at all times.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Misuse of support systems or abusive language may lead to account action.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Response time may vary depending on issue complexity.</span></div>
+                </div>
+            </div>
+
+            <!-- 10. TOURNAMENT RULES -->
+            <div id="sec-10" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-purple">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #10</span>
+                            <h3 class="section-title mt-0.5">TOURNAMENT RULES</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>Each tournament may have specific rules which must be followed strictly.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Players must join matches on time; delays may result in disqualification without refund.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Any form of unfair exit or intentional loss may lead to penalties.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>Match results once declared will be considered final unless officially reviewed.</span></div>
+                </div>
+            </div>
+
+            <!-- 11. TECHNICAL ISSUES -->
+            <div id="sec-11" class="legal-card">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-green">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag">RULE #11</span>
+                            <h3 class="section-title mt-0.5">TECHNICAL ISSUES</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item"><span class="term-bullet"></span><span>Users are solely responsible for stable internet connectivity, hardware compatibility, and device performance.</span></div>
+                    <div class="term-item"><span class="term-bullet"></span><span>PIXEL ARENA is not responsible for losses, match drops, or missed entries due to lag, device crashes, ISP outages, or third-party game updates.</span></div>
+                </div>
+            </div>
+
+            <!-- 12. ABSOLUTE ZERO LIABILITY WAIVER -->
+            <div id="sec-12" class="legal-card border-slate-900 bg-slate-900 text-white">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="sec-ic ic-lime">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div>
+                            <span class="section-tag bg-[#CCFF00]/10 text-[#CCFF00] border-[#CCFF00]/30">ABSOLUTE DISCLAIMER</span>
+                            <h3 class="section-title text-white mt-0.5">DEVELOPER LIABILITY WAIVER</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="term-list">
+                    <div class="term-item text-slate-200"><span class="term-bullet bg-[#CCFF00]"></span><span>THE DEVELOPER(S), OPERATORS, AND OWNERS OF PIXEL ARENA ARE NOT RESPONSIBLE OR LIABLE FOR ANYTHING AT ALL UNDER ANY CIRCUMSTANCES.</span></div>
+                    <div class="term-item text-slate-300"><span class="term-bullet bg-[#CCFF00]"></span><span>THIS ABSOLUTE WAIVER INCLUDES, BUT IS NOT LIMITED TO, ANY FINANCIAL LOSSES, TECHNICAL ERRORS, APP DOWNTIME, DATA LOSS, PAYMENT DISPUTES, MATCH DISQUALIFICATIONS, OR THIRD-PARTY GAME ACTIONS.</span></div>
+                    <div class="term-item text-slate-300"><span class="term-bullet bg-[#CCFF00]"></span><span>USERS PARTICIPATE AT THEIR OWN SOLE RISK AND INDIVIDUAL RESPONSIBILITY.</span></div>
+                    <div class="term-item text-slate-300"><span class="term-bullet bg-[#CCFF00]"></span><span>WE DO NOT GUARANTEE WINNINGS OR UNINTERRUPTED SERVICE; RESULTS DEPEND ENTIRELY ON USER SKILL AND PERFORMANCE.</span></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer Agreement Statement -->
+        <section class="px-5 mt-6 mb-8 text-center space-y-3">
+            <div class="p-4 bg-[#070A10] text-white border border-slate-800 rounded-xl">
+                <p class="text-[11px] font-bold text-slate-300 uppercase leading-snug">
+                    PIXEL ARENA IS COMMITTED TO MAINTAINING A COMPETITIVE AND TRANSPARENT GAMING ENVIRONMENT FOR ALL USERS.
+                </p>
+                <p class="text-[10px] font-black text-[#CCFF00] mt-2 uppercase tracking-wider">
+                    BY CONTINUING TO USE THE PLATFORM, YOU AGREE TO ABIDE BY ALL THE ABOVE TERMS, THE 0% REFUND POLICY, AND THE DEVELOPER LIABILITY WAIVER.
+                </p>
+            </div>
+            <p class="font-mono-num text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                THANK YOU FOR BEING A PART OF PIXEL ARENA
+            </p>
+        </section>
+
+    </div>
+
+    <!-- EWC BOTTOM NAV BAR WITH SHARP VECTOR ICONS -->
+    <nav class="app-bottom-nav">
+        <a href="tournaments.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="wallet.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="1"/>
+                <path d="M16 12h.01"/>
+                <path d="M2 10h20"/>
+            </svg>
+            <span>Wallet</span>
+        </a>
+        <a href="play.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Tournament</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M18 20V10"/>
+                <path d="M12 20V4"/>
+                <path d="M6 20v-6"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="profile.html" class="nav-item active-ewc">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        function scrollToSec(id) {
+            if (navigator.vibrate) navigator.vibrate(8);
+            const el = document.getElementById(id);
+            if (el) {
+                const yOffset = -70; 
+                const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>

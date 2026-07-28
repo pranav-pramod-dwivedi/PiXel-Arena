@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iconic EWC - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;0,800;0,900;1,700&family=JetBrains+Mono:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+
+        :root {
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --ewc-gold-gradient: linear-gradient(135deg, #FFE57F 0%, #D4AF37 50%, #8C6D10 100%);
+            --wlt-green: #22C55E;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--surface);
+            color: #0F172A;
+            margin: 0;
+            padding-bottom: 95px;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-ewc {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .font-mono-num {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* --- LIGHT GRID OVERLAY --- */
+        .light-grid {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrap { position: relative; z-index: 2; }
+
+        .spring { transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+        .spring:active { transform: scale(.96); }
+
+        /* --- HERO MATCH DISPLAY HUD CARD (EWC POLYGONAL HUD) --- */
+        .match-hero-card {
+            position: relative;
+            background-color: #070A10;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            box-shadow: 0 16px 40px rgba(7, 10, 16, 0.45);
+            color: #FFFFFF;
+            /* Polygonal chamfer cuts on top-left and bottom-right corners */
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        .match-hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 20px; right: 0; height: 2px;
+            background: linear-gradient(90deg, #CCFF00, #D4AF37, transparent);
+            z-index: 12;
+        }
+
+        .match-hero-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 20px; height: 2px;
+            background: linear-gradient(90deg, transparent, #D4AF37, #CCFF00);
+            z-index: 12;
+        }
+
+        .hud-corner-tl {
+            position: absolute; top: 6px; left: 6px; width: 10px; height: 10px;
+            border-top: 2px solid #CCFF00; border-left: 2px solid #CCFF00; z-index: 15; pointer-events: none;
+        }
+        .hud-corner-br {
+            position: absolute; bottom: 6px; right: 6px; width: 10px; height: 10px;
+            border-bottom: 2px solid #CCFF00; border-right: 2px solid #CCFF00; z-index: 15; pointer-events: none;
+        }
+
+        .poly-box {
+            background: rgba(7, 10, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+        }
+
+        .match-hero-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://dl.dir.freefiremobile.com/common/web_event/official2/dist/client/img/home_chars_bg_m.ab67bda.jpeg');
+            background-size: cover;
+            background-position: center top;
+            filter: brightness(0.65) contrast(1.15);
+            transform: scale(1.05);
+            transition: transform 6s ease-out;
+        }
+
+        .match-hero-card:hover .match-hero-bg {
+            transform: scale(1.12);
+        }
+
+        .match-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(7, 10, 16, 0.35) 0%, rgba(7, 10, 16, 0.85) 65%, rgba(7, 10, 16, 0.98) 100%),
+                        radial-gradient(circle at top right, rgba(204, 255, 0, 0.2), transparent 60%);
+            z-index: 1;
+        }
+
+        .booyah-pill {
+            background: linear-gradient(90deg, #FFE57F 0%, #D4AF37 50%, #8C6D10 100%);
+            color: #070A10;
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 900;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            padding: 5px 12px;
+            clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        /* --- QUICK ACTION BUTTONS --- */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .act-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .act-card .ic {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .act-card:active .ic { transform: scale(0.92); border-color: var(--ewc-gold); }
+
+        .act-card .lbl {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            color: #0F172A;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        /* --- SYSTEM PANELS --- */
+        .ewc-panel {
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        /* --- EWC NAVIGATION BAR --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
+
+        /* --- PROGRESS OVERLAY --- */
+        #progress-overlay {
+            position: fixed; inset: 0; z-index: 200; background: rgba(7, 10, 16, 0.88); backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: white;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #progress-overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .progress-step { display: flex; align-items: center; gap: 10px; font-family: 'Chakra Petch', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #94A3B8; }
+        .progress-step.active { color: var(--ewc-lime); }
+        .progress-step.done { color: #22C55E; }
+        .nv-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="max-w-md mx-auto relative">
+
+    <div class="light-grid"></div>
+
+    <div id="progress-overlay">
+        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
+        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading dashboard</div>
+        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Syncing activity</div>
+    </div>
+
+    <!-- MAIN PAGE STAGE -->
+    <div class="wrap px-5 pt-5 pb-32">
+
+        <header class="flex items-center justify-between mb-6">
+            <a href="profile.html" class="flex items-center gap-3 spring">
+                <div class="w-11 h-11 rounded-xl p-0.5 bg-gradient-to-br from-[#070A10] to-[#B88E24] shadow-sm flex items-center justify-center shrink-0">
+                    <img id="avatar" src="" alt="Avatar" class="w-full h-full rounded-[10px] object-cover border border-white/20" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?background=0F131C&color=CCFF00&bold=true&name=Player'">
+                </div>
+                <div class="leading-tight">
+                    <span class="font-ewc text-[10px] font-black text-slate-400 tracking-wider block">WELCOME BACK</span>
+                    <p id="handle" class="font-ewc text-base font-black text-slate-900 leading-none">PLAYER_18</p>
+                </div>
+            </a>
+            <a href="user.html" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-800 shadow-sm spring relative">
+                <i class="fa-solid fa-bell text-sm"></i>
+                <span id="notif-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#22C55E] rounded-full border-2 border-white"></span>
+            </a>
+        </header>
+
+        <div class="mb-5">
+            <span class="font-ewc text-[10px] font-black tracking-widest text-slate-400 block mb-1">EWC // TOTAL BALANCE</span>
+            <div class="flex items-end gap-3">
+                <h1 id="balance" class="font-ewc text-4xl font-black text-slate-900 leading-none tracking-tight cursor-pointer" onclick="toggleHide()">₹429,487.93</h1>
+                <span class="mb-1 text-xs font-ewc font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-trend-up text-[10px]"></i> +2.4%
+                </span>
+            </div>
+        </div>
+
+        <!-- NEXT MATCH HERO CARD WITH GARENA BACKGROUND & POLYGONAL GEOMETRY -->
+        <div class="match-hero-card p-5 mb-6 spring cursor-pointer sticky top-3 z-30" onclick="location.href='play.html'">
+            <div class="hud-corner-tl"></div>
+            <div class="hud-corner-br"></div>
+            <div class="match-hero-bg"></div>
+            <div class="match-hero-overlay"></div>
+
+            <div class="relative z-10 space-y-3.5">
+                <!-- Top Badge Row -->
+                <div class="flex justify-between items-center">
+                    <span id="hero-match-badge" class="font-ewc text-[9px] font-black tracking-widest text-[#CCFF00] bg-[#CCFF00]/10 border border-[#CCFF00]/40 px-3 py-1 flex items-center gap-1.5" style="clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);">
+                        <i class="fa-solid fa-bolt animate-pulse"></i> <span id="hero-badge-text">YOUR JOINED MATCH</span>
+                    </span>
+                    <span id="hero-match-status" class="font-ewc text-[9px] font-black tracking-widest text-emerald-400 bg-emerald-950/90 backdrop-blur-md px-3 py-1 border border-emerald-500/50" style="clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);">
+                        REGISTERED
+                    </span>
+                </div>
+
+                <!-- Title & Description -->
+                <div>
+                    <h2 id="hero-match-title" class="font-ewc text-xl font-black text-white tracking-wider leading-tight drop-shadow-md">
+                        SOLO BR BATTLE #76115
+                    </h2>
+                    <p id="hero-match-desc" class="font-mono-num text-[10px] text-slate-300 mt-1 line-clamp-1 tracking-wide">
+                        GUN ATTRIBUTES OFF • HORSE BAN • PLAY SMART
+                    </p>
+                </div>
+
+                <!-- Match Telemetry Metric Grid with Polygonal Chamfers -->
+                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/15">
+                    <div class="poly-box p-2.5 text-center">
+                        <span class="font-ewc text-[8px] text-slate-400 block font-extrabold tracking-widest">MATCH TIME</span>
+                        <span id="hero-match-time" class="font-ewc text-xs font-black text-white mt-0.5 block">08:00 AM</span>
+                    </div>
+                    <div class="poly-box p-2.5 text-center">
+                        <span class="font-ewc text-[8px] text-slate-400 block font-extrabold tracking-widest">ENTRY FEE</span>
+                        <span id="hero-match-fee" class="font-ewc text-xs font-black text-[#CCFF00] mt-0.5 block">₹6</span>
+                    </div>
+                    <div class="poly-box p-2.5 text-center">
+                        <span class="font-ewc text-[8px] text-slate-400 block font-extrabold tracking-widest">PER KILL</span>
+                        <span id="hero-match-kill" class="font-ewc text-xs font-black text-emerald-400 mt-0.5 block">₹4</span>
+                    </div>
+                </div>
+
+                <!-- Booyah Reward Banner / Lobby Link -->
+                <div id="hero-match-booyah-row" class="flex items-center justify-between pt-1">
+                    <div class="booyah-pill flex items-center gap-1.5">
+                        <i class="fa-solid fa-crown text-[10px]"></i>
+                        <span id="hero-match-booyah-text">₹20 ON BOOYAH</span>
+                    </div>
+                    <span id="hero-cta-action" class="font-ewc text-[10px] font-black text-[#CCFF00] hover:underline flex items-center gap-1 tracking-wider">
+                        ENTER LOBBY <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS GRID -->
+        <div class="actions-grid mb-6">
+            <a href="play.html" class="act-card spring">
+                <div class="ic text-blue-600"><i class="fa-solid fa-gamepad"></i></div>
+                <span class="lbl">Matches</span>
+            </a>
+            <a href="wallet.html" class="act-card spring">
+                <div class="ic text-[#B88E24]"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <span class="lbl">Deposit Cash</span>
+            </a>
+            <a href="stats.html" class="act-card spring">
+                <div class="ic text-purple-600"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="lbl">Overview</span>
+            </a>
+            <a href="user.html" class="act-card spring">
+                <div class="ic text-emerald-600"><i class="fa-solid fa-user-group"></i></div>
+                <span class="lbl">Connect</span>
+            </a>
+        </div>
+
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-ewc text-sm font-black text-slate-900 tracking-wider">RECENT ACTIVITY</h3>
+            <a href="stats.html" class="font-ewc text-xs font-black text-blue-600 hover:text-black tracking-wider uppercase">VIEW ALL</a>
+        </div>
+
+        <div id="activity" class="ewc-panel space-y-3">
+            <div class="flex items-center gap-3 py-1">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
+                    <i class="fa-solid fa-trophy text-sm"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="font-ewc text-xs font-black text-slate-900 truncate">SOLO BR TOURNAMENT #76115</p>
+                    <p class="text-[10px] text-slate-400 font-bold">1st Place Victory Reward</p>
+                </div>
+                <span class="font-ewc text-xs font-black text-emerald-600">+₹1,200</span>
+            </div>
+            <div class="flex items-center gap-3 py-1 border-t border-slate-100">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-[#B88E24] flex items-center justify-center shrink-0 border border-amber-100">
+                    <i class="fa-solid fa-ticket text-sm"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="font-ewc text-xs font-black text-slate-900 truncate">SQUAD BR MATCH ENTRY</p>
+                    <p class="text-[10px] text-slate-400 font-bold">Registration Fee Paid</p>
+                </div>
+                <span class="font-ewc text-xs font-black text-slate-900">-₹20</span>
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="app-bottom-nav">
+        <a href="tournaments.html" class="nav-item active-ewc">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="wallet.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21 18V6H3v12h18zm-2-2H5V8h14v8zm-3-5h2v2h-2v-2z"/>
+            </svg>
+            <span>Wallet</span>
+        </a>
+        <a href="play.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Tournament</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M5 19h14v2H3V3h2v16zm4-8h3v7H9v-7zm5-5h3v12h-3V6z"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="user.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        let isHidden = false;
+        let actualBalance = 429487.93;
+
+        // Sample match dataset
+        const upcomingMatches = [
+            {
+                id: "#76115",
+                type: "Solo",
+                title: "SOLO BR BATTLE #76115",
+                desc: "GUN ATTRIBUTES OFF • ₹20 ON BOOYAH • HORSE BAN",
+                timeDisp: "08:00 AM",
+                time24h: "08:00",
+                fee: 6,
+                kill: 4,
+                booyah: "₹20 ON BOOYAH",
+                isJoined: true // User is registered for this match
+            },
+            {
+                id: "#76185",
+                type: "Duo",
+                title: "DUO BR CLASH #76185",
+                desc: "DUO BR • GUN ATTRIBUTES OFF • ₹20 ON BOOYAH",
+                timeDisp: "08:15 AM",
+                time24h: "08:15",
+                fee: 6,
+                kill: 4,
+                booyah: "₹20 ON BOOYAH",
+                isJoined: false
+            }
+        ];
+
+        function fmt(n) {
+            return "₹" + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function toggleHide() {
+            isHidden = !isHidden;
+            const el = document.getElementById('balance');
+            if (el) el.textContent = isHidden ? '••••••' : fmt(actualBalance);
+            if (navigator.vibrate) navigator.vibrate(8);
+        }
+
+        /* Check if device time has passed match time */
+        function hasTimePassed(time24h) {
+            if (!time24h) return true;
+            const now = new Date();
+            const [hours, minutes] = time24h.split(':').map(Number);
+            const matchTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+            return now >= matchTime;
+        }
+
+        /* Dynamic Match Card Telemetry Renderer with Joined Priority */
+        function renderNextMatchHero() {
+            // Check localStorage for dynamically joined matches
+            let userJoinedIds = [];
+            try {
+                userJoinedIds = JSON.parse(localStorage.getItem('joinedMatches') || '[]');
+            } catch(e){}
+
+            // 1. First priority: Check if user joined an upcoming match
+            let targetMatch = upcomingMatches.find(m => (m.isJoined || userJoinedIds.includes(m.id)) && !hasTimePassed(m.time24h));
+            let isUserJoined = true;
+
+            // 2. Second priority: If no joined match, show next available match to join
+            if (!targetMatch) {
+                targetMatch = upcomingMatches.find(m => !hasTimePassed(m.time24h));
+                isUserJoined = false;
+            }
+
+            const badgeTextEl = document.getElementById('hero-badge-text');
+            const titleEl = document.getElementById('hero-match-title');
+            const descEl = document.getElementById('hero-match-desc');
+            const timeEl = document.getElementById('hero-match-time');
+            const feeEl = document.getElementById('hero-match-fee');
+            const killEl = document.getElementById('hero-match-kill');
+            const booyahTextEl = document.getElementById('hero-match-booyah-text');
+            const statusEl = document.getElementById('hero-match-status');
+            const ctaEl = document.getElementById('hero-cta-action');
+
+            if (targetMatch) {
+                if (titleEl) titleEl.textContent = targetMatch.title;
+                if (descEl) descEl.textContent = targetMatch.desc;
+                if (timeEl) timeEl.textContent = targetMatch.timeDisp;
+                if (feeEl) feeEl.textContent = '₹' + targetMatch.fee;
+                if (killEl) killEl.textContent = '₹' + targetMatch.kill;
+                if (booyahTextEl) booyahTextEl.textContent = targetMatch.booyah || 'CUSTOM PRIZE';
+
+                if (isUserJoined) {
+                    if (badgeTextEl) badgeTextEl.textContent = 'YOUR JOINED MATCH';
+                    if (statusEl) {
+                        statusEl.textContent = 'REGISTERED';
+                        statusEl.className = 'font-ewc text-[9px] font-black tracking-widest text-emerald-400 bg-emerald-950/90 backdrop-blur-md px-3 py-1 border border-emerald-500/50';
+                        statusEl.style.clipPath = 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)';
+                    }
+                    if (ctaEl) ctaEl.innerHTML = 'ENTER LOBBY <i class="fa-solid fa-chevron-right text-[8px]"></i>';
+                } else {
+                    if (badgeTextEl) badgeTextEl.textContent = 'NEXT AVAILABLE MATCH';
+                    if (statusEl) {
+                        statusEl.textContent = 'OPEN';
+                        statusEl.className = 'font-ewc text-[9px] font-black tracking-widest text-[#CCFF00] bg-[#CCFF00]/10 border border-[#CCFF00]/40 px-3 py-1';
+                        statusEl.style.clipPath = 'polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%)';
+                    }
+                    if (ctaEl) ctaEl.innerHTML = 'JOIN ARENA <i class="fa-solid fa-chevron-right text-[8px]"></i>';
+                }
+            } else {
+                /* FALLBACK STATE IF NO UPCOMING MATCHES ARE AVAILABLE */
+                if (badgeTextEl) badgeTextEl.textContent = 'NO ACTIVE MATCHES';
+                if (titleEl) titleEl.textContent = 'NO UPCOMING MATCHES';
+                if (descEl) descEl.textContent = 'ALL TODAY\'S MATCHES COMPLETED • CHECK BACK SOON';
+                if (timeEl) timeEl.textContent = '---';
+                if (feeEl) feeEl.textContent = '---';
+                if (killEl) killEl.textContent = '---';
+                if (booyahTextEl) booyahTextEl.textContent = '---';
+                if (statusEl) {
+                    statusEl.textContent = 'CLOSED';
+                    statusEl.className = 'font-ewc text-[9px] font-black tracking-widest text-slate-400 bg-slate-800/80 border border-slate-700 px-2 py-0.5 rounded';
+                }
+                if (ctaEl) ctaEl.innerHTML = 'VIEW SCHEDULE <i class="fa-solid fa-chevron-right text-[8px]"></i>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNextMatchHero();
+        });
+    </script>
+
+    <script src="haptics.js?v=16" defer></script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { requireAuth } from './authGuard.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        var _homeUser;
+
+        async function refreshHome() {
+            if (!_homeUser) return;
+            try {
+                var snap = await getDoc(doc(db, 'users', _homeUser.uid));
+                if (snap.exists()) {
+                    var userData = snap.data();
+                    var handleEl = document.getElementById('handle');
+                    if (handleEl) { handleEl.textContent = (userData.name || _homeUser.email.split('@')[0] || 'PLAYER_18').toUpperCase(); }
+                    if (userData.coins !== undefined) { actualBalance = userData.coins; var balEl = document.getElementById('balance'); if (balEl) balEl.textContent = fmt(actualBalance); }
+                }
+            } catch(e) {}
+        }
+
+        try {
+            _homeUser = await requireAuth();
+            document.getElementById('p-auth').className = 'progress-step done';
+            document.getElementById('p-auth').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            document.getElementById('p-profile').className = 'progress-step active';
+            await refreshHome();
+            document.getElementById('p-profile').className = 'progress-step done';
+            document.getElementById('p-profile').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            document.getElementById('p-data').className = 'progress-step done';
+            document.getElementById('p-data').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            setTimeout(function() {
+                var overlay = document.getElementById('progress-overlay');
+                if (overlay) overlay.classList.add('hide');
+            }, 300);
+
+            setInterval(refreshHome, 10000);
+
+        } catch(e) {
+            var overlay = document.getElementById('progress-overlay');
+            if (overlay) overlay.classList.add('hide');
+        }
+    </script>
+</body>
+</html>

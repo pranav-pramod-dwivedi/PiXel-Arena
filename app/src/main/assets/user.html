@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iconic EWC - Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
+
+        :root {
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --wlt-green: #22C55E;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--surface);
+            color: #0F172A;
+            margin: 0;
+            overflow-x: hidden;
+            padding-bottom: 95px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-ewc {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* --- ORBITAL SYSTEM --- */
+        .orbit-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sun-profile {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            z-index: 10;
+            background: #070A10;
+            border: 3px solid var(--ewc-lime);
+            box-shadow: 0 0 25px rgba(204, 255, 0, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sun-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .orbit-track {
+            position: absolute;
+            border: 1px dashed rgba(7, 10, 16, 0.15);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .track-1 { width: 160px; height: 160px; animation: spinRight 20s linear infinite; }
+        .track-2 { width: 260px; height: 260px; animation: spinLeft 30s linear infinite; }
+
+        .planet {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #fff;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .planet img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .planet-svg { width: 18px; height: 18px; }
+
+        .track-1 .p1 { top: -20px; left: 50%; margin-left: -20px; }
+        .track-1 .p2 { bottom: -20px; left: 50%; margin-left: -20px; }
+        .track-1 .p3 { top: 50%; left: -20px; margin-top: -20px; }
+        .track-2 .p4 { top: 20px; right: 20px; }
+        .track-2 .p5 { bottom: 20px; left: 20px; }
+        .track-2 .p6 { top: 50%; right: -20px; margin-top: -20px; }
+        .track-2 .p7 { bottom: -20px; left: 50%; margin-left: -20px; }
+
+        @keyframes spinRight { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes spinLeft { 100% { transform: translate(-50%, -50%) rotate(-360deg); } }
+        .track-1 .planet { animation: counterSpinRight 20s linear infinite; }
+        .track-2 .planet { animation: counterSpinLeft 30s linear infinite; }
+        @keyframes counterSpinRight { 100% { transform: rotate(-360deg); } }
+        @keyframes counterSpinLeft { 100% { transform: rotate(360deg); } }
+
+        /* --- EWC STAT CAPSULES --- */
+        .stat-cap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 14px 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .stat-n {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0F172A;
+        }
+
+        .stat-cap:nth-child(1) .stat-n { color: #3B82F6; }
+        .stat-cap:nth-child(2) .stat-n { color: #EF4444; }
+        .stat-cap:nth-child(3) .stat-n { color: var(--ewc-gold); }
+
+        .stat-l {
+            font-size: 9px;
+            font-weight: 800;
+            color: #64748B;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .cap-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spring { transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+        .spring:active { transform: scale(.96); }
+
+        /* --- EWC PANELS --- */
+        .panel {
+            margin: 16px 20px;
+            border-radius: 20px;
+            padding: 16px;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+        }
+
+        .panel-head h3 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 0;
+            color: #0F172A;
+        }
+
+        .panel-head .see {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #2563EB;
+        }
+
+        .grow {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 12px 0;
+        }
+
+        .grow + .grow { border-top: 1px solid #F1F5F9; }
+
+        .grow-av {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            flex-shrink: 0;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+        }
+
+        .grow-mid { flex: 1; min-width: 0; }
+        .grow-name { font-size: 14px; font-weight: 700; color: #0F172A; }
+        .grow-note { font-size: 12px; color: #64748B; margin-top: 1px; }
+
+        /* --- TOURNAMENT CARDS --- */
+        .tournament-scroll {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding: 0 20px 8px;
+            scrollbar-width: none;
+        }
+
+        .tournament-scroll::-webkit-scrollbar { display: none; }
+
+        .t-card {
+            min-width: 280px;
+            flex-shrink: 0;
+            text-decoration: none;
+            border-radius: 24px;
+            padding: 18px;
+            color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0F131C 0%, #1A2333 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .t-card::after {
+            content: "";
+            position: absolute;
+            right: -24px;
+            top: -24px;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: rgba(204, 255, 0, 0.08);
+        }
+
+        .t-card:active { transform: scale(.98); }
+
+        .t-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 14px;
+        }
+
+        .t-game { font-family: 'Chakra Petch', sans-serif; font-size: 11px; font-weight: 800; opacity: .9; text-transform: uppercase; }
+        .t-format { font-family: 'Chakra Petch', sans-serif; font-size: 10px; font-weight: 800; background: rgba(204,255,0,0.2); color: var(--ewc-lime); padding: 3px 10px; border-radius: 99px; text-transform: uppercase; }
+
+        .t-body {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .t-name { font-family: 'Chakra Petch', sans-serif; font-size: 20px; font-weight: 800; line-height: 1.1; text-transform: uppercase; }
+        .t-detail { text-align: right; }
+        .t-time { font-family: 'Chakra Petch', sans-serif; font-size: 13px; font-weight: 800; opacity: .9; }
+        .t-date { font-size: 10px; font-weight: 600; color: #94A3B8; margin-top: 2px; }
+
+        .t-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+            margin-top: 16px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .t-prize {
+            background: rgba(212, 175, 55, 0.2);
+            color: #FFE57F;
+            padding: 3px 9px;
+            border-radius: 99px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        /* --- MASONRY FEED --- */
+        .masonry-grid { column-count: 2; column-gap: 8px; padding: 0 20px 10px; }
+        .masonry-item { break-inside: avoid; margin-bottom: 8px; border-radius: 16px; overflow: hidden; background: #E2E8F0; }
+        .masonry-img { width: 100%; display: block; object-fit: cover; }
+
+        /* --- GIFT ICON --- */
+        .gift-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 13px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FEF2F2;
+            color: #F0506E;
+        }
+
+        .gift-svg { width: 18px; height: 18px; }
+
+        /* --- SYSTEM LIST --- */
+        .bank-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            background: #FFFFFF;
+            transition: 0.2s;
+        }
+
+        .bank-item:active { transform: scale(0.98); background: #F8FAFC; }
+        .bank-logo { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #F8FAFC; color: #0F172A; font-size: 1.2rem; }
+
+        /* --- UPLOAD BUTTON --- */
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: #2563EB;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+        }
+        .upload-btn:active { transform: scale(.96); }
+
+        /* --- FORMAT CHIP --- */
+        .format-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 99px;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: #0F172A;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+        }
+        .format-chip:active { transform: scale(.96); }
+        .format-chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 0 0; }
+
+        /* --- EMPTY STATE --- */
+        .empty-state { text-align: center; padding: 24px 20px; color: #64748B; }
+        .empty-state p { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+        
+        .join-btn {
+            display: inline-block;
+            background: var(--ewc-black);
+            color: var(--ewc-lime);
+            padding: 10px 24px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+        }
+        .join-btn:active { transform: scale(.96); }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(236,239,241,.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #CBD5E1;
+        }
+
+        /* --- EWC NAVIGATION BAR --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
+
+        .bank-item p:first-child { font-family: 'Chakra Petch', sans-serif; text-transform: uppercase; font-size: 12px; font-weight: 800; }
+        .section-head { font-family: 'Chakra Petch', sans-serif; font-size: 14px; font-weight: 800; text-transform: uppercase; color: #0F172A; }
+
+        /* --- PROGRESS OVERLAY --- */
+        #progress-overlay {
+            position: fixed; inset: 0; z-index: 200; background: rgba(7, 10, 16, 0.88); backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: white;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        #progress-overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .progress-step { display: flex; align-items: center; gap: 10px; font-family: 'Chakra Petch', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #94A3B8; }
+        .progress-step.active { color: var(--ewc-lime); }
+        .progress-step.done { color: #22C55E; }
+        .nv-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="max-w-md mx-auto relative">
+
+    <!-- Progress Loader Overlay -->
+    <div id="progress-overlay">
+        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
+        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading profile</div>
+        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading data</div>
+    </div>
+
+    <!-- MAIN PAGE STAGE -->
+    <div id="main-content" class="min-h-screen pb-32" style="padding-top:58px">
+
+        <!-- Header -->
+        <header class="sticky-header">
+            <a href="tournaments.html" class="cap-btn spring w-9 h-9 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-chevron-left text-xs text-slate-700"></i>
+            </a>
+            <h1 class="font-ewc text-base font-black text-slate-900 tracking-wider">USER PROFILE</h1>
+            <div class="w-9 h-9"></div>
+        </header>
+
+        <!-- ORBITAL SYSTEM -->
+        <div class="orbit-container mt-2">
+            <div class="orbit-track track-1">
+                <div class="planet p1">
+                    <span class="font-ewc text-xs font-black text-slate-900">SK</span>
+                </div>
+                <div class="planet p2">
+                    <span class="font-ewc text-xs font-black text-slate-900">MK</span>
+                </div>
+                <div class="planet p3">
+                    <span class="font-ewc text-xs font-black text-blue-600">H</span>
+                </div>
+            </div>
+            <div class="orbit-track track-2">
+                <div class="planet p4">
+                    <span class="font-ewc text-xs font-black text-emerald-600">M</span>
+                </div>
+                <div class="planet p5">
+                    <span class="font-ewc text-xs font-black text-amber-600">PX</span>
+                </div>
+                <div class="planet p6">
+                    <span class="font-ewc text-xs font-black text-purple-600">EV</span>
+                </div>
+                <div class="planet p7">
+                    <span class="font-ewc text-xs font-black text-rose-600">AK</span>
+                </div>
+            </div>
+            <div class="sun-profile">
+                <img id="userSunImg" src="" alt="User" class="sun-img">
+            </div>
+        </div>
+
+        <div class="text-center mb-6">
+            <h2 class="font-ewc text-xl font-black text-slate-900 mb-1"><span id="displayName">Player</span> <i class="fa-solid fa-circle-check text-blue-600 text-sm ml-1"></i></h2>
+        </div>
+
+        <!-- STATS: Matches / Kills / Coins -->
+        <div class="px-5 grid grid-cols-3 gap-2.5 mb-6">
+            <div class="stat-cap"><span id="statMatches" class="stat-n">0</span><span class="stat-l">Matches</span></div>
+            <div class="stat-cap"><span id="statKills" class="stat-n">0</span><span class="stat-l">Kills</span></div>
+            <div class="stat-cap"><span id="statCoins" class="stat-n">0</span><span class="stat-l">Coins</span></div>
+        </div>
+
+        <!-- TOURNAMENT COINS -->
+        <div class="panel">
+            <div class="panel-head"><h3>Tournament Coins</h3><span class="see" id="coin-total">0</span></div>
+            <div id="coin-bars" style="padding:6px 16px 14px"></div>
+        </div>
+
+        <!-- FAVOURITE TOURNAMENTS -->
+        <div class="panel">
+            <div class="panel-head"><h3>Your Favourite Tournaments</h3></div>
+            <div id="fav-formats-list"></div>
+        </div>
+
+        <!-- NEXT TOURNAMENTS -->
+        <div class="px-5 mb-3 mt-6 flex items-center justify-between">
+            <h3 class="section-head">Next Tournaments</h3>
+            <a href="tournaments.html" class="font-ewc text-[11px] font-black text-blue-600 uppercase">View all</a>
+        </div>
+        <div id="next-tournaments-scroll" class="tournament-scroll hide-scrollbar"></div>
+
+        <!-- GAMING GALLERY -->
+        <div class="px-5 mb-3 mt-6 flex items-center justify-between">
+            <h3 class="section-head">Gaming Gallery</h3>
+            <label class="upload-btn spring"><i class="fa-solid fa-plus"></i> Upload Pics<input type="file" id="galleryUpload" accept="image/*" multiple style="display:none"></label>
+        </div>
+        <div id="gallery-grid" class="masonry-grid"></div>
+
+        <!-- SYSTEM -->
+        <div class="px-5 space-y-3 mt-6">
+            <h3 class="section-head mb-2">System</h3>
+            <a href="wallet.html" class="bank-item">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-amber-50 text-[#B88E24]"><i class="fa-solid fa-wallet"></i></div>
+                    <div><p class="text-[13px] font-bold text-slate-900">My Wallet</p><p class="text-[10px] text-slate-400 font-bold uppercase">Balance & Transfers</p></div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </a>
+            <a href="transactions.html" class="bank-item">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-blue-50 text-blue-600"><i class="fa-solid fa-receipt"></i></div>
+                    <div><p class="text-[13px] font-bold text-slate-900">Transactions</p><p class="text-[10px] text-slate-400 font-bold uppercase">Audit History</p></div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </a>
+            <a href="address.html" class="bank-item">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-slate-100 text-slate-700"><i class="fa-solid fa-map-location-dot"></i></div>
+                    <div><p class="text-[13px] font-bold text-slate-900">Registered Address</p><p class="text-[10px] text-slate-400 font-bold uppercase" id="regAddress">Quebec, Canada</p></div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </a>
+            <div class="bank-item border-red-200/60 bg-red-50/40">
+                <div class="flex items-center gap-4">
+                    <div class="bank-logo bg-red-100 text-red-600"><i class="fa-solid fa-trash"></i></div>
+                    <div><p class="text-[13px] font-bold text-red-600">Delete Account</p><p class="text-[10px] text-red-400 font-bold uppercase">Locked</p></div>
+                </div>
+                <i class="fa-solid fa-lock text-xs text-red-400"></i>
+            </div>
+        </div>
+
+        <!-- GIFTS RECEIVED -->
+        <div class="panel mt-6 mb-8">
+            <div class="panel-head"><h3>Gifts Received</h3><span class="see" id="gift-total"></span></div>
+            <div id="gift-list"></div>
+            <button id="gift-more" onclick="toggleGifts()" class="w-full text-center py-3 text-xs font-ewc font-black text-blue-600 uppercase tracking-wider">More</button>
+        </div>
+
+    </div>
+
+    <!-- EWC BOTTOM NAV BAR WITH SHARP VECTOR ICONS -->
+    <nav class="app-bottom-nav">
+        <a href="home.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="wallet.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="1"/>
+                <path d="M16 12h.01"/>
+                <path d="M2 10h20"/>
+            </svg>
+            <span>Wallet</span>
+        </a>
+        <a href="TOURNAMENTS.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Tournament</span>
+        </a>
+        <a href="stats.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M18 20V10"/>
+                <path d="M12 20V4"/>
+                <path d="M6 20v-6"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="user.html" class="nav-item active-ewc">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        let giftsExpanded = false;
+        let _allGifts = [];
+
+        function timeAgo(ts){
+            const d = Math.floor((Date.now() - ts) / 86400000);
+            if(d < 1) return 'today';
+            if(d < 30) return d + 'd ago';
+            if(d < 365) return Math.floor(d/30) + 'mo ago';
+            return Math.floor(d/365) + 'y ago';
+        }
+
+        function renderCoinBars(){
+            const userData = window._userData || { coins: 0 };
+            const spent = Math.min(Math.floor(userData.coins * 0.4), userData.coins);
+            const won = userData.coins - spent;
+            const total = spent + won || 1;
+            document.getElementById('coin-total').textContent = userData.coins;
+            document.getElementById('coin-bars').innerHTML = `
+                <div style="font-size:10px;font-weight:700;color:#64748B;margin-bottom:4px"><i class="fa-solid fa-arrow-up-right-dots" style="font-size:9px;color:var(--ewc-gold)"></i> Spent on Tournaments</div>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-size:12px;font-weight:700;color:var(--ewc-gold)">${userData.coins ? spent : '-'}</span>
+                    <div style="flex:1;height:3px;border-radius:99px;background:#F1F5F9">
+                        <span style="display:block;height:100%;width:${(spent/total*100).toFixed(1)}%;border-radius:99px;background:var(--ewc-gold)"></span>
+                    </div>
+                </div>
+                <div style="margin-top:10px">
+                <div style="font-size:10px;font-weight:700;color:#64748B;margin-bottom:4px"><i class="fa-solid fa-trophy" style="font-size:9px;color:var(--ewc-gold)"></i> Won from Tournaments</div>
+                <div style="display:flex;align-items:center;gap:6px">
+                    <span style="font-size:12px;font-weight:700;color:var(--ewc-gold)">${userData.coins ? won : '-'}</span>
+                    <div style="flex:1;height:3px;border-radius:99px;background:#F1F5F9">
+                        <span style="display:block;height:100%;width:${(won/total*100).toFixed(1)}%;border-radius:99px;background:var(--ewc-gold)"></span>
+                    </div>
+                </div>
+                </div>
+            `;
+        }
+
+        function renderFavouriteFormats(){
+            const formats = window._userData?.favouriteFormats || [];
+            const el = document.getElementById('fav-formats-list');
+            if (!formats.length) {
+                el.innerHTML = `
+                    <div class="empty-state">
+                        <p>You've played no tournaments,<br>why not play one?</p>
+                        <a href="tournaments.html" class="join-btn">Join a Tournament</a>
+                    </div>
+                `;
+                return;
+            }
+            el.innerHTML = `<div class="format-chips">${formats.map(f =>
+                `<a href="format.html?f=${encodeURIComponent(f)}" class="format-chip spring"><i class="fa-solid fa-gamepad" style="font-size:12px;color:#2563EB"></i>${f}</a>`
+            ).join('')}</div>`;
+        }
+
+        function renderNextTournaments(){
+            const list = window._nextTournaments || [];
+            const el = document.getElementById('next-tournaments-scroll');
+            if (!list.length) {
+                el.innerHTML = `<div class="empty-state" style="min-width:100%"><p>No upcoming tournaments scheduled</p></div>`;
+                return;
+            }
+            el.innerHTML = list.map(t => `
+                <a href="details.html?id=${encodeURIComponent(t.id)}" class="t-card">
+                    <div class="t-top">
+                        <span class="t-game">${t.game || 'Tournament'}</span>
+                        <span class="t-format">${t.format || 'Open'}</span>
+                    </div>
+                    <div class="t-body">
+                        <div class="t-name">${t.name}</div>
+                        <div class="t-detail">
+                            <div class="t-time">${t.time || 'TBD'}</div>
+                            <div class="t-date">${t.date || ''}</div>
+                        </div>
+                    </div>
+                    <div class="t-foot">
+                        <span>${t.game || ''}</span>
+                        <span class="t-prize">${t.prizePool || 'Free'}</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function renderGamingGallery(){
+            const images = window._galleryImages || [];
+            const el = document.getElementById('gallery-grid');
+            if (!images.length) {
+                el.innerHTML = `<div class="empty-state" style="column-span:all"><p>No gaming moments yet.<br>Upload your first screenshot!</p></div>`;
+                return;
+            }
+            el.innerHTML = images.map(src =>
+                `<div class="masonry-item"><img src="${src}" class="masonry-img" loading="lazy"></div>`
+            ).join('');
+        }
+
+        function renderGifts(){
+            const gifts = _allGifts;
+            document.getElementById('gift-total').textContent = gifts.length ? gifts.length + (gifts.length === 1 ? ' gift' : ' gifts') : '';
+            if (!gifts.length) {
+                document.getElementById('gift-list').innerHTML = `<div class="empty-state"><p>No gifts received yet</p></div>`;
+                document.getElementById('gift-more').style.display = 'none';
+                return;
+            }
+            const shown = giftsExpanded ? gifts : gifts.slice(0,3);
+            document.getElementById('gift-list').innerHTML = shown.map(g => `
+                <div class="grow">
+                    <img class="grow-av" src="${g.img || 'https://ui-avatars.com/api/?background=0F131C&color=CCFF00&name='+encodeURIComponent(g.from)}" onerror="this.src='https://ui-avatars.com/api/?background=0F131C&color=CCFF00&name=${encodeURIComponent(g.from)}'">
+                    <div class="grow-mid"><div class="grow-name">${g.from}</div><div class="grow-note">${g.note || ''} · ${timeAgo(g.createdAt?.toMillis ? g.createdAt.toMillis() : (g.createdAt || Date.now()))}</div></div>
+                    <div class="gift-icon"><svg class="gift-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8"></path><path d="M12 8v13"></path><path d="M12 8H7.5a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8z"></path><path d="M12 8h4.5a2.5 2.5 0 0 1 0-5C13 3 12 8 12 8z"></path></svg></div>
+                </div>
+            `).join('');
+            const btn = document.getElementById('gift-more');
+            if (gifts.length <= 3) btn.style.display = 'none';
+            else { btn.style.display = ''; btn.textContent = giftsExpanded ? 'Show less' : 'More'; }
+        }
+
+        function toggleGifts(){ giftsExpanded = !giftsExpanded; renderGifts(); if(navigator.vibrate) navigator.vibrate(10); }
+
+        function renderAll(){
+            try {
+                renderCoinBars();
+                renderFavouriteFormats();
+                renderNextTournaments();
+                renderGamingGallery();
+                renderGifts();
+            } catch(e) {}
+        }
+
+        // Gallery upload handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('galleryUpload');
+            if (input) {
+                input.addEventListener('change', function(e) {
+                    const files = Array.from(e.target.files);
+                    if (!files.length) return;
+                    const existing = window._galleryImages || [];
+                    const available = 4 - existing.length;
+                    if (available <= 0) { alert('Max 4 images allowed'); return; }
+                    const toProcess = files.slice(0, available);
+                    let loaded = 0;
+                    toProcess.forEach(f => {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            existing.push(ev.target.result);
+                            loaded++;
+                            if (loaded === toProcess.length) {
+                                window._galleryImages = existing;
+                                try { localStorage.setItem('galleryImages', JSON.stringify(existing)); } catch(e) {}
+                                renderGamingGallery();
+                            }
+                        };
+                        reader.readAsDataURL(f);
+                    });
+                    this.value = '';
+                });
+            }
+            try {
+                const saved = localStorage.getItem('galleryImages');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length) {
+                        window._galleryImages = parsed;
+                        renderGamingGallery();
+                    }
+                }
+            } catch(e) {}
+        });
+    </script>
+
+    <script src="haptics.js?v=16" defer></script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { requireAuth } from './authGuard.js';
+        import { doc, getDoc, collection, query, orderBy, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        var _userProfileUser;
+
+        function nameFromEmail(email) {
+            if (!email) return 'Player';
+            var raw = email.split('@')[0];
+            var clean = raw.replace(/[^a-zA-Z0-9._-]/g, '');
+            if (!clean) return 'Player';
+            return clean.replace(/[._-]+/g, ' ').split(' ').filter(Boolean).map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
+        }
+
+        async function refreshProfile() {
+            if (!_userProfileUser) return;
+            try {
+                var snap = await getDoc(doc(db, 'users', _userProfileUser.uid));
+                var userData = snap.exists() ? { name: '', profilePhoto: '', matchesPlayed: 0, kills: 0, coins: 0, favouriteFormats: [], ...snap.data() } : { name: '', profilePhoto: '', matchesPlayed: 0, kills: 0, coins: 0, favouriteFormats: [] };
+                
+                var displayName = (userData.name && userData.name.trim()) ? userData.name.trim() : nameFromEmail(_userProfileUser.email);
+                document.getElementById('displayName').textContent = displayName;
+                document.getElementById('statMatches').textContent = userData.matchesPlayed ?? 0;
+                document.getElementById('statKills').textContent = userData.kills ?? 0;
+                document.getElementById('statCoins').textContent = userData.coins ?? 0;
+                document.getElementById('regAddress').textContent = userData.address || 'Quebec, Canada';
+                window._userData = userData;
+
+                if (userData.profilePhoto) { document.getElementById('userSunImg').src = userData.profilePhoto; }
+                else { var c = displayName.charAt(0).toUpperCase(); document.getElementById('userSunImg').src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Cdefs%3E%3ClinearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"%3E%3Cstop offset="0%" stop-color="%23070A10"/%3E%3Cstop offset="100%" stop-color="%230F131C"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="200" height="200" fill="url(%23g)"/%3E%3Ctext x="100" y="118" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="900" font-size="80" fill="%23CCFF00"%3E' + c + '%3C/text%3E%3C/svg%3E'; }
+
+                var tSnap = await getDocs(query(collection(db, 'tournaments'), orderBy('date', 'asc'), limit(10)));
+                window._nextTournaments = tSnap.docs.map(function(d) { return { id: d.id, ...d.data() }; });
+
+                var gSnap = await getDocs(query(collection(db, 'users', _userProfileUser.uid, 'gifts'), orderBy('createdAt', 'desc')));
+                _allGifts = gSnap.docs.map(function(d) { return { id: d.id, ...d.data() }; });
+
+                if (typeof renderCoinBars === 'function') renderCoinBars();
+                if (typeof renderFavouriteFormats === 'function') renderFavouriteFormats();
+                if (typeof renderNextTournaments === 'function') renderNextTournaments();
+                if (typeof renderGifts === 'function') renderGifts();
+            } catch(e) {}
+        }
+
+        try {
+            _userProfileUser = await requireAuth();
+            document.getElementById('p-auth').className = 'progress-step done';
+            document.getElementById('p-auth').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            document.getElementById('p-profile').className = 'progress-step active';
+            await refreshProfile();
+            document.getElementById('p-profile').className = 'progress-step done';
+            document.getElementById('p-profile').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            document.getElementById('p-data').className = 'progress-step done';
+            document.getElementById('p-data').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            setTimeout(function() { document.getElementById('progress-overlay').classList.add('hide'); }, 300);
+            setInterval(refreshProfile, 10000);
+        } catch (e) {
+            document.getElementById('progress-overlay').classList.add('hide');
+        }
+    </script>
+</body>
+</html>

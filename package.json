@@ -1,0 +1,10 @@
+{
+  "name": "pixel-arena",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PiXel Arena - HTML-based game app",
+  "scripts": {
+    "start": "node serve.js",
+    "serve": "node serve.js"
+  }
+}

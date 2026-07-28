@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pixel Arena</title>
+    <script src="app.js?v=16"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css?v=16">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+        * { -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; overflow-x: hidden; }
+        .num { font-family: 'Space Grotesk', sans-serif; }
+        .glow-orb { position:fixed; z-index:0; width:50vw;height:50vw;border-radius:50%;filter:blur(100px);opacity:.28;
+            background: radial-gradient(circle,#39c0ff,transparent 60%); top:38%; left:30%; animation: float 20s ease-in-out infinite -4s; }
+        [data-theme="dark"] .glow-orb { opacity:.4; }
+        @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(5vw,-4vw) scale(1.12)} }
+
+        .wrap { position: relative; z-index: 2; }
+
+        .glass {
+            background: var(--nv-glass);
+            backdrop-filter: blur(26px) saturate(150%); -webkit-backdrop-filter: blur(26px) saturate(150%);
+            border: 1px solid var(--nv-glass-brd);
+            box-shadow: inset 0 1px 0 var(--nv-glass-hi), var(--nv-shadow);
+        }
+        .glass-in { background: var(--nv-glass); border:1px solid var(--nv-glass-brd); backdrop-filter: blur(14px); }
+        .tap { transition: transform .16s cubic-bezier(.16,1,.3,1); } .tap:active { transform: scale(.95); }
+
+        /* tournament card — vivid gradient hero element */
+        .tournament-card {
+            position: relative; border-radius: 28px; overflow: hidden;
+            background: linear-gradient(135deg, #0F131C 0%, #1a3a2a 55%, #0d4a3a 100%);
+            box-shadow: 0 24px 55px -22px rgba(20,180,120,.35), inset 0 1px 0 rgba(255,255,255,.15);
+        }
+        .tournament-card::after { content:""; position:absolute; inset:0;
+            background: linear-gradient(115deg, transparent 30%, rgba(204,255,0,.12) 47%, transparent 64%);
+            transform: translateX(-40%); animation: sheen 6s ease-in-out infinite; }
+        @keyframes sheen { 0%,100%{transform:translateX(-45%)} 50%{transform:translateX(45%)} }
+
+        .trophy-badge {
+            width:44px;height:32px;border-radius:6px;background:linear-gradient(135deg,#B88E24,#FFE57F 50%,#B88E24);position:relative;box-shadow:0 1px 3px rgba(0,0,0,.3);
+            display:flex;align-items:center;justify-content:center;
+        }
+
+        .act { display:flex; flex-direction:column; align-items:center; gap:9px; }
+        .act .ic { width:58px;height:58px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;
+            background: var(--nv-glass); border:1px solid var(--nv-glass-brd); backdrop-filter: blur(12px);
+            box-shadow: inset 0 1px 0 var(--nv-glass-hi); transition: transform .16s; }
+        .act:active .ic { transform: scale(.9); }
+        .act .lbl { font-size:11px; font-weight:700; color:var(--nv-ink2); }
+        .ink { color: var(--nv-ink); } .sub { color: var(--nv-sub); } .ink2 { color: var(--nv-ink2); }
+
+        /* bottom nav */
+        .nav { position: fixed; bottom: 18px; left:16px; right:16px; max-width: calc(100% - 32px); margin:0 auto; z-index: 60; }
+        .nav-bar {
+            height: 64px; border-radius: 28px; display:flex; align-items:center; justify-content:space-between; padding: 0 22px;
+            background: rgba(255,255,255,.28); backdrop-filter: blur(36px) saturate(180%); -webkit-backdrop-filter: blur(36px) saturate(180%);
+            border: 1px solid rgba(255,255,255,.55); box-shadow: 0 14px 40px -12px rgba(40,60,120,.28), inset 0 1px 0 rgba(255,255,255,.7);
+        }
+        .nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--nv-sub); font-size:19px; transition:color .2s; }
+        .nav-item span { font-size:9px; font-weight:700; }
+        .nav-item.on { color:var(--nv-blue); }
+        .nav-fab { width:54px;height:54px;border-radius:19px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:21px;
+            background: linear-gradient(135deg,#B88E24,#CCFF00); box-shadow: 0 10px 24px rgba(184,142,36,.45); }
+    </style>
+</head>
+<body class="max-w-md mx-auto">
+
+    <div class="aurora"></div><div class="glow-orb"></div>
+
+    <div class="wrap px-5 pb-32 pt-7">
+
+        <!-- header -->
+        <header class="flex items-center justify-between mb-7">
+            <a href="user.html" class="flex items-center gap-3 tap">
+                <div class="w-11 h-11 rounded-full p-0.5" style="background:linear-gradient(135deg,#B88E24,#CCFF00)">
+                    <img id="avatar" src="IMG_20251214_013513.jpg" class="w-full h-full rounded-full object-cover border-2 border-[#05060E]">
+                </div>
+                <div class="leading-tight">
+                    <p class="text-[11px] sub font-semibold">Welcome</p>
+                    <p id="handle" class="text-[15px] font-extrabold ink">Player</p>
+                </div>
+            </a>
+            <a href="notifications.html" class="relative glass tap w-11 h-11 rounded-full flex items-center justify-center text-[#c3ccec]">
+                <i class="fa-solid fa-bell"></i>
+                <span id="notif-dot" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-[#ff375f] text-white text-[10px] font-bold rounded-full flex items-center justify-center"></span>
+            </a>
+        </header>
+
+        <!-- tournament overview -->
+        <div class="mb-5">
+            <p class="text-[12px] font-bold sub uppercase tracking-[0.15em] mb-1">Prize Pool</p>
+            <div class="flex items-end gap-3">
+                <h1 class="num text-[42px] font-bold ink leading-none tracking-tight">₹50,000</h1>
+                <span class="mb-1.5 text-[12px] font-bold text-[#ffb020] flex items-center gap-1"><i class="fa-solid fa-clock"></i> 2 Days Left</span>
+            </div>
+        </div>
+
+        <!-- tournament hero card (replaces neon payment card) -->
+        <div class="tournament-card p-5 mb-6 tap sticky top-3 z-30" onclick="location.href='TOURNAMENTS.html'">
+            <div class="flex justify-between items-start mb-8 relative z-10">
+                <div class="trophy-badge"><i class="fa-solid fa-trophy text-[#070A10] text-sm"></i></div>
+                <span id="card-brand" class="text-[10px] font-bold text-[#CCFF00] uppercase tracking-wider bg-[rgba(204,255,0,.15)] px-2 py-1 rounded-md">BGMI</span>
+            </div>
+            <div class="flex items-end justify-between relative z-10">
+                <div>
+                    <p id="card-num" class="text-[18px] font-extrabold text-white/90 mb-1 uppercase tracking-wide">BGMI CHAMPIONSHIP</p>
+                    <p class="text-[10px] font-bold text-white/50 uppercase tracking-widest">Prize Pool ₹50,000</p>
+                </div>
+                <i class="fa-solid fa-trophy text-white/30 text-xl"></i>
+            </div>
+            <div class="flex items-center justify-between mt-4 relative z-10">
+                <p class="text-[11px] font-bold text-white/40 uppercase tracking-wider">128/256 Teams</p>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-[#33d69f] animate-pulse"></span>
+                    <p class="text-[10px] font-bold text-[#33d69f] uppercase">Live</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- quick actions -->
+        <div class="grid grid-cols-4 gap-3 mb-7">
+            <a href="TOURNAMENTS.html" class="act tap"><div class="ic" style="color:#4d8bff"><i class="fa-solid fa-users"></i></div><span class="lbl">Join</span></a>
+            <a href="play.html" class="act tap"><div class="ic" style="color:#33d69f"><i class="fa-solid fa-gamepad"></i></div><span class="lbl">Play</span></a>
+            <a href="RANKINGS.html" class="act tap"><div class="ic" style="color:#B88E24"><i class="fa-solid fa-trophy"></i></div><span class="lbl">Rankings</span></a>
+            <a href="stats.html" class="act tap"><div class="ic" style="color:#c07bff"><i class="fa-solid fa-chart-column"></i></div><span class="lbl">Results</span></a>
+        </div>
+
+        <!-- recent activity -->
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-[15px] font-extrabold ink">Recent Activity</h3>
+        </div>
+        <div class="glass rounded-3xl p-2">
+            <div class="flex items-center gap-3 p-3 border-b border-white/5">
+                <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(204,255,0,.14);color:#CCFF00"><i class="fa-solid fa-trophy"></i></div>
+                <div class="flex-1 min-w-0"><p class="text-[14px] font-bold ink truncate">BGMI Championship</p><p class="text-[11px] sub truncate">Registration opened</p></div>
+                <p class="num text-[14px] font-bold whitespace-nowrap" style="color:#33d69f">+128 Teams</p>
+            </div>
+            <div class="flex items-center gap-3 p-3 border-b border-white/5">
+                <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(77,139,255,.14);color:#4d8bff"><i class="fa-solid fa-gamepad"></i></div>
+                <div class="flex-1 min-w-0"><p class="text-[14px] font-bold ink truncate">Match #23 completed</p><p class="text-[11px] sub truncate">Squad mode · 25 kills</p></div>
+                <p class="num text-[14px] font-bold whitespace-nowrap" style="color:#4d8bff">Won</p>
+            </div>
+            <div class="flex items-center gap-3 p-3 border-b border-white/5">
+                <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(184,142,36,.14);color:#B88E24"><i class="fa-solid fa-coins"></i></div>
+                <div class="flex-1 min-w-0"><p class="text-[14px] font-bold ink truncate">Prize distributed</p><p class="text-[11px] sub truncate">Friday Face-Off · ₹5,000</p></div>
+                <p class="num text-[14px] font-bold whitespace-nowrap" style="color:#33d69f">+₹5,000</p>
+            </div>
+            <div class="flex items-center gap-3 p-3 border-b border-white/5">
+                <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(192,123,255,.14);color:#c07bff"><i class="fa-solid fa-sitemap"></i></div>
+                <div class="flex-1 min-w-0"><p class="text-[14px] font-bold ink truncate">Bracket updated</p><p class="text-[11px] sub truncate">Semi-finals locked in</p></div>
+                <p class="num text-[14px] font-bold whitespace-nowrap" style="color:#c07bff">Updated</p>
+            </div>
+            <div class="flex items-center gap-3 p-3">
+                <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(51,214,159,.14);color:#33d69f"><i class="fa-solid fa-users"></i></div>
+                <div class="flex-1 min-w-0"><p class="text-[14px] font-bold ink truncate">Team Alpha registered</p><p class="text-[11px] sub truncate">Weekend Warriors · Squad</p></div>
+                <p class="num text-[14px] font-bold whitespace-nowrap" style="color:#33d69f">Joined</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- nav -->
+    <div class="nav">
+        <div class="nav-bar">
+            <a href="home.html" class="nav-item on"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="wallet.html" class="nav-item"><i class="fa-solid fa-trophy"></i><span>Hub</span></a>
+            <a href="play.html" class="nav-fab tap"><i class="fa-solid fa-gamepad"></i></a>
+            <a href="stats.html" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Stats</span></a>
+            <a href="user.html" class="nav-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+        </div>
+    </div>
+
+    <script>
+        function render() {
+            const s = NovaPay.state;
+            document.getElementById('handle').textContent = s.profile.name || s.profile.handle || 'Player';
+            if (s.profile.avatar) document.getElementById('avatar').src = s.profile.avatar;
+
+            const unread = NovaPay.unreadCount(), dot = document.getElementById('notif-dot');
+            if (unread > 0) { dot.classList.remove('hidden'); dot.textContent = unread > 9 ? '9+' : unread; } else dot.classList.add('hidden');
+        }
+
+        window.addEventListener('novapay:change', () => { NovaPay.reload(); render(); });
+        function boot(){ try{ render(); }catch(e){} document.body.classList.add('loaded'); }
+        if (document.readyState !== 'loading') boot(); else document.addEventListener('DOMContentLoaded', boot);
+        setTimeout(boot, 300);
+    </script>
+    <script src="haptics.js?v=16" defer></script>
+</body>
+</html>

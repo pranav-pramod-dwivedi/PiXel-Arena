@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Iconic EWC - Stats & Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@700&display=swap');
+
+        :root {
+            --surface: #ECEFF1;
+            --ewc-black: #070A10;
+            --ewc-card-bg: #0F131C;
+            --ewc-lime: #CCFF00;
+            --ewc-gold: #B88E24;
+            --wlt-green: #22C55E;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--surface);
+            color: #0F172A;
+            margin: 0;
+            padding-bottom: 95px;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-ewc {
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* --- HUD CARDS & FRAMES --- */
+        .hud-card {
+            background-color: var(--ewc-card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            color: #FFFFFF;
+        }
+
+        .spring { transition: transform .35s cubic-bezier(.34,1.56,.64,1); }
+        .spring:active { transform: scale(.97); }
+
+        /* --- CHART ENGINE --- */
+        .chart-container { position: relative; height: 210px; width: 100%; }
+        .chart-svg { width: 100%; height: 100%; display:block; overflow: visible; }
+        .chart-line {
+            fill: none; stroke: url(#lineGrad); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+            stroke-dasharray: 1200; stroke-dashoffset: 1200;
+            animation: drawLine 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            filter: drop-shadow(0 0 6px rgba(204, 255, 0, 0.4));
+        }
+        .chart-fill { fill: url(#gradientLime); opacity: 0; animation: fadeIn 1.2s ease-out .8s forwards; }
+        @keyframes drawLine { to { stroke-dashoffset: 0; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .grid-line { stroke: rgba(255,255,255,.06); stroke-width: 1; }
+        .x-lbl { fill:#64748b; font-size:9px; font-weight:800; font-family: 'Chakra Petch', sans-serif; letter-spacing:.06em; }
+        .dot { fill:#070A10; stroke:#CCFF00; stroke-width:2.5; opacity:0; animation:pop .45s ease-out forwards; }
+        .dot-live { fill: #CCFF00; stroke: #FFFFFF; }
+        @keyframes pop { to { opacity:1; } }
+
+        /* --- SEGMENT BUTTONS --- */
+        .seg {
+            display: flex; gap: 6px; padding: 5px; border-radius: 14px;
+            background: #FFFFFF; border: 1.5px solid #E2E8F0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .seg button {
+            flex: 1; padding: 8px 0; border: none; border-radius: 10px; font-size: 11px; font-weight: 800;
+            color: #64748B; background: transparent; transition: all .2s ease; cursor: pointer;
+            font-family: 'Chakra Petch', sans-serif; text-transform: uppercase;
+        }
+        .seg button.on {
+            background: var(--ewc-black); color: var(--ewc-lime);
+            box-shadow: 0 4px 12px rgba(7, 10, 16, 0.2);
+        }
+
+        /* --- WRAPPED / REWIND CARDS --- */
+        .wrapped-scroll { display: flex; gap: 14px; overflow-x: auto; padding: 0 20px 20px; scroll-snap-type: x mandatory; }
+        .wrapped-card {
+            min-width: 260px; height: 310px; border-radius: 24px;
+            scroll-snap-align: center; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 22px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: transform 0.2s;
+            color: #FFFFFF;
+        }
+        .wrapped-card:active { transform: scale(0.98); }
+        .wc-1 { background: linear-gradient(135deg, #070A10 0%, #161D2B 100%); border: 1px solid rgba(204, 255, 0, 0.3); }
+        .wc-2 { background: linear-gradient(135deg, #0F131C 0%, #1A2333 100%); border: 1px solid rgba(58, 107, 255, 0.3); }
+        .wc-3 { background: linear-gradient(135deg, #180E1C 0%, #2A102E 100%); border: 1px solid rgba(240, 80, 110, 0.3); }
+        .wc-4 { background: linear-gradient(135deg, #161618 0%, #070A10 100%); border: 1px solid rgba(212, 175, 55, 0.3); }
+        .big-stat { font-family: 'Chakra Petch', sans-serif; font-weight: 800; line-height: 1;
+            font-size: clamp(1.8rem, 8.5vw, 2.6rem); white-space: nowrap; letter-spacing: -0.02em; }
+
+        /* --- STAT WIDGETS --- */
+        .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
+        .stat-widget {
+            background: #FFFFFF; border: 1.5px solid #E2E8F0;
+            border-radius: 18px; padding: 16px;
+            display: flex; flex-direction: column; justify-content: space-between; height: 135px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .w-ic { width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+
+        /* --- AI SCROLL --- */
+        .msg-scroll { max-height:190px; overflow-y:auto; scrollbar-width:none; }
+        .msg-scroll::-webkit-scrollbar { display:none; }
+        .msg-line { padding:8px 0; border-bottom:1px solid rgba(255,255,255,.08); font-size:11px; color:#94a3b8; line-height:1.5; }
+        .msg-line:last-child { border-bottom:none; }
+        .msg-line strong { color: var(--ewc-lime); font-family: 'Chakra Petch', sans-serif; }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* --- EWC NAVIGATION BAR --- */
+        .app-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px 0 12px 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            color: #64748B;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .nav-item.active-ewc {
+            color: var(--ewc-black);
+            font-weight: 900;
+        }
+        .nav-item.active-ewc svg {
+            color: var(--ewc-gold);
+            filter: drop-shadow(0 2px 6px rgba(184, 142, 36, 0.35));
+        }
+
+        /* --- PROGRESS OVERLAY --- */
+        #progress-overlay {
+            position: fixed; inset: 0; z-index: 200; background: rgba(7, 10, 16, 0.88); backdrop-filter: blur(12px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: white;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #progress-overlay.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .progress-step { display: flex; align-items: center; gap: 10px; font-family: 'Chakra Petch', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; color: #94A3B8; }
+        .progress-step.active { color: var(--ewc-lime); }
+        .progress-step.done { color: #22C55E; }
+        .nv-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="max-w-md mx-auto relative">
+
+    <!-- Progress Loader Overlay -->
+    <div id="progress-overlay">
+        <div class="progress-step active" id="p-auth"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Authenticating</div>
+        <div class="progress-step" id="p-profile"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading profile</div>
+        <div class="progress-step" id="p-data"><span class="picon"><i class="fa-solid fa-circle-notch nv-spin"></i></span> Loading analytics</div>
+    </div>
+
+    <!-- MAIN PAGE STAGE -->
+    <div class="wrap max-w-md mx-auto px-5 pt-5 pb-32">
+
+        <!-- Top Telemetry Header -->
+        <header class="flex items-center justify-between mb-5">
+            <div>
+                <span class="font-ewc text-[10px] font-black tracking-widest text-slate-400 block">EWC > SYSTEM</span>
+                <h1 class="font-ewc text-2xl font-black text-slate-900 leading-none">PERFORMANCE PULSE</h1>
+            </div>
+            <a href="wallet.html" class="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xs font-black text-slate-900 shadow-sm spring">
+                <i class="fa-solid fa-wallet text-[#B88E24]"></i>
+            </a>
+        </header>
+
+        <!-- Dynamic Main Chart HUD Frame -->
+        <div class="hud-card p-5 mb-5">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <p class="font-ewc text-[10px] text-slate-400 font-extrabold tracking-wider">CURRENT PERIOD BALANCE</p>
+                    <p class="font-ewc text-2xl font-black text-white mt-0.5" id="chart-total">0</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-ewc text-[10px] text-slate-400 font-extrabold tracking-wider">VS PREVIOUS</p>
+                    <p class="font-ewc text-sm font-black mt-0.5" id="chart-trend">—</p>
+                </div>
+            </div>
+            <div class="chart-container">
+                <svg class="chart-svg" id="chart" viewBox="0 0 340 200" preserveAspectRatio="none"></svg>
+            </div>
+        </div>
+
+        <!-- Range Selection Buttons -->
+        <div class="mb-6">
+            <div class="seg" id="range">
+                <button data-r="week">1 WEEK</button>
+                <button data-r="month" class="on">1 MONTH</button>
+                <button data-r="all">ALL TIME</button>
+            </div>
+        </div>
+
+        <!-- Financial Rewind Section -->
+        <div class="mb-3 flex justify-between items-end">
+            <h2 class="font-ewc text-base font-black text-slate-900">FINANCIAL REWIND</h2>
+            <span class="font-ewc text-[10px] font-bold text-slate-400" id="rewind-sub">SINCE JUL 2026</span>
+        </div>
+
+        <div class="wrapped-scroll hide-scrollbar -mx-5 px-5 mb-6">
+            <div class="wrapped-card wc-1">
+                <div>
+                    <div class="bg-[#CCFF00]/10 border border-[#CCFF00]/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-[#CCFF00] mb-2">TOTAL COINS</div>
+                    <h3 class="font-ewc text-xl font-black text-white">NET BALANCE</h3>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Net Coins Earned</p>
+                    <p class="big-stat text-[#CCFF00]" id="wc-net">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-net-sub">—</p>
+                </div>
+            </div>
+
+            <div class="wrapped-card wc-2">
+                <div>
+                    <div class="bg-blue-500/20 border border-blue-400/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-blue-300 mb-2">BEST FORMAT</div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-gamepad text-2xl text-blue-400"></i>
+                        <h3 class="font-ewc text-xl font-black text-white" id="wc-format-name">—</h3>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Format Net Profit</p>
+                    <p class="big-stat text-blue-400" id="wc-format-profit">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-format-sub">—</p>
+                </div>
+            </div>
+
+            <div class="wrapped-card wc-3">
+                <div>
+                    <div class="bg-pink-500/20 border border-pink-400/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-pink-300 mb-2">TOP GIFTERS</div>
+                    <h3 class="font-ewc text-xl font-black text-white">INNER CIRCLE</h3>
+                    <div class="flex -space-x-2.5 mt-3" id="wc-faces"></div>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Top Gifter · <span id="wc-gifter-name">—</span></p>
+                    <p class="big-stat text-pink-400" id="wc-gifter-amt">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-gifter-sub">—</p>
+                </div>
+            </div>
+
+            <div class="wrapped-card wc-4">
+                <div>
+                    <div class="bg-amber-500/20 border border-amber-400/30 w-fit px-3 py-1 rounded-full font-ewc text-[9px] font-black text-[#B88E24] mb-2">POINTS BANK</div>
+                    <h3 class="font-ewc text-xl font-black text-white">POINTS BANK</h3>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Available Vault</p>
+                    <p class="big-stat text-[#D4AF37]" id="wc-pts">—</p>
+                    <p class="text-slate-300 text-xs mt-2" id="wc-pts-sub">—</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- At a Glance Metric Grid -->
+        <div class="mb-3"><h2 class="font-ewc text-base font-black text-slate-900">AT A GLANCE</h2></div>
+        <div class="widget-grid -mx-5 px-5 mb-5" id="widgets"></div>
+
+        <!-- AI Tactical Telemetry Block -->
+        <div class="mb-3"><h2 class="font-ewc text-base font-black text-slate-900">AI ANALYTICS</h2></div>
+
+        <div class="hud-card p-4 mb-5 border-emerald-500/30">
+            <div class="flex gap-3.5 items-start">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#CCFF00]/10 border border-[#CCFF00]/30 text-[#CCFF00]">
+                    <i class="fa-solid fa-robot text-sm"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="font-ewc text-sm font-black text-white mb-1" id="ai-headline">—</p>
+                    <div class="msg-scroll" id="ai-messages"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget-grid -mx-5 px-5 mb-6" id="analytics-grid"></div>
+
+        <!-- Link to Wallet Footer Card -->
+        <a href="wallet.html" class="hud-card p-4 flex items-center gap-4 spring border-[#B88E24]/40 hover:border-[#CCFF00]">
+            <div class="w-10 h-10 rounded-xl bg-black border border-[#B88E24]/50 flex items-center justify-center text-[#D4AF37] text-base shrink-0">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+            <div class="min-w-0">
+                <h3 class="font-ewc text-sm font-black text-white">MY WALLET</h3>
+                <p class="text-xs text-slate-400 font-medium">Manage transactions & balance</p>
+            </div>
+            <i class="fa-solid fa-chevron-right text-slate-400 text-xs ml-auto shrink-0"></i>
+        </a>
+
+    </div>
+
+    <!-- EWC BOTTOM NAVIGATION BAR WITH SHARP VECTOR ICONS -->
+    <nav class="app-bottom-nav">
+        <a href="home.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="wallet.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="1"/>
+                <path d="M16 12h.01"/>
+                <path d="M2 10h20"/>
+            </svg>
+            <span>Wallet</span>
+        </a>
+        <a href="TOURNAMENTS.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <path d="M 11.2526,18.942 C 11.1678,18.8317 11.1341,18.6996 11.173599999999999,18.575499999999998 C 11.2098,18.4603 11.2732,18.3725 11.4066,18.3161 L 17.543999999999997,15.6949 C 17.6946,15.630399999999998 17.7934,15.5458 17.8256,15.408100000000001 C 17.865099999999998,15.238900000000001 17.7967,15.1294 17.6913,15.005299999999998 L 14.206,10.8881 C 14.077599999999999,10.735899999999999 14.1204,10.516 14.2349,10.3919 C 14.3567,10.2606 14.5823,10.1873 14.7462,10.3017 L 23.3923,16.3409 C 23.5298,16.436799999999998 23.5858,16.5914 23.5537,16.749299999999998 C 23.528999999999996,16.8702 23.426899999999996,17.0305 23.261400000000002,17.0595 L 11.655199999999999,19.0838 C 11.4955,19.112 11.346499999999999,19.0661 11.2518,18.9428 L 11.2526,18.942" fill="currentColor"/>
+                    <path d="M 13.049199999999999,7.78121 C 12.8384,7.629759999999999 12.549399999999999,7.740119999999999 12.465399999999999,7.96326 L 10.5412,13.0261 C 10.4712,13.2098 10.3066,13.3097 10.111429999999999,13.284699999999999 C 9.845479999999998,13.2533 9.69069,13.0221 9.75244,12.761099999999999 L 10.7652,2.53064 C 10.784099999999999,2.34294 10.938099999999999,2.2237199999999997 11.100299999999999,2.1915 C 11.296299999999999,2.15203 11.431299999999998,2.25514 11.552299999999999,2.3952999999999998 L 19.0038,11.0525 C 19.095999999999997,11.159699999999999 19.1841,11.266 19.1685,11.4062 C 19.1438,11.6229 18.9651,11.7945 18.741099999999996,11.7961 C 18.6464,11.7961 18.5616,11.7526 18.4842,11.6962 L 13.049199999999999,7.78121" fill="currentColor"/>
+                    <path d="M 14.733799999999999,15.4783 C 14.7412,15.6419 14.6646,15.7804 14.517199999999999,15.846499999999999 L 4.821249999999999,20.161 C 4.715039999999999,20.1924 4.648339999999999,20.1892 4.5495399999999995,20.1505 C 4.370049999999999,20.0805 4.221019999999999,19.8734 4.2967699999999995,19.668 L 8.331259999999999,8.7697 C 8.407839999999998,8.5619 8.673779999999999,8.51357 8.85245,8.58123 C 9.015479999999998,8.64326 9.092049999999999,8.7633 9.11923,8.934099999999999 L 8.36749,15.4832 C 8.35102,15.627400000000002 8.346079999999999,15.7498 8.442419999999998,15.857 C 8.52723,15.9512 8.657319999999999,16.0189 8.813759999999998,15.993099999999998 L 14.2595,15.089300000000001 C 14.508199999999999,15.048200000000001 14.722199999999999,15.2254 14.734599999999999,15.4783 L 14.733799999999999,15.4783" fill="currentColor"/>
+                </g>
+            </svg>
+            <span>Tournament</span>
+        </a>
+        <a href="stats.html" class="nav-item active-ewc">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M18 20V10"/>
+                <path d="M12 20V4"/>
+                <path d="M6 20v-6"/>
+            </svg>
+            <span>Stats</span>
+        </a>
+        <a href="user.html" class="nav-item">
+            <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- DATA CALCULATION & CHART SCRIPT -->
+    <script>
+        const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        let _userData = {};
+        let _gifts = [];
+
+        function fmt(val) {
+            if (val == null) return '0';
+            return val.toLocaleString('en-US');
+        }
+
+        function generateChartData(range) {
+            const coins = _userData.coins || 0;
+            let buckets = [], maxPoints = 10;
+            const now = Date.now();
+            const day = 86400000;
+
+            if (range === 'week') {
+                maxPoints = 7;
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date(now - i * day);
+                    const seed = (d.getFullYear() * 365 + d.getMonth() * 30 + d.getDate()) * 7;
+                    const val = Math.round(coins * (0.05 + ((seed % 17) / 100)));
+                    buckets.push({ label: MONTHS[d.getMonth()] + ' ' + d.getDate(), val, ts: d.getTime() });
+                }
+            } else if (range === 'month') {
+                maxPoints = 30;
+                for (let i = 29; i >= 0; i--) {
+                    const d = new Date(now - i * day);
+                    const seed = (d.getFullYear() * 365 + d.getMonth() * 30 + d.getDate()) * 13;
+                    const val = Math.round(coins * (0.02 + ((seed % 11) / 100)));
+                    buckets.push({ label: MONTHS[d.getMonth()] + ' ' + d.getDate(), val, ts: d.getTime() });
+                }
+            } else {
+                const monthsBack = Math.min(10, (_userData.matchesPlayed || 10));
+                for (let i = monthsBack - 1; i >= 0; i--) {
+                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    const seed = (d.getFullYear() * 12 + d.getMonth()) * 31;
+                    const val = Math.round(coins * (0.08 + ((seed % 19) / 100)));
+                    buckets.push({ label: MONTHS[d.getMonth()] + " '" + String(d.getFullYear()).slice(2), val, ts: d.getTime() });
+                }
+            }
+
+            if (buckets.length > maxPoints) {
+                const step = Math.ceil(buckets.length / maxPoints);
+                const merged = [];
+                for (let i = 0; i < buckets.length; i += step) {
+                    const chunk = buckets.slice(i, i + step);
+                    merged.push({
+                        label: chunk[0].label,
+                        val: Math.round(chunk.reduce((s, b) => s + b.val, 0) / chunk.length),
+                        ts: chunk[0].ts
+                    });
+                }
+                return merged;
+            }
+            if (!buckets.length) {
+                const now = new Date();
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date(now - i * 86400000);
+                    buckets.push({ label: MONTHS[d.getMonth()] + ' ' + d.getDate(), val: 0, ts: d.getTime() });
+                }
+            }
+            return buckets;
+        }
+
+        function smoothPath(pts) {
+            if (pts.length < 2) return '';
+            let d = `M${pts[0].x},${pts[0].y}`;
+            for (let i = 0; i < pts.length - 1; i++) {
+                const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+                d += ` C${p1.x+(p2.x-p0.x)/6},${p1.y+(p2.y-p0.y)/6} ${p2.x-(p3.x-p1.x)/6},${p2.y-(p3.y-p1.y)/6} ${p2.x},${p2.y}`;
+            }
+            return d;
+        }
+
+        function drawChart(data) {
+            const W = 340, H = 200, PL = 8, PR = 8, PT = 20, PB = 26;
+            const iw = W - PL - PR, ih = H - PT - PB;
+            if (!data.length) {
+                const d = new Date();
+                for (let i = 6; i >= 0; i--) {
+                    const dd = new Date(d - i * 86400000);
+                    data.push({ val: 0, label: MONTHS[dd.getMonth()] + ' ' + dd.getDate(), ts: dd.getTime() });
+                }
+            }
+            const max = Math.max(...data.map(p => p.val)) * 1.2 || 1;
+
+            const minTs = Math.min(...data.map(p => p.ts));
+            const maxTs = Math.max(...data.map(p => p.ts));
+            const range = maxTs - minTs || 1;
+
+            const pts = data.map((p) => ({
+                x: PL + ((p.ts - minTs) / range) * iw,
+                y: PT + ih - (p.val / max) * ih,
+                label: p.label
+            }));
+
+            const line = smoothPath(pts);
+            const fill = line + ` L${pts[pts.length-1].x},${PT+ih} L${pts[0].x},${PT+ih} Z`;
+            const grid = [0, .5, 1].map(f =>
+                `<line class="grid-line" x1="${PL}" y1="${PT+ih*f}" x2="${W-PR}" y2="${PT+ih*f}"/>`).join('');
+
+            const want = Math.min(5, pts.length);
+            const keep = new Set();
+            for (let k = 0; k < want; k++) keep.add(Math.round(k * (pts.length - 1) / (want - 1 || 1)));
+
+            const labels = [...keep].sort((a,b)=>a-b).map(i => {
+                const p = pts[i];
+                const anchor = i === 0 ? 'start' : i === pts.length-1 ? 'end' : 'middle';
+                return `<text class="x-lbl" x="${p.x}" y="${H-8}" text-anchor="${anchor}">${p.label.toUpperCase()}</text>`;
+            }).join('');
+
+            const dots = [...keep].sort((a,b)=>a-b).map(i =>
+                `<circle class="dot ${i===pts.length-1?'dot-live':''}" cx="${pts[i].x}" cy="${pts[i].y}" r="3.5"
+                         style="animation-delay:${1.3 + i*0.04}s"/>`).join('');
+
+            document.getElementById('chart').innerHTML = `
+                <defs>
+                    <linearGradient id="gradientLime" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#CCFF00" stop-opacity="0.35"/>
+                        <stop offset="100%" stop-color="#CCFF00" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="lineGrad" x1="0" x2="1" y1="0" y2="0">
+                        <stop offset="0%" stop-color="#D4AF37"/>
+                        <stop offset="100%" stop-color="#CCFF00"/>
+                    </linearGradient>
+                </defs>
+                ${grid}
+                <path class="chart-fill" d="${fill}"/>
+                <path class="chart-line" d="${line}"/>
+                ${dots}${labels}`;
+
+            const last = data[data.length-1].val;
+            const prev = data.length > 1 ? data[data.length-2].val : 0;
+            document.getElementById('chart-total').textContent = fmt(last) + ' COINS';
+
+            const el = document.getElementById('chart-trend');
+            if (!prev) { el.textContent = '—'; el.style.color = '#64748b'; return; }
+            const pct = prev ? Math.round((last - prev) / prev * 100) : 0;
+            const up = pct >= 0;
+            el.innerHTML = `<i class="fa-solid fa-arrow-${up?'up':'down'} text-[10px]"></i> ${Math.abs(pct)}%`;
+            el.style.color = up ? '#22C55E' : '#EF4444';
+        }
+
+        function renderRewind() {
+            const coins = _userData.coins || 0;
+            const spent = Math.floor(coins * 0.4);
+            const won = coins - spent;
+            document.getElementById('wc-net').textContent = fmt(coins);
+            document.getElementById('wc-net-sub').textContent = `Won ${fmt(won)} · Spent ${fmt(spent)}`;
+
+            const formats = _userData.favouriteFormats || [];
+            const best = formats.length ? formats[0] : null;
+            document.getElementById('wc-format-name').textContent = best ? best.toUpperCase() : '—';
+            const formatProfit = best ? Math.floor(coins * 0.3) : 0;
+            document.getElementById('wc-format-profit').textContent = best ? '+' + fmt(formatProfit) : '—';
+            document.getElementById('wc-format-sub').textContent = best ? `Best performing format` : 'Play matches to unlock format analytics';
+
+            const gifterMap = {};
+            _gifts.forEach(g => { if (g.from) gifterMap[g.from] = (gifterMap[g.from] || 0) + 1; });
+            const topGifter = Object.entries(gifterMap).sort((a,b) => b[1] - a[1])[0];
+            document.getElementById('wc-gifter-name').textContent = topGifter ? topGifter[0] : '—';
+            document.getElementById('wc-gifter-amt').textContent = topGifter ? String(topGifter[1]) + ' GIFTS' : '—';
+            document.getElementById('wc-gifter-sub').textContent = topGifter ? `Most generous supporter` : 'Earn gifts in tournament play!';
+
+            const faces = _gifts.filter(g => g.from).slice(0, 4);
+            document.getElementById('wc-faces').innerHTML = faces.length ? faces.map(g => {
+                const fallback = 'https://ui-avatars.com/api/?background=0F131C&color=CCFF00&bold=true&name=' + encodeURIComponent(g.from);
+                return `<img class="w-9 h-9 rounded-full border-2 border-[#0F131C] object-cover shrink-0"
+                             src="${g.img || fallback}" alt="${g.from}" title="${g.from}"
+                             onerror="this.onerror=null;this.src='${fallback}'">`;
+            }).join('') : '<p class="text-xs text-slate-400 font-bold">No gifters recorded</p>';
+
+            document.getElementById('wc-pts').textContent = (coins || 0).toLocaleString();
+            document.getElementById('wc-pts-sub').textContent = `Vault Coins · ${fmt(won)} earned`;
+        }
+
+        function renderWidgets() {
+            const coins = _userData.coins || 0;
+            const matches = _userData.matchesPlayed || 0;
+            const kills = _userData.kills || 0;
+            document.getElementById('widgets').innerHTML = `
+                <div class="stat-widget">
+                    <div class="w-ic bg-blue-50 text-blue-600"><i class="fa-solid fa-gamepad text-sm"></i></div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">MATCHES PLAYED</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches}</p>
+                    </div>
+                </div>
+                <div class="stat-widget">
+                    <div class="w-ic bg-red-50 text-red-600"><i class="fa-solid fa-crosshairs text-sm"></i></div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">TOTAL KILLS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${kills}</p>
+                    </div>
+                </div>
+                <div class="stat-widget">
+                    <div class="w-ic bg-amber-50 text-[#B88E24]"><i class="fa-solid fa-trophy text-sm"></i></div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">EST. WIN RATE</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches ? Math.round((kills/2/matches)*100) : 0}%</p>
+                        <p class="text-[9px] text-slate-400 font-bold mt-0.5 truncate">${matches ? Math.floor(kills/2) + ' victories' : 'No matches'}</p>
+                    </div>
+                </div>
+                <div class="stat-widget">
+                    <div class="w-ic bg-emerald-50 text-emerald-600"><i class="fa-solid fa-coins text-sm"></i></div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">VAULT COINS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${(coins||0).toLocaleString()}</p>
+                        <p class="text-[9px] text-slate-400 font-bold mt-0.5">Available Balance</p>
+                    </div>
+                </div>`;
+        }
+
+        const AI_MSGS = {
+            'not-played': [
+                'You haven\'t played any tournaments yet. The arena awaits!',
+                'Zero matches played — every champion starts somewhere.',
+                'The leaderboard is empty without you. Play your first match!'
+            ],
+            'few-matches': [
+                'You\'ve played a few matches. Time to ramp it up!',
+                'Good start! Now build on those early games.',
+                'A handful of matches is just the beginning. Play more!'
+            ],
+            'moderate-profit': [
+                'Solid profit! Your strategy is working. Keep executing!',
+                'You\'re building real tournament wealth. One match at a time!',
+                'Good gains! Consistency like this creates champions!'
+            ],
+            'huge-profit': [
+                'Extraordinary profits! You\'re an absolute legend!',
+                'Phenomenal returns! This is championship level play!',
+                'Massive profits! Your strategy is god-tier!'
+            ]
+        };
+
+        function renderAnalytics() {
+            const coins = _userData.coins || 0;
+            const matches = _userData.matchesPlayed || 0;
+            const kills = _userData.kills || 0;
+            const winRate = matches ? Math.round((kills/2/matches)*100) : 0;
+
+            let condition = matches === 0 ? 'not-played' : (matches < 5 ? 'few-matches' : 'moderate-profit');
+            const msgs = AI_MSGS[condition] || AI_MSGS['few-matches'];
+            const shuffled = [...msgs].sort(() => Math.random() - 0.5).slice(0, 3);
+            document.getElementById('ai-headline').textContent = shuffled[0].split('.')[0].toUpperCase() + '.';
+            document.getElementById('ai-messages').innerHTML = shuffled.map(m =>
+                `<div class="msg-line"><strong>EWC_AI</strong> · ${m}</div>`
+            ).join('');
+
+            document.getElementById('analytics-grid').innerHTML = `
+                <div class="stat-widget">
+                    <div class="flex justify-between items-center text-purple-600">
+                        <i class="fa-solid fa-star text-base"></i>
+                        <span class="font-ewc text-[9px] font-black bg-purple-50 text-purple-600 px-2 py-0.5 rounded">REWARDS</span>
+                    </div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">REWARD POINTS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${(coins||0).toLocaleString()}</p>
+                    </div>
+                </div>
+                <div class="stat-widget">
+                    <div class="flex justify-between items-center text-cyan-600">
+                        <i class="fa-solid fa-shield-halved text-base"></i>
+                        <span class="font-ewc text-[9px] font-black bg-cyan-50 text-cyan-600 px-2 py-0.5 rounded">ARENA</span>
+                    </div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">TOURNAMENTS</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches}</p>
+                    </div>
+                </div>
+                <div class="stat-widget">
+                    <div class="flex justify-between items-center text-rose-600">
+                        <i class="fa-solid fa-crosshairs text-base"></i>
+                        <span class="font-ewc text-[9px] font-black bg-rose-50 text-rose-600 px-2 py-0.5 rounded">RATIO</span>
+                    </div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">KILLS / MATCH</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${matches ? (kills/matches).toFixed(1) : 0}</p>
+                    </div>
+                </div>
+                <div class="stat-widget">
+                    <div class="flex justify-between items-center">
+                        <i class="fa-solid fa-gauge-high text-base text-slate-700"></i>
+                        <span class="font-ewc text-[9px] ${winRate >= 50 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'} px-2 py-0.5 rounded font-black">
+                            ${winRate >= 50 ? 'HIGH' : 'EVAL'}
+                        </span>
+                    </div>
+                    <div>
+                        <p class="font-ewc text-[10px] font-black text-slate-400">WIN RATE</p>
+                        <p class="font-ewc text-xl font-black text-slate-900 mt-0.5">${winRate}%</p>
+                    </div>
+                </div>`;
+        }
+
+        let currentRange = 'month';
+        document.querySelectorAll('#range button').forEach(b => b.onclick = () => {
+            currentRange = b.dataset.r;
+            document.querySelectorAll('#range button').forEach(x => x.classList.toggle('on', x === b));
+            if (navigator.vibrate) navigator.vibrate(8);
+            const data = generateChartData(currentRange);
+            drawChart(data);
+        });
+
+        function renderAll() {
+            const now = new Date();
+            const MONTH_NAMES = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+            document.getElementById('rewind-sub').textContent = 'SINCE ' + MONTH_NAMES[now.getMonth()] + ' ' + now.getFullYear();
+            drawChart(generateChartData(currentRange));
+            renderAnalytics();
+            renderWidgets();
+            renderRewind();
+        }
+    </script>
+
+    <!-- FIREBASE INITIALIZATION & GUARGUARD MODULE -->
+    <script src="haptics.js?v=16" defer></script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { requireAuth } from './authGuard.js';
+        import { doc, getDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        try {
+            const user = await requireAuth();
+            document.getElementById('p-auth').className = 'progress-step done';
+            document.getElementById('p-auth').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            document.getElementById('p-profile').className = 'progress-step active';
+            const snap = await getDoc(doc(db, 'users', user.uid));
+            if (snap.exists()) _userData = snap.data();
+            document.getElementById('p-profile').className = 'progress-step done';
+            document.getElementById('p-profile').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            document.getElementById('p-data').className = 'progress-step active';
+            try {
+                const gSnap = await getDocs(query(collection(db, 'users', user.uid, 'gifts'), orderBy('createdAt', 'desc')));
+                _gifts = gSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            } catch (e) {}
+            
+            renderAll();
+            document.getElementById('p-data').className = 'progress-step done';
+            document.getElementById('p-data').querySelector('.picon').innerHTML = '<i class="fa-solid fa-check"></i>';
+
+            setTimeout(() => document.getElementById('progress-overlay').classList.add('hide'), 300);
+        } catch (e) {
+            document.getElementById('progress-overlay').classList.add('hide');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://fonts.googleapis.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="../guard.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap');
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0B1120; color: #e2e8f0; margin: 0; min-height: 100vh; display: flex; }
+        .sidebar { width: 240px; background: rgba(15,23,42,.85); backdrop-filter: blur(16px); border-right: 1px solid rgba(255,255,255,.06); padding: 24px 0; flex-shrink: 0; display: flex; flex-direction: column; }
+        .s-logo { padding: 0 24px 20px; border-bottom: 1px solid rgba(255,255,255,.06); margin-bottom: 12px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .s-logo i { color: #3b82f6; }
+        .s-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; font-size: 13px; font-weight: 600; color: #94a3b8; text-decoration: none; transition: all .15s; }
+        .s-item:hover, .s-item.on { color: #fff; background: rgba(59,130,246,.1); }
+        .s-item.on { border-right: 2px solid #3b82f6; }
+        .s-item i { width: 20px; text-align: center; font-size: 14px; }
+        .s-spacer { flex: 1; }
+        .s-logout { color: #f87171; }
+        .s-logout:hover { background: rgba(248,113,113,.1); color: #fca5a5; }
+        .main { flex: 1; padding: 32px; overflow-y: auto; }
+        .hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+        .hdr h1 { font-size: 22px; font-weight: 800; }
+        .bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .btn-add { height: 40px; padding: 0 20px; border-radius: 10px; border: none; background: linear-gradient(135deg,#1d4ed8,#3b82f6); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .btn-add:active { transform: scale(.97); }
+        .btn-sm { padding: 6px 14px; border-radius: 6px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; margin: 0 3px; }
+        .btn-edit { background: rgba(59,130,246,.15); color: #60a5fa; }
+        .btn-del { background: rgba(248,113,113,.15); color: #f87171; }
+        .btn-sm:active { transform: scale(.95); }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid rgba(255,255,255,.06); }
+        td { padding: 12px 16px; font-size: 13px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.04); }
+        tr:hover td { background: rgba(255,255,255,.02); }
+        .table-wrap { background: rgba(15,23,42,.5); border: 1px solid rgba(255,255,255,.06); border-radius: 16px; overflow: hidden; }
+        .num { font-family: 'JetBrains Mono', monospace; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+        .badge-gold { background: rgba(245,158,11,.15); color: #fbbf24; }
+        .badge-silver { background: rgba(148,163,184,.15); color: #94a3b8; }
+        .badge-bronze { background: rgba(180,83,9,.15); color: #d97706; }
+        .modal-overlay { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.5); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .25s; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-box { width: calc(100% - 48px); max-width: 480px; padding: 28px; background: rgba(15,23,42,.95); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; transform: scale(.92); transition: transform .25s; }
+        .modal-overlay.show .modal-box { transform: scale(1); }
+        .modal-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
+        .modal-box input, .modal-box select { width: 100%; height: 40px; padding: 0 12px; border-radius: 8px; background: rgba(15,23,42,.6); border: 1px solid rgba(255,255,255,.08); color: #fff; font-size: 13px; font-weight: 600; outline: none; margin-bottom: 10px; }
+        .modal-box input:focus, .modal-box select:focus { border-color: #3b82f6; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+        .modal-actions button { flex: 1; height: 40px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .modal-actions .cancel { background: rgba(255,255,255,.06); color: #94a3b8; }
+        .modal-actions .save { background: linear-gradient(135deg,#1d4ed8,#3b82f6); color: #fff; }
+        .modal-actions .save:disabled { opacity: .5; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .toast { position: fixed; bottom: 32px; right: 32px; background: rgba(15,23,42,.9); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.1); padding: 12px 24px; border-radius: 12px; font-size: 13px; font-weight: 700; opacity: 0; transition: all .3s; pointer-events: none; z-index: 200; }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="s-logo"><i class="fa-solid fa-shield-halved"></i> PIXEL ADMIN</div>
+        <a href="dashboard.html" class="s-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="users.html" class="s-item"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="tournaments.html" class="s-item"><i class="fa-solid fa-trophy"></i> Tournaments</a>
+        <a href="rankings.html" class="s-item"><i class="fa-solid fa-ranking-star"></i> Rankings</a>
+        <a href="results.html" class="s-item on"><i class="fa-solid fa-medal"></i> Results</a>
+        <a href="schedule.html" class="s-item"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        <div class="s-spacer"></div>
+        <a href="#" id="logoutBtn" class="s-item s-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </aside>
+
+    <div class="main">
+        <div class="hdr"><h1><i class="fa-solid fa-medal mr-2 text-emerald-400"></i>Tournament Results</h1></div>
+        <div class="bar"><span id="count" class="text-sm text-slate-500 font-semibold">Loading...</span><button class="btn-add" onclick="openModal()"><i class="fa-solid fa-plus mr-1"></i>Add Result</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Pos</th><th>Player</th><th>Club</th><th>Medals</th><th>Winnings</th><th>Badge</th><th style="width:100px"></th></tr></thead><tbody id="tbody"></tbody></table></div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <h3 id="modal-title">Add Result</h3>
+            <input type="number" id="m-position" placeholder="Position (1, 2, 3, ...)">
+            <input type="text" id="m-playerName" placeholder="Player name">
+            <input type="text" id="m-club" placeholder="Club / Team name">
+            <input type="number" id="m-medals" placeholder="Medals count">
+            <input type="number" id="m-winnings" placeholder="Winnings amount">
+            <select id="m-badge"><option value="">No badge</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option></select>
+            <input type="text" id="m-playerUid" placeholder="Player UID (optional)">
+            <div class="modal-actions"><button class="cancel" onclick="closeModal()">Cancel</button><button class="save" id="modal-save" onclick="saveItem()">Save</button></div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="module">
+        import { requireAdmin, logoutUser } from '../authGuard.js';
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+        import { db } from '../firebase.js';
+        var admin; try { admin = await requireAdmin(); } catch(e) { return; }
+        var C = 'tournamentResults', items=[], editingId=null;
+
+        function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(function(){e.classList.remove('show');},2000);}
+
+        window.openModal=function(id){
+            editingId=id||null;
+            document.getElementById('modal-title').textContent=id?'Edit Result':'Add Result';
+            var f=['m-position','m-playerName','m-club','m-medals','m-winnings','m-badge','m-playerUid'];
+            if(id){var it=items.find(function(i){return i._id===id});if(it)f.forEach(function(k){var el=document.getElementById(k);if(el)el.value=it[k.replace('m-','')]||'';});}
+            else{f.forEach(function(k){var el=document.getElementById(k);if(el)el.value='';});}
+            document.getElementById('modal').classList.add('show');
+        };
+        window.closeModal=function(){document.getElementById('modal').classList.remove('show');};
+
+        window.saveItem=async function(){
+            var btn=document.getElementById('modal-save');btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner spinner"></i>';
+            var d={
+                position: Number(document.getElementById('m-position').value)||0,
+                playerName: document.getElementById('m-playerName').value.trim(),
+                club: document.getElementById('m-club').value.trim(),
+                medals: Number(document.getElementById('m-medals').value)||0,
+                winnings: Number(document.getElementById('m-winnings').value)||0,
+                badge: document.getElementById('m-badge').value,
+                playerUid: document.getElementById('m-playerUid').value.trim()
+            };
+            if(!d.playerName){toast('Player name required');btn.disabled=false;btn.innerHTML='Save';return;}
+            try{if(editingId){await updateDoc(doc(db,C,editingId),d);toast('Updated');}else{await addDoc(collection(db,C),d);toast('Added');}closeModal();loadItems();}
+            catch(e){toast('Error: '+e.message);}
+            btn.disabled=false;btn.innerHTML='Save';
+        };
+
+        async function loadItems(){
+            var snap=await getDocs(query(collection(db,C),orderBy('position')));
+            items=snap.docs.map(function(d){var x=d.data();x._id=d.id;return x;});
+            var tbody=document.getElementById('tbody');
+            document.getElementById('count').textContent=items.length+' entries';
+            tbody.innerHTML=items.map(function(r){
+                var badgeClass='';
+                if(r.badge==='gold') badgeClass='badge-gold';
+                else if(r.badge==='silver') badgeClass='badge-silver';
+                else if(r.badge==='bronze') badgeClass='badge-bronze';
+                return '<tr><td class="num">'+(r.position||'-')+'</td><td>'+esc(r.playerName||'')+'</td><td>'+esc(r.club||'')+'</td><td class="num">'+(r.medals||0)+'</td><td class="num">₹'+(r.winnings||0).toLocaleString()+'</td><td>'+(r.badge?'<span class="badge '+badgeClass+'">'+esc(r.badge)+'</span>':'—')+'</td><td><button class="btn-sm btn-edit" onclick="window.openModal(\''+r._id+'\')"><i class="fa-solid fa-pen"></i></button><button class="btn-sm btn-del" onclick="window.deleteItem(\''+r._id+'\')"><i class="fa-solid fa-trash"></i></button></td></tr>';
+            }).join('');
+        }
+        window.deleteItem=async function(id){if(!confirm('Delete this result?'))return;try{await deleteDoc(doc(db,C,id));toast('Deleted');loadItems();}catch(e){toast('Error: '+e.message);}};
+
+        function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+        loadItems();
+        setInterval(loadItems, 10000);
+        document.getElementById('logoutBtn').addEventListener('click',function(e){e.preventDefault();logoutUser();});
+    </script>
+</body>
+</html>
